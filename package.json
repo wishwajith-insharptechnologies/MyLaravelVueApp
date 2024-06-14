@@ -17,6 +17,7 @@
         "vue": "^3.4.27"
     },
     "dependencies": {
+        "@stripe/stripe-js": "^3.5.0",
         "ant-design-vue": "^4.2.1",
         "js-cookie": "^3.0.5",
         "lodash.clonedeep": "^4.5.0",

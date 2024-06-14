@@ -36,7 +36,7 @@ Route::middleware('guest')->group(function () {
             Route::get('/project/{project}', [ProjectsController::class, 'getProjectById']);
             Route::get('/projects/list', [ProjectsController::class, 'getProjectList']);
             Route::post('/projects/create-project', [ProjectsController::class, 'createProject']);
-            Route::patch('/projects/update-project/{project}', [ProjectsController::class, 'updateProject']);
+            Route::post('/projects/update-project/{project}', [ProjectsController::class, 'updateProject']);
             Route::delete('/projects/delete/project/{project}', [ProjectsController::class, 'deleteProject']);
 
             //packages

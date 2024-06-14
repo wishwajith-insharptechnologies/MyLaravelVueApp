@@ -43,7 +43,7 @@
                             </a-menu-item>
                         </router-link>
 
-                        <router-link to="/package">
+                        <router-link :to="{ name: 'ListProductPage' }">
                             <a-menu-item key="view-products">
                                 <span>View Products</span>
                             </a-menu-item>

@@ -20,7 +20,7 @@
           <a-form-item>
             <a-input
               id="projectName"
-              v-model="form.projectName"
+              v-model:value="form.projectName"
               placeholder="Project Name"
               :class="errors && errors.project_name ? 'ant-input-status-error' : ''"
             />
@@ -30,7 +30,7 @@
           <a-form-item>
             <a-select
               id="environmentType"
-              v-model="form.environmentType"
+              v-model:value="form.environmentType"
               placeholder="Select Environment Type"
               :class="errors && errors.environment_type ? 'ant-input-status-error' : ''"
             >
@@ -49,7 +49,7 @@
           <a-form-item>
             <a-select
               id="projectType"
-              v-model="form.projectType"
+              v-model:value="form.projectType"
               placeholder="Select Project Type"
               :class="errors && errors.project_type ? 'ant-input-status-error' : ''"
             >
@@ -68,7 +68,7 @@
           <a-form-item>
             <a-textarea
               id="projectDescription"
-              v-model="form.description"
+              v-model:value="form.description"
               placeholder="Project Description"
               rows="4"
               :class="errors && errors.description ? 'ant-input-status-error' : ''"
@@ -90,7 +90,7 @@
           <a-form-item>
             <a-input
               id="secretCode"
-              v-model="form.secretCode"
+              v-model:value="form.secretCode"
               placeholder="Secret Code"
               :class="errors && errors.secret_code ? 'ant-input-status-error' : ''"
             />
@@ -100,7 +100,7 @@
           <a-form-item>
             <a-input
               id="productLink"
-              v-model="form.link"
+              v-model:value="form.link"
               placeholder="Product Link"
               :class="errors && errors.link ? 'ant-input-status-error' : ''"
             />
@@ -127,21 +127,13 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '@/stores';
-import { UserCircleIcon } from '@heroicons/vue/24/outline';
-import clonedeep from 'lodash.clonedeep';
-import moment from 'moment';
-// import Multiselect from '@vueform/multiselect';
-// import Errors from '@components/Errors.vue';
 import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
 
-// const { popToast } = mapActions('toast', ['popToast']);
 const store = useAuthStore();
-// Define the component props
 const props = defineProps({
   product: { type: Object, default: null },
 });
 
-// Define reactive variables
 const projectTypes = [
   { id: 1, name: 'web' },
   { id: 2, name: 'mobile' },
@@ -156,6 +148,8 @@ const improtsConfigTypes = [
   { id: 1, name: 'Json' },
   { id: 2, name: 'Web' },
 ];
+
+// Define form as a reactive reference
 const form = ref({
   id: null,
   image: '',
@@ -173,9 +167,7 @@ const form = ref({
 
 const submitting = ref(false);
 const errors = ref(null);
-const changed = ref(false);
 const ready = ref(false);
-const items = ref([{ name: '', value: '' }]);
 
 const isEditable = computed(() => {
   return props.product !== null;
@@ -189,13 +181,17 @@ const storedLimitations = computed(() => {
   }
 });
 
+// Initialize form data when component is mounted
 onMounted(() => {
   if (props.product) {
-    const editableProduct = {
+    // Update form data with product details
+    console.log(props.product);
+    console.log(props.product.limitation ? props.product.limitation.limitation : [] );
+
+    form.value = {
       ...props.product,
-      limitation: storedLimitations.value,
+      limitation: props.product.limitation ? props.product.limitation.limitation : [],
     };
-    form.value = clonedeep(editableProduct);
     setTimeout(() => {
       ready.value = true;
     }, 100);
@@ -205,35 +201,119 @@ onMounted(() => {
   }
 });
 
-// Define methods
+// Method to handle file change for project image
 const onProjectImageFileChange = (event) => {
-  console.log(event.target.files[0].type);
-
   form.value.image = event.target.files[0];
 };
 
-const importLimitation = (updatedLimitaionData) => {
-  form.value.limitation = updatedLimitaionData;
-  console.log(updatedLimitaionData);
-  // console.log(form.value.limitation);
-};
-const productUpdated = (data) => {
-  emit('productUpdated', data);
+// Method to update limitations
+const importLimitation = (updatedLimitationData) => {
+  form.value.limitation = updatedLimitationData;
 };
 
-const generateRandomString = (length) => {
-  if (props.product) return;
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
+// Method to handle form submission
+const submit = async () => {
+  errors.value = null;
+  submitting.value = true;
+
+  try {
+    if (!props.product) {
+      await submitForm();
+    } else {
+      await updateProduct();
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error);
+  } finally {
+    submitting.value = false;
   }
-  form.value.secretCode = result;
 };
 
+// Method to submit form data for creating new project
+const submitForm = async () => {
+  try {
+    const formData = new FormData();
+
+    // Append each form field to FormData
+    Object.entries(form.value).forEach(([key, value]) => {
+      // If the key is 'limitation', stringify the JSON array and append it
+      if (key === 'limitation') {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    const response = await axios.post(
+      '/api/projects/create-project',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+
+    // Reset form data after successful submission
+    resetFormData();
+
+    // Dispatch success toast notification
+    const toast = {
+      icon: 'success',
+      message: 'Project Successfully Created!',
+      position: 'bottom-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      showCloseButton: false,
+    };
+    store.dispatch('toast/popToast', toast);
+
+  } catch (error) {
+    // Handle errors
+    handleSubmissionError(error);
+  }
+};
+
+// Method to update existing project
+const updateProduct = async () => {
+  try {
+    const updateFormData = new FormData();
+
+    // Append each form field to FormData
+    for (const [key, value] of Object.entries(form.value)) {
+      if (key === 'limitation') {
+        updateFormData.append(key, JSON.stringify(value));
+      } else {
+        updateFormData.append(key, value);
+      }
+    }
+
+    const response = await axios.post(
+      `/api/projects/update-project/${props.product.id}`,
+      updateFormData,
+    );
+
+    // Dispatch success toast notification
+    const toast = {
+      icon: 'success',
+      message: `Project Updated Successfully!`,
+      position: 'bottom-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      showCloseButton: false,
+    };
+    store.dispatch('toast/popToast', toast);
+
+  } catch (error) {
+    // Handle errors
+    handleSubmissionError(error);
+  }
+};
+
+// Method to reset form data
 const resetFormData = () => {
-  // Reset form data to initial state
   form.value = {
     id: null,
     image: '',
@@ -250,136 +330,39 @@ const resetFormData = () => {
   };
 };
 
-const submit = async () => {
-  errors.value = null;
-  submitting.value = true;
-
-  if (!props.product) {
-    await submitForm();
-  } else {
-    await updateProduct();
+// Method to generate random string
+const generateRandomString = (length) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-
-  submitting.value = false;
+  form.value.secretCode = result;
 };
 
-const submitForm = async () => {
-  try {
-    const formData = new FormData();
-
-    // Append each form field to FormData
-    Object.entries(form.value).forEach(([key, value]) => {
-      // If the key is 'limitation', stringify the JSON array and append it
-      if (key === 'limitation') {
-        formData.append(key, JSON.stringify(value));
-      } else {
-        formData.append(key, value);
-      }
-    });
-    console.log(formData);
-
-    const response = await axios.post(
-      '/api/projects/create-project',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    );
-
-    console.log(response.data);
-
-    const toast = {
-      icon: 'success',
-      message: 'Project Successfully Created!',
-      position: 'bottom-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      showCloseButton: false,
-    };
-    store.dispatch('toast/popToast', toast);
-
-    resetFormData();
-  } catch (error) {
-    // Handle axios errors
-    if (axios.isAxiosError(error)) {
-      if (error.response && error.response.status === 422) {
-        errors.value = error.response.data.errors;
-      } else {
-        const toast = {
-          icon: 'error',
-          message: 'Error Creating Project',
-          position: 'bottom-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-          showCloseButton: false,
-        };
-        store.dispatch('toast/popToast', toast);
-      }
+// Method to handle form submission errors
+const handleSubmissionError = (error) => {
+  if (axios.isAxiosError(error)) {
+    if (error.response && error.response.status === 422) {
+      errors.value = error.response.data.errors;
     } else {
-      // Handle non-axios errors
-      console.error('Error creating project:', error);
+      const toast = {
+        icon: 'error',
+        message: 'Error Submitting Form',
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        showCloseButton: false,
+      };
+      store.dispatch('toast/popToast', toast);
     }
-  }
-};
-
-const updateProduct = async () => {
-  try {
-    const updateFormData = new FormData();
-    console.log(form.value);
-
-    // Append each form field to FormData
-    for (const [key, value] of Object.entries(form.value)) {
-      // If the key is 'limitation', stringify the JSON array and append it
-      if (key === 'limitation') {
-        updateFormData.append(key, JSON.stringify(value));
-      } else {
-        updateFormData.append(key, value);
-      }
-    }
-    console.log(updateFormData);
-
-    const response = await axios.patch(
-      `/api/projects/update-project/${props.product.id}`,
-      form.value,
-    );
-
-    const toast = {
-      icon: 'success',
-      message: `User ${response.data.user.name} Successfully Updated!`,
-      position: 'bottom-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      showCloseButton: false,
-    };
-
-    store.dispatch('toast/popToast', toast);
-    emit('userUpdated', response.data.user);
-    productUpdated(response.data);
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response && error.response.status === 422) {
-        errors.value = error.response.data.errors;
-      } else {
-        const toast = {
-          icon: 'error',
-          message: 'Error Updating Project',
-          position: 'bottom-end',
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-          showCloseButton: false,
-        };
-        store.dispatch('toast/popToast', toast);
-      }
-    }
+  } else {
+    console.error('Unexpected error occurred:', error);
   }
 };
 </script>
+
 
 
 
