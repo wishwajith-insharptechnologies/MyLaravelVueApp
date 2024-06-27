@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectService
 {
+    public static function getAllProjects()
+    {
+        return ProjectRepository::getAll(['id', 'project_name']);
+    }
+
     public static function getProjects($per)
     {
         return ProjectRepository::get($per);

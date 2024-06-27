@@ -16,7 +16,7 @@ import PaymentPage from '../views/pages/Payment.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Dashboard },
-  { path: '/login', name: 'Login', component: Login },
+  { path: '/login', name: 'Login', component: Login, meta: { middleware: "guest", title: `Login`} },
   { path: '/register', name: 'Register', component: Register },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/admin_dashboard', name: 'AdminDashboard', component: AdminDashboard },

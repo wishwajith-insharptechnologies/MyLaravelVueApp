@@ -25,6 +25,7 @@ class PaymentsController extends Controller
     public function getSession(Request $request){
         try {
             $productId = $request->productId;
+
             $checkoutSession = PaymentServices::createPaymentIntent($productId);
 
             return response()->json($checkoutSession);

@@ -13,6 +13,11 @@ class ProjectRepository
         return Projects::with('limitation')->paginate($per);
     }
 
+    public static function getAll($columns)
+    {
+        return Projects::where('status', 1)->select($columns)->get();
+    }
+
     public static function find($projectId)
     {
         return Projects::findOrFail($projectId);

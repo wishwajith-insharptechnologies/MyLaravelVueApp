@@ -12,9 +12,13 @@
         <a-input v-model:value="form.description" placeholder="Enter description" />
       </a-form-item>
 
-      <a-form-item label="Product ID">
-        <a-input v-model:value="form.product_id" placeholder="Enter product ID" />
-      </a-form-item>
+      <a-form-item label="Project">
+          <a-select v-model:value="form.product_id"   @change="projectSelectChange" placeholder="Select product ID">
+          <a-select-option v-for="product in projectsList" :key="product.id" :value="product.id">
+            {{ product.project_name }}
+          </a-select-option>
+        </a-select>
+        </a-form-item>
 
       <a-form-item label="Rank">
         <a-input v-model:value="form.rank" placeholder="Enter rank" />
@@ -57,19 +61,30 @@
         <a-input v-model:value="form.category_id" placeholder="Enter category ID" />
       </a-form-item>
 
-      <a-form-item label="Limitation">
-        <a-input v-model:value="form.limitation" placeholder="Enter limitation" />
-      </a-form-item>
+      <LimitationForm
+          v-model="form.limitation"
+          :limitations="loadedLimitations"
+          @update:value="handleLimitationsUpdate"
+          @update:errors="handleLimitationsErrors"
+        />
 
       <a-form-item>
         <a-button type="primary" html-type="submit">Submit</a-button>
       </a-form-item>
     </a-form>
+
+
   </template>
 
   <script setup>
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import { message } from 'ant-design-vue'
+  import http from '@/services/axios.js';
+  import LimitationForm from './PackageLimitationForm.vue';
+
+  const props = defineProps({
+  package: { type: Object, default: null },
+});
 
   const form = ref({
     title: '',
@@ -80,17 +95,106 @@
     price: '',
     discount: '',
     images: [],
-    status: 1,
+    status: true,
     trial_period: '',
     category_id: '',
     limitation: {},
-  })
+  });
+  const errors = ref([]);
+  const limitationErrors = ref(false);
+  const submitting = ref(false);
+  const projectsList = ref([]);
+  const loadedLimitations = ref([]);
 
-  const handleSubmit = () => {
-    // Validate form and handle submission logic
-    console.log('Form submitted:', form.value)
-    message.success('Form submitted successfully!')
+onMounted(() => {
+    getProjectList();
+});
+
+const handleSubmit = async () => {
+  errors.value = null;
+  submitting.value = true;
+
+  if (!props.package) {
+    await submitForm();
+  } else {
+    await updatePackage();
   }
+
+  submitting.value = false;
+};
+
+const getProjectList = async () => {
+    try {
+        const { data } = await http.get(`/api/projects/list`);
+        console.log(data);
+        projectsList.value = data;
+    } catch (error) {
+        console.error(error);
+        // Handle error
+    }
+};
+
+  const projectSelectChange = async (event) => {
+    console.log("project select change");
+    loadProjectLimitation();
+};
+
+const handleLimitationsUpdate = (limitationUpdate) => {
+  form.value.limitation = limitationUpdate;
+  console.log(limitationUpdate);
+};
+
+const handleLimitationsErrors = (isLimitationError) => {
+  limitationErrors.value = isLimitationError.value.length === 0;
+  console.log(isLimitationError.value);
+  console.log(limitationErrors.value);
+};
+
+const loadProjectLimitation = async () => {
+  try {
+    const { data } = await http.get(`/api/project/${form.value.product_id}`);
+    loadedLimitations.value = data.project.limitation.limitation;
+    console.log(data);
+
+    // items.value = clonedeep(JSON.parse(data.project.limitation.limitation));
+
+    // updateFormLimitations();
+  } catch (error) {
+    console.error(error);
+    // Handle error
+  }
+};
+const submitForm = async () => {
+  try {
+    const formData = new FormData();
+    formData.append('title', form.value.title);
+    formData.append('description', form.value.description);
+    formData.append('rank', form.value.rank);
+    formData.append('validity', form.value.validity);
+    formData.append('price', form.value.price);
+    formData.append('discount', form.value.discount);
+    formData.append('image', form.value.image);
+    formData.append('status', (form.value.status ? 1 : 0));
+    formData.append('trial_period', form.value.trial_period);
+    formData.append('product_id', form.value.product_id);
+    formData.append('category_id', form.value.category_id);
+    formData.append('limitation', JSON.stringify(form.value.limitation));
+
+    const { data } = await http.post('/api/package/create-package', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log(data);
+
+    message.success('Form submitted successfully!')
+
+    resetFormData();
+  } catch (error) {
+    console.error(error);
+    // Handle error
+  }
+};
   </script>
 
   <style>

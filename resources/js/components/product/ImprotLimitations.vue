@@ -111,7 +111,7 @@
   </template>
   <script setup lang="ts">
   import { ref, onMounted, computed, watch } from 'vue';
-  import axiosInstance from '../../services/axios';
+  import http from '../../services/axios';
 
   const props = defineProps({
     storedLimitationData: { type: Object, default: null },
@@ -171,7 +171,7 @@
 
   const fetchWebLimitationData = async () => {
     try {
-      const response = await axiosInstance.get(form.value.improtsConfigLink, {
+      const response = await http.get(form.value.improtsConfigLink, {
         withCredentials: true,
       });
       form.value.limitationData = response.data;

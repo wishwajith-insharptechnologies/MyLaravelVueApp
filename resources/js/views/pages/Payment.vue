@@ -24,25 +24,26 @@
               show-icon
             />
           </a-row>
+          <a-alert
+            v-if="errorMessage"
+            type="error"
+            message="Error"
+            description="errorMessage"
+            show-icon
+          />
           <a-row :span="8" class="p-4">
-            <a-alert
-              v-if="errorMessage"
-              type="error"
-              message="Error"
-              description="errorMessage"
-              show-icon
-            />
             <div class="container">
               <div id="payment-element" class="my-4 card-element"></div>
               <a-button
                 type="primary"
                 :loading="loading"
-                class="btn btn-primary mx-auto w-400"
+                class="btn btn-primary mx-auto w-400 mt-2"
                 @click="handleSubmit"
               >
                 <template v-if="loading" #icon>
                   <a-spin />
                 </template>
+                Pay
                 <!-- <span v-else id="button-text" class="inline-block text-center">
                   Pay {{ packageTotalPrice }}
                 </span> -->
@@ -61,7 +62,7 @@
 
   <script setup>
   import { ref, onMounted, computed, nextTick, watch } from 'vue';
-  import axios from 'axios';
+  import http from '@/services/axios.js';
   import { loadStripe } from '@stripe/stripe-js';
   import { useAuthStore } from '@/stores';
   import { useRouter } from 'vue-router';
@@ -89,7 +90,7 @@
   const paymentIntentStatus = ref(null);
   const paymentToken = ref(null);
 
-  const authenticated = computed(() => store.getters['auth/authenticated']);
+  const isAuthenticated = store.isAuthenticated;
 
   const props = defineProps({
     id: {
@@ -122,7 +123,7 @@
 
   const fetchPackageDetails = async () => {
     try {
-      const response = await axios.get(`/api/package/${props.id}`);
+      const response = await http.get(`/api/package/${props.id}`);
       packageDetails.value = response.data;
     } catch (err) {
       console.log(err);
@@ -130,7 +131,7 @@
   };
 
   const getSession = async () => {
-    const response = await axios.post(`/api/payment/get-session`, {
+    const response = await http.post(`/api/payment/get-session`, {
       productId: props.id,
     });
     if (response && response.data && response.data.id) {
@@ -141,7 +142,7 @@
   };
 
   const updatePaymentStatus = async () => {
-    const response = await axios.post(`/api/payment/complete`, {
+    const response = await http.post(`/api/payment/complete`, {
       payment_token: paymentToken.value,
       payment_Intent_Id: paymentIntentStatus.value.paymentIntent.id,
     });
@@ -172,10 +173,10 @@
     errorMessage.value = '';
 
     try {
-      if (!authenticated.value) {
+      if (!isAuthenticated.value) {
         await authenticationFlow();
       }
-      // if (!authenticated.value) {
+      // if (!isAuthenticated.value) {
       //   return;
       // }
 

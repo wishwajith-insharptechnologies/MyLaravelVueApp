@@ -12,6 +12,7 @@ class UsersController extends Controller
 {
     public function user(Request $request)
     {
+
         if (auth('sanctum')->check()) {
             return response()->json(auth('sanctum')->user());
         }

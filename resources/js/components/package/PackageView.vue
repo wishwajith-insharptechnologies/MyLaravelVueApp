@@ -1,6 +1,6 @@
 <template>
     <a-row justify="center">
-      <a-col :span="8">
+      <a-col :span="10">
         <a-button type="text" class="back-button" icon>
           <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
@@ -19,8 +19,8 @@
             <span class="plan-price"><b>${{ props.package.price }}</b></span>
           </div>
           <span class="plan-name mb-5">Package details</span>
-          <ul class="package-details mb-5">
-            <a-list
+          <ul class="package-details mb-2">
+            <li
               v-for="(feature, key) in props.package.limitation.limitation"
               :key="key"
             >
@@ -28,7 +28,7 @@
                 <a-icon type="check" class="check-icon" />
                 {{ limitationValue(feature.value) + ' ' + feature.name }}
               </a-list-item>
-            </a-list>
+            </li>
           </ul>
           <div class="flex-between">
             <span>{{ props.package.title }}</span>
@@ -159,7 +159,7 @@ const getImageUrl = (imagePath) => {
 }
 
 .package-details {
-  margin-top: 1rem;
+  margin-top: 1px;
   list-style: none;
   padding-left: 0;
 }

@@ -1,6 +1,6 @@
 <template>
     <a-row justify="center">
-      <a-col :span="8">
+      <a-col :span="30">
         <h1 class="heading">Checkout</h1>
         <a-form v-if="!authenticated" layout="vertical" @submit="handleSubmit">
           <!-- Name Field -->
@@ -84,11 +84,11 @@
           </a-form-item>
 
           <!-- Submit Button -->
-          <a-form-item>
+          <!-- <a-form-item>
             <a-button type="primary" html-type="submit" :loading="loading">
               Submit
             </a-button>
-          </a-form-item>
+          </a-form-item> -->
         </a-form>
       </a-col>
     </a-row>
@@ -117,7 +117,7 @@ const form = ref({
 
 const emit = defineEmits(['form-change']);
 
-const authenticated = computed(() => store.getters['auth/authenticated']);
+const isAuthenticated = store.isAuthenticated;
 
 watch(form.value, (newValue, oldValue) => {
   console.log(newValue);

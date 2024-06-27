@@ -79,11 +79,9 @@ class ProjectsController extends Controller
 
     public function getProjectList()
     {
-        $projects = $this->projectRepository->getProjectList();
+        $projects = ProjectService::getAllProjects();
 
-        return response()->json([
-            'project'  => $projects,
-        ]);
+        return response()->json($projects);
     }
 
     public function getProjectById($projectId)

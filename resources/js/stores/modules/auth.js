@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-import axiosInstance from './../../services/axios';
+import http from './../../services/axios';
 import Cookies from 'js-cookie';
 import router from '@/router';
 
@@ -128,8 +128,8 @@ export const useAuthStore = defineStore('auth', () => {
   // Actions
   const login = async (payload) => {
     // try {
-      await axiosInstance.get('/sanctum/csrf-cookie');
-      const res = await axiosInstance.post('/api/login', payload);
+      await http.get('/sanctum/csrf-cookie');
+      const res = await http.post('/api/login', payload);
       if (res.status === 200) {
         SET_TOKEN(res.data.access_token, payload.remember);
         await fetchUser();
@@ -140,8 +140,8 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const register = async (payload) => {
-    await axiosInstance.get('/sanctum/csrf-cookie');
-    const res = await axiosInstance.post('/api/register', payload);
+    await http.get('/sanctum/csrf-cookie');
+    const res = await http.post('/api/register', payload);
     if (res.status === 201 && res.data?.user?.id) {
       SET_USER(res.data.user);
       SET_THEME(res.data.user.theme_dark);
@@ -153,30 +153,32 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const logout = async () => {
-    await axiosInstance.post('/api/logout');
+    await http.post('/api/logout');
     LOGOUT();
     router.push({ name: 'home' });
   };
 
   const fetchUser = async () => {
-    try {
-      const res = await axiosInstance.get('/api/user');
+    // try {
+      const res = await http.get('/api/user');
       if (res.data?.id) {
+        console.log(res);
         SET_USER(res.data);
         SET_THEME(res.data.theme_dark);
         SET_AUTHENTICATION(true);
       } else {
+        console.log('log out');
         LOGOUT();
       }
-    } catch (err) {
-      LOGOUT();
-      throw err.response;
-    }
+    // } catch (err) {
+    //   LOGOUT();
+    //   throw err.response;
+    // }
   };
 
   const getUserByToken = async (payload) => {
     try {
-      const res = await axiosInstance.post('/api/user-by-token', { token: payload.token });
+      const res = await http.post('/api/user-by-token', { token: payload.token });
       if (res.data?.id) {
         SET_USER(res.data);
         SET_THEME(res.data.theme_dark);
@@ -191,7 +193,7 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const profile = async (payload) => {
-    const res = await axiosInstance.patch('/api/profile', payload);
+    const res = await http.patch('/api/profile', payload);
     if (res.status === 200 && res.data?.user?.id) {
       SET_USER(res.data.user);
       SET_THEME(res.data.user.theme_dark);

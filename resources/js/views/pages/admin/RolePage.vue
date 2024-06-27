@@ -52,7 +52,7 @@
 
   <script setup>
   import { ref, onMounted } from 'vue';
-  import axiosInstance from '../../../services/axios';
+  import http from '../../../services/axios';
   import MainLayout from './../../../components/layout/AdminLayout.vue';
 
   const roles = ref([]);
@@ -75,7 +75,7 @@
       pagination.value.current = updatedPage;
     }
     try {
-      const { data } = await axiosInstance.get(`/api/roles?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+      const { data } = await http.get(`/api/roles?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
       roles.value = data.data;
       pagination.value.total = data.total;
       dataReady.value = true;
@@ -99,7 +99,7 @@
     try {
       await createFormRef.value.validate();
       // Call your API to create the role
-      await axiosInstance.post('/api/roles', createForm.value);
+      await http.post('/api/roles', createForm.value);
       createModalVisible.value = false;
       getRoles();
     } catch (error) {
@@ -111,7 +111,7 @@
     try {
       await editFormRef.value.validate();
       // Call your API to update the role
-      await axiosInstance.patch(`/api/roles/update-role/${editForm.value.id}`, editForm.value);
+      await http.patch(`/api/roles/update-role/${editForm.value.id}`, editForm.value);
       editModalVisible.value = false;
       getRoles();
     } catch (error) {
@@ -126,7 +126,7 @@
 
   const deleteRole = async (id) => {
     try {
-      await axiosInstance.delete(`/api/roles/delete/role/${id}`);
+      await http.delete(`/api/roles/delete/role/${id}`);
       getRoles();
     } catch (error) {
       console.error('Error deleting role:', error);

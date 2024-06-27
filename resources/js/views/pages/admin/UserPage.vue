@@ -52,7 +52,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import axiosInstance from './../../../services/axios';
+import http from './../../../services/axios';
 import { Table, Button, Modal, Form, Input } from 'ant-design-vue';
 import MainLayout from './../../../components/layout/AdminLayout.vue';
 
@@ -76,7 +76,7 @@ const getUsers = async (updatedPage = null) => {
     pagination.value.current = updatedPage;
   }
   try {
-    const { data } = await axiosInstance.get(`/api/users?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+    const { data } = await http.get(`/api/users?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
     users.value = data.data;
     pagination.value.total = data.total;
     dataReady.value = true;
@@ -100,7 +100,7 @@ const handleCreateUser = async () => {
   try {
     await createFormRef.value.validate();
     // Call your API to create the user
-    await axiosInstance.post('/api/users', createForm.value);
+    await http.post('/api/users', createForm.value);
     createModalVisible.value = false;
     getUsers();
   } catch (error) {
@@ -112,7 +112,7 @@ const handleEditUser = async () => {
   try {
     await editFormRef.value.validate();
     // Call your API to update the user
-    await axiosInstance.patch(`/api/users/update-user/${editForm.value.id}`, editForm.value);
+    await http.patch(`/api/users/update-user/${editForm.value.id}`, editForm.value);
     editModalVisible.value = false;
     getUsers();
   } catch (error) {
@@ -127,7 +127,7 @@ const editUser = (user) => {
 
 const deleteUser = async (id) => {
   try {
-    await axiosInstance.delete(`/api/users/delete/user/${id}`);
+    await http.delete(`/api/users/delete/user/${id}`);
     getUsers();
   } catch (error) {
     console.error('Error deleting user:', error);

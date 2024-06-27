@@ -61,7 +61,7 @@
 
   <script setup>
   import { ref, onMounted } from 'vue';
-  import axiosInstance from '../../../services/axios';
+  import http from '../../../services/axios';
   import MainLayout from './../../../components/layout/AdminLayout.vue';
 
   const packages = ref([]);
@@ -84,7 +84,7 @@
       pagination.value.current = updatedPage;
     }
     try {
-      const { data } = await axiosInstance.get(`/api/packages?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+      const { data } = await http.get(`/api/packages?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
       packages.value = data.data;
       pagination.value.total = data.total;
       dataReady.value = true;
@@ -108,7 +108,7 @@
     try {
       await createFormRef.value.validate();
       // Call your API to create the package
-      await axiosInstance.post('/api/packages', createForm.value);
+      await http.post('/api/packages', createForm.value);
       createModalVisible.value = false;
       getPackages();
     } catch (error) {
@@ -120,7 +120,7 @@
     try {
       await editFormRef.value.validate();
       // Call your API to update the package
-      await axiosInstance.patch(`/api/packages/update-package/${editForm.value.id}`, editForm.value);
+      await http.patch(`/api/packages/update-package/${editForm.value.id}`, editForm.value);
       editModalVisible.value = false;
       getPackages();
     } catch (error) {
@@ -135,7 +135,7 @@
 
   const deletePackage = async (id) => {
     try {
-      await axiosInstance.delete(`/api/packages/delete/package/${id}`);
+      await http.delete(`/api/packages/delete/package/${id}`);
       getPackages();
     } catch (error) {
       console.error('Error deleting package:', error);

@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Mail\SendProductKeyMail;
 use Stripe\Stripe;
 use App\Models\Packages;
 use Stripe\StripeClient;
 use AWS\CRT\HTTP\Request;
 use Stripe\PaymentIntent;
 use Illuminate\Support\Str;
+use App\Mail\SendProductKeyMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -71,6 +71,7 @@ class PaymentServices
     {
         try {
             $paymentToken = (string) Str::uuid();
+
             $product = PackagesRepository::getPackageByID($id);
 
             // Check if the product is valid
@@ -101,7 +102,7 @@ class PaymentServices
                 'metadata' => [
                     'payment_token' => $paymentToken,
                     'package_id' => $product->id,
-                    'user_id' => Auth::user()->id,
+                    'user_id' => 1,
                 ],
             ]);
 
