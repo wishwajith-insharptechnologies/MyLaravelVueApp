@@ -96,7 +96,7 @@
 
 <script setup>
 import { computed, ref, defineEmits, watch } from 'vue';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/modules/auth.js';
 
 const props = defineProps({
   errors: Object,

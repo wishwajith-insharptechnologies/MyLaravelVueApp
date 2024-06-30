@@ -79,7 +79,7 @@
   <script setup>
   import { onMounted, ref } from 'vue'
   import { message } from 'ant-design-vue'
-  import http from '@/services/axios.js';
+  import Http from '@/services/Http.js';
   import LimitationForm from './PackageLimitationForm.vue';
 
   const props = defineProps({
@@ -125,7 +125,7 @@ const handleSubmit = async () => {
 
 const getProjectList = async () => {
     try {
-        const { data } = await http.get(`/api/projects/list`);
+        const { data } = await Http.get(`/api/projects/list`);
         console.log(data);
         projectsList.value = data;
     } catch (error) {
@@ -152,7 +152,7 @@ const handleLimitationsErrors = (isLimitationError) => {
 
 const loadProjectLimitation = async () => {
   try {
-    const { data } = await http.get(`/api/project/${form.value.product_id}`);
+    const { data } = await Http.get(`/api/project/${form.value.product_id}`);
     loadedLimitations.value = data.project.limitation.limitation;
     console.log(data);
 
@@ -180,7 +180,7 @@ const submitForm = async () => {
     formData.append('category_id', form.value.category_id);
     formData.append('limitation', JSON.stringify(form.value.limitation));
 
-    const { data } = await http.post('/api/package/create-package', formData, {
+    const { data } = await Http.post('/api/package/create-package', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

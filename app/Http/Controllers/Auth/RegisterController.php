@@ -27,18 +27,8 @@ class RegisterController extends Controller
         ]);
 
         if ($user) {
-            // $userRole = Role::whereName('User')->first();
-            // $user->attachRole($userRole);
-            // event(new Registered($user));
-            // // Log the user in
-            // // Auth::login($user);
-            $token = $user->createToken('access_token')->plainTextToken;
-
             return response()->json([
-                'token' => $token,
-                'type'  => 'Bearer',
-                'user'  => $user,
-                'status'  => 200,
+                'user' => $user,
             ]);
         }
     }

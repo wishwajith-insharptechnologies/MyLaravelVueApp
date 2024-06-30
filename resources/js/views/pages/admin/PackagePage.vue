@@ -61,7 +61,7 @@
 
   <script setup>
   import { ref, onMounted } from 'vue';
-  import http from '../../../services/axios';
+  import Http from '@/services/Http.js';
   import MainLayout from './../../../components/layout/AdminLayout.vue';
 
   const packages = ref([]);

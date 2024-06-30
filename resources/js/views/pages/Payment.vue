@@ -62,9 +62,9 @@
 
   <script setup>
   import { ref, onMounted, computed, nextTick, watch } from 'vue';
-  import http from '@/services/axios.js';
+  import Http from '@/services/Http.js';
   import { loadStripe } from '@stripe/stripe-js';
-  import { useAuthStore } from '@/stores';
+  import { useAuthStore } from '@/stores/modules/auth.js';
   import { useRouter } from 'vue-router';
   import PackageView from '@/components/package/PackageView.vue';
   import PaymentLogin from '@/components/auth/PaymentLogin.vue';
@@ -123,7 +123,7 @@
 
   const fetchPackageDetails = async () => {
     try {
-      const response = await http.get(`/api/package/${props.id}`);
+      const response = await Http.get(`/api/package/${props.id}`);
       packageDetails.value = response.data;
     } catch (err) {
       console.log(err);
@@ -131,7 +131,7 @@
   };
 
   const getSession = async () => {
-    const response = await http.post(`/api/payment/get-session`, {
+    const response = await Http.post(`/api/payment/get-session`, {
       productId: props.id,
     });
     if (response && response.data && response.data.id) {
@@ -142,7 +142,7 @@
   };
 
   const updatePaymentStatus = async () => {
-    const response = await http.post(`/api/payment/complete`, {
+    const response = await Http.post(`/api/payment/complete`, {
       payment_token: paymentToken.value,
       payment_Intent_Id: paymentIntentStatus.value.paymentIntent.id,
     });

@@ -36,7 +36,9 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/modules/auth.js';
+
+
 
 const email = ref('');
 const password = ref('');
@@ -52,9 +54,10 @@ const handleSubmit = async () => {
   try {
     await authStore.login({ email: email.value, password: password.value });
     message.success('Login successful');
-    router.push('/dashboard'); // Redirect after successful login
+    router.push('/dashboard');
   } catch (error) {
     message.error('Login failed');
+    password.value = '';
   }
 };
 </script>

@@ -126,7 +126,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/modules/auth.js';
 import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
 
 const store = useAuthStore();
@@ -257,18 +257,6 @@ const submitForm = async () => {
     // Reset form data after successful submission
     resetFormData();
 
-    // Dispatch success toast notification
-    const toast = {
-      icon: 'success',
-      message: 'Project Successfully Created!',
-      position: 'bottom-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      showCloseButton: false,
-    };
-    store.dispatch('toast/popToast', toast);
-
   } catch (error) {
     // Handle errors
     handleSubmissionError(error);
@@ -295,16 +283,6 @@ const updateProduct = async () => {
     );
 
     // Dispatch success toast notification
-    const toast = {
-      icon: 'success',
-      message: `Project Updated Successfully!`,
-      position: 'bottom-end',
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      showCloseButton: false,
-    };
-    store.dispatch('toast/popToast', toast);
 
   } catch (error) {
     // Handle errors
@@ -346,16 +324,8 @@ const handleSubmissionError = (error) => {
     if (error.response && error.response.status === 422) {
       errors.value = error.response.data.errors;
     } else {
-      const toast = {
-        icon: 'error',
-        message: 'Error Submitting Form',
-        position: 'bottom-end',
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true,
-        showCloseButton: false,
-      };
-      store.dispatch('toast/popToast', toast);
+        // alert Error Submitting Form
+
     }
   } else {
     console.error('Unexpected error occurred:', error);

@@ -51,7 +51,7 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { message } from 'ant-design-vue';
-  import { useAuthStore } from '@/stores';
+  import { useAuthStore } from '@/stores/modules/auth.js';
 
   const name = ref('');
   const email = ref('');

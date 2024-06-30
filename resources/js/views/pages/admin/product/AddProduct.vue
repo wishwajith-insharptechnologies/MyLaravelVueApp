@@ -26,7 +26,7 @@
   </template>
   <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { useAuthStore } from '@/stores';
+  import { useAuthStore } from '@/stores/modules/auth.js';
   import { Button, Breadcrumb, Icon } from 'ant-design-vue';
   import ProductForm from '../../../../components/product/ProductForm.vue';
   import MainLayout from './../../../../components/layout/AdminLayout.vue';

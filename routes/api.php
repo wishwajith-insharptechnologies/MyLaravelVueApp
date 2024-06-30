@@ -21,10 +21,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/forgot-password', ForgotPasswordController::class);
     Route::post('/reset-password', ResetPasswordController::class);
+    Route::get('/user', [UsersController::class, 'user']);
 });
 
-// Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', [UsersController::class, 'user']);
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UsersController::class, 'users']);
     Route::post('/users/toggle-verify', [UsersController::class, 'toggleVerify']);
     Route::delete('/users/delete/user/{user}', [UsersController::class, 'deleteUser']);
@@ -46,7 +46,7 @@ Route::middleware('guest')->group(function () {
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
 
-// });
+});
 
 Route::post('/payment/get-session',  [PaymentsController::class, 'getSession']);
 Route::post('/payment/complete',  [PaymentsController::class, 'paymentComplete']);
