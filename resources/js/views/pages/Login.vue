@@ -34,6 +34,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import Auth from "@/services/Auth"
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '@/stores/modules/auth.js';
@@ -45,20 +46,29 @@ const password = ref('');
 const router = useRouter();
 const authStore = useAuthStore();
 
+// const signIn = () => authStore.dispatch("auth/login");
+
+
 const handleSubmit = async () => {
   if (!email.value || !password.value) {
     message.error('Please fill in all fields');
     return;
   }
 
-  try {
-    await authStore.login({ email: email.value, password: password.value });
-    message.success('Login successful');
-    router.push('/dashboard');
-  } catch (error) {
-    message.error('Login failed');
-    password.value = '';
-  }
+//   try {
+
+    Auth.login({ email: email.value, password: password.value })
+        .then( async (Response) => {
+            await useAuthStore().login();
+            router.push('/dashboard');
+        })
+
+    // message.success('Login successful');
+    // router.push('/dashboard');
+//   } catch (error) {
+//     message.error('Login failed');
+//     password.value = '';
+//   }
 };
 </script>
 

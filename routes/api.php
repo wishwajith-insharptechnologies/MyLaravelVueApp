@@ -12,16 +12,25 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    $authWithUserRole = [
+        ...$request->user()->toArray(),
+        'role' => "admin"
+    ];
+
+    return response()->json($authWithUserRole);
+});
 
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', RegisterController::class);
     Route::post('/forgot-password', ForgotPasswordController::class);
     Route::post('/reset-password', ResetPasswordController::class);
-    Route::get('/user', [UsersController::class, 'user']);
+    // Route::get('/user', [UsersController::class, 'user']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
