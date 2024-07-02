@@ -63,6 +63,7 @@
   <script setup>
   import { ref, onMounted, computed, nextTick, watch } from 'vue';
   import Http from '@/services/Http.js';
+  import Auth from "@/services/Auth"
   import { loadStripe } from '@stripe/stripe-js';
   import { useAuthStore } from '@/stores/modules/auth.js';
   import { useRouter } from 'vue-router';
@@ -118,6 +119,7 @@
   });
 
   const handleFormChange = (updatedForm) => {
+    console.log(updatedForm);
     form.value = updatedForm;
   };
 
@@ -219,10 +221,11 @@
   };
 
   const authenticationFlow = async () => {
+    console.log("authenticated flow");
     if (form.value.isRegisterForm) {
       register(form.value);
     } else {
-      login(form.value);
+      login(form);
     }
   };
 
@@ -240,12 +243,19 @@
   };
 
   const login = async (loginForm) => {
-    try {
-      const response = await store.dispatch('auth/login', loginForm);
-      console.log(response);
-    } catch (e) {
-      handleError(e);
-    }
+    console.log("login form flow");
+    // try {
+    //   const response = await store.dispatch('auth/login', loginForm);
+    console.log(loginForm);
+      Auth.login({ email: loginForm.value.email, password: loginForm.value.password })
+        .then( async (Response) => {
+            await useAuthStore().login();
+            // router.push('/dashboard');
+            console.log('loged in');
+        })
+    // } catch (e) {
+    //   handleError(e);
+    // }
   };
 
   const handleError = (response) => {

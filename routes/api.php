@@ -16,14 +16,18 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    $authWithUserRole = [
-        ...$request->user()->toArray(),
-        'role' => "admin"
-    ];
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     $authWithUserRole = [
+//         ...$request->user()->toArray(),
+//         'role' => "admin"
+//     ];
 
-    return response()->json($authWithUserRole);
-});
+//     return response()->json($authWithUserRole);
+// });
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -33,7 +37,7 @@ Route::middleware('guest')->group(function () {
     // Route::get('/user', [UsersController::class, 'user']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UsersController::class, 'users']);
     Route::post('/users/toggle-verify', [UsersController::class, 'toggleVerify']);
     Route::delete('/users/delete/user/{user}', [UsersController::class, 'deleteUser']);
@@ -55,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
 
-});
+// });
 
 Route::post('/payment/get-session',  [PaymentsController::class, 'getSession']);
 Route::post('/payment/complete',  [PaymentsController::class, 'paymentComplete']);

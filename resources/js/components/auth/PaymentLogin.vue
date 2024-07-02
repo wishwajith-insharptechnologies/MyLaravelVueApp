@@ -11,7 +11,7 @@
             :help="props.errors?.name ? props.errors.name[0] : ''"
           >
             <a-input
-              v-model="form.name"
+              v-model:value="form.name"
               type="text"
               name="name"
               :disabled="loading"
@@ -25,7 +25,7 @@
             :help="props.errors?.email ? props.errors.email[0] : ''"
           >
             <a-input
-              v-model="form.email"
+              v-model:value="form.email"
               type="email"
               name="email"
               :disabled="loading"
@@ -39,7 +39,7 @@
             :help="props.errors?.password ? props.errors.password[0] : ''"
           >
             <a-input
-              v-model="form.password"
+              v-model:value="form.password"
               type="password"
               placeholder="Must be at least 8 characters"
             />
@@ -53,7 +53,7 @@
             :help="props.errors?.password_confirmation ? props.errors.password_confirmation[0] : ''"
           >
             <a-input
-              v-model="form.password_confirmation"
+              v-model:value="form.password_confirmation"
               type="password"
               name="password_confirmation"
               :disabled="loading"
@@ -69,7 +69,7 @@
 
           <!-- Checkbox Field -->
           <a-form-item>
-            <a-checkbox v-model="form.isSameEmail">
+            <a-checkbox v-model:checked="form.isSameEmail">
               Peaco user email is same as email
             </a-checkbox>
           </a-form-item>
@@ -77,7 +77,7 @@
           <!-- Peaco User Email Field -->
           <a-form-item label="Peaco User Email">
             <a-input
-              v-model="form.userEmail"
+              v-model:value="form.userEmail"
               type="email"
               :disabled="form.isSameEmail"
             />
