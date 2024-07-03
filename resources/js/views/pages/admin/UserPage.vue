@@ -1,5 +1,4 @@
 <template>
-  <MainLayout>
     <a-layout-header style="background: #fff; padding: 24px;">
       <h1>User Management</h1>
     </a-layout-header>
@@ -47,14 +46,12 @@
         </a-form>
       </a-modal>
     </a-layout-content>
-  </MainLayout>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import Http from '@/services/Http.js';
 import { Table, Button, Modal, Form, Input } from 'ant-design-vue';
-import MainLayout from './../../../components/layout/AdminLayout.vue';
 
 const users = ref([]);
 const editModalVisible = ref(false);

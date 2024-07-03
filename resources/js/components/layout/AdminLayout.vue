@@ -1,12 +1,6 @@
 <template>
+<NavBar/>
     <a-layout class="layout">
-        <div class="logo" />
-        <a-menu theme="light" mode="horizontal" v-model:selectedKeys="selectedKeys" :style="{ lineHeight: '64px' }">
-            <a-menu-item key="1">nav 1</a-menu-item>
-            <a-menu-item key="2">nav 2</a-menu-item>
-            <a-menu-item key="3">nav 3</a-menu-item>
-        </a-menu>
-
         <a-layout>
             <a-layout-sider theme="light" width="200">
                 <a-menu mode="inline" theme="light" :default-selected-keys="['admin']"
@@ -72,23 +66,24 @@
                     <a-breadcrumb-item>{{ currentBreadcrumb }}</a-breadcrumb-item>
                 </a-breadcrumb>
                 <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
-                    <slot></slot>
+                    <!-- <slot></slot> -->
+                    <router-view></router-view>
                 </div>
             </a-layout-content>
         </a-layout>
-
-        <a-layout-footer style="text-align: center">
-            PeacoHRM ©2024 All rights reserved.
-        </a-layout-footer>
-    </a-layout>
+        </a-layout>
+    <Footer/>
 </template>
 
   <script setup>
   import { ref } from 'vue';
 //   import 'ant-design-vue/dist/antd.css';
   import { Layout, Menu, Breadcrumb } from 'ant-design-vue';
+  import NavBar from "./NavBar.vue";
+  import Footer from "./Footer.vue";
 
-  const { Header, Footer, Sider, Content } = Layout;
+
+  const { Header, Sider, Content } = Layout;
   const { Item, SubMenu } = Menu;
 
   const selectedKeys = ref(['1']);
@@ -129,7 +124,7 @@
   }
 
   .layout-content {
-    padding: 0 50px;
+    /* padding: 0 50px; */
   }
 
   .site-layout-content {

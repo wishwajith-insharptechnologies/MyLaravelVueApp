@@ -12,21 +12,28 @@ import AddPackage from '../views/pages/admin/package/AddPackage.vue';
 import AddProduct from '../views/pages/admin/product/AddProduct.vue';
 import ListProduct from '../views/pages/admin/product/ProductList.vue';
 import PaymentPage from '../views/pages/Payment.vue';
+import MainLayout from '../components/layout/AdminLayout.vue';
 // import UserPage from '/resources/js/views/pages/UserPage.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: Dashboard },
+//   { path: '/', name: 'Home', component: Dashboard },
+{
+    path: '/',
+    component: MainLayout,
+    children: [
+      { path: '/user', name: 'UserPage', component: UserPage},
+      { path: '/role', name: 'RolePage', component: RolePage},
+      { path: '/permission', name: 'PermissionPage', component: PermissionPage},
+      { path: '/package', name: 'PackagePage', component: PackagePage},
+      { path: '/package/create', name: 'PackageAddPage', component: AddPackage},
+      { path: '/product/create', name: 'ProductAddPage', component: AddProduct},
+      { path: '/product/list', name: 'ListProductPage', component: ListProduct},
+]},
   { path: '/login', name: 'Login', component: Login, meta: { middleware: "guest", title: `Login`} },
   { path: '/register', name: 'Register', component: Register },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/admin_dashboard', name: 'AdminDashboard', component: AdminDashboard },
-  { path: '/user', name: 'UserPage', component: UserPage},
-  { path: '/role', name: 'RolePage', component: RolePage},
-  { path: '/permission', name: 'PermissionPage', component: PermissionPage},
-  { path: '/package', name: 'PackagePage', component: PackagePage},
-  { path: '/package/create', name: 'PackageAddPage', component: AddPackage},
-  { path: '/product/create', name: 'ProductAddPage', component: AddProduct},
-  { path: '/product/list', name: 'ListProductPage', component: ListProduct},
+
 
   {path: '/payment/:id',
     props: (route) => ({

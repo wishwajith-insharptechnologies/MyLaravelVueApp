@@ -1,5 +1,4 @@
 <template>
-    <MainLayout>
       <a-layout-header style="background: #fff; padding: 24px;">
         <h1>Role Management</h1>
       </a-layout-header>
@@ -47,7 +46,6 @@
           </a-form>
         </a-modal>
       </a-layout-content>
-    </MainLayout>
   </template>
 
   <script setup>

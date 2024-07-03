@@ -1,5 +1,4 @@
 <template>
-       <MainLayout>
            <div id="users" class="bg-white p-3 dark:bg-slate-800 dark:text-gray-200">
              <nav class="mb-6 text-sm font-semibold" aria-label="Breadcrumb">
                <a-breadcrumb>
@@ -22,14 +21,12 @@
              </nav>
              <ProductForm />
            </div>
-       </MainLayout>
   </template>
   <script setup lang="ts">
   import { ref, computed } from 'vue';
   import { useAuthStore } from '@/stores/modules/auth.js';
   import { Button, Breadcrumb, Icon } from 'ant-design-vue';
   import ProductForm from '../../../../components/product/ProductForm.vue';
-  import MainLayout from './../../../../components/layout/AdminLayout.vue';
 
   const store = useAuthStore();
 

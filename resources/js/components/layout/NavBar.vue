@@ -1,40 +1,80 @@
 <template>
-      <a-layout-header>
-        <div class="logo" />
-        <a-menu
-          theme="dark"
-          mode="horizontal"
-          v-model:selectedKeys="selectedKeys"
-          :style="{ lineHeight: '64px' }"
-        >
-          <a-menu-item key="1">nav 1</a-menu-item>
-          <a-menu-item key="2">nav 2</a-menu-item>
-          <a-menu-item key="3">nav 3</a-menu-item>
-        </a-menu>
-      </a-layout-header>
+    <header class="navbar">
+      <div class="navbar__logo">
+        <img src="path-to-logo.png" alt="Peaco HRM" />
+      </div>
+      <a-dropdown>
+        <div class="navbar__account" @click="toggleDropdown">
+          <span>My Account</span>
+          <i class="arrow-down"></i>
+        </div>
+        <template #overlay>
+          <a-menu>
+            <a-menu-item key="profile">
+              <router-link to="/profile">Profile</router-link>
+            </a-menu-item>
+            <a-menu-item key="logout" @click="logout">
+              Logout
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
+    </header>
   </template>
-  <script setup lang="ts">
 
+  <script setup>
+  import { ref } from 'vue';
+  import { Menu, Dropdown } from 'ant-design-vue';
+  import Auth from "@/services/Auth"
+  import { useRouter } from 'vue-router';
+  import { useAuthStore } from '@/stores/modules/auth.js';
+
+  const showDropdown = ref(false);
+  const router = useRouter();
+  const authStore = useAuthStore();
+
+
+  const toggleDropdown = () => {
+    showDropdown.value = !showDropdown.value;
+  };
+
+  const signOut = () => authStore.logout();
+
+  const logout = () => {
+    Auth.logout().then(async () => {
+        await signOut();
+        await router.push('/login');
+    });
+  };
   </script>
-  <style>
-  .site-layout-content {
-    min-height: 280px;
-    padding: 24px;
-    background: #fff;
-  }
-  #components-layout-demo-top .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(255, 255, 255, 0.3);
-  }
-  .ant-row-rtl #components-layout-demo-top .logo {
-    float: right;
-    margin: 16px 0 16px 24px;
+
+  <style scoped>
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #fff;
   }
 
-  [data-theme='dark'] .site-layout-content {
-    background: #141414;
+  .navbar__logo img {
+    height: 40px;
+  }
+
+  .navbar__account {
+    display: flex;
+    align-items: center;
+    color: #3c007b;
+    cursor: pointer;
+  }
+
+  .arrow-down {
+    border: solid #3c007b;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-left: 5px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
   }
   </style>

@@ -8,7 +8,6 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     authenticated: false,
     user: {},
-    redirectUrl: {},
   }),
   getters: {
     isAuthenticated(state) {
@@ -16,10 +15,7 @@ export const useAuthStore = defineStore('auth', {
     },
     getUser(state) {
       return state.user;
-    },
-    getSavedUrl(state) {
-      return state.redirectUrl;
-    },
+    }
   },
   actions: {
     async login() {
@@ -35,7 +31,6 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.user = {};
       this.authenticated = false;
-      this.redirectUrl = {};
     },
   },
 });
