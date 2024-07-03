@@ -12,22 +12,20 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     $authWithUserRole = [
-//         ...$request->user()->toArray(),
-//         'role' => "admin"
-//     ];
-
-//     return response()->json($authWithUserRole);
-// });
-
-Route::get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+});
 
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);

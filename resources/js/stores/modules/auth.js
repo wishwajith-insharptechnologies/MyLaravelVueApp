@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
-import axios from "axios";
+import Http from '@/services/Http.js';
+
+// import axios from "axios";
 // No router import needed in Pinia stores
 
 export const useAuthStore = defineStore('auth', {
@@ -22,7 +24,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login() {
       try {
-        const { data } = await axios.get("/api/user");
+        const { data } = await Http.get("/api/user");
         this.user = data;
         this.authenticated = true;
       } catch (error) {
