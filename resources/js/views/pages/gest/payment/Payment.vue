@@ -125,7 +125,7 @@
 
   const fetchPackageDetails = async () => {
     try {
-      const response = await Http.get(`/api/package/${props.id}`);
+      const response = await Http.get(`package/${props.id}`);
       packageDetails.value = response.data;
     } catch (err) {
       console.log(err);
@@ -133,7 +133,7 @@
   };
 
   const getSession = async () => {
-    const response = await Http.post(`/api/payment/get-session`, {
+    const response = await Http.post(`payment/get-session`, {
       productId: props.id,
     });
     if (response && response.data && response.data.id) {
@@ -144,7 +144,7 @@
   };
 
   const updatePaymentStatus = async () => {
-    const response = await Http.post(`/api/payment/complete`, {
+    const response = await Http.post(`payment/complete`, {
       payment_token: paymentToken.value,
       payment_Intent_Id: paymentIntentStatus.value.paymentIntent.id,
     });

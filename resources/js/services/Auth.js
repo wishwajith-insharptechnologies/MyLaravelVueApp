@@ -4,19 +4,19 @@ import Csrf from "@/services/Csrf";
 export default {
   async register(form) {
     await Csrf.getCookie();
-    return Http.post("/api/register", form);
+    return Http.post("register", form);
   },
 
   async login(form) {
     await Csrf.getCookie();
-    return Http.post("/api/login", form);
+    return Http.post("login", form);
   },
 
   async logout() {
-    return Http.get("/api/logout");
+    return Http.get("logout");
   },
 
   auth() {
-    return Http.get("/api/user");
+    return Http.get("user");
   },
 };

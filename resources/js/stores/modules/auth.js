@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     authenticated: false,
     user: {},
+    role:"admin"
   }),
   getters: {
     isAuthenticated(state) {
@@ -15,12 +16,15 @@ export const useAuthStore = defineStore('auth', {
     },
     getUser(state) {
       return state.user;
+    },
+    getRole(state) {
+      return state.role;
     }
   },
   actions: {
     async login() {
       try {
-        const { data } = await Http.get("/api/user");
+        const { data } = await Http.get("user");
         this.user = data;
         this.authenticated = true;
       } catch (error) {
@@ -32,5 +36,14 @@ export const useAuthStore = defineStore('auth', {
       this.user = {};
       this.authenticated = false;
     },
+  },
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        key: 'main',
+        storage: localStorage, // or sessionStorage
+      },
+    ],
   },
 });

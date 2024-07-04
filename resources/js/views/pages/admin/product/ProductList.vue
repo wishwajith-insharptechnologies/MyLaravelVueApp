@@ -78,7 +78,7 @@
       pagination.value.current = updatedPage;
     }
     try {
-      const { data } = await Http.get(`/api/projects?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+      const { data } = await Http.get(`projects?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
       products.value = data.data;
       pagination.value.total = data.total;
       dataReady.value = true;
@@ -101,7 +101,7 @@
     try {
       await createFormRef.value.validate();
       // Call your API to create the package
-      await Http.post('/api/packages', createForm.value);
+      await Http.post('packages', createForm.value);
       createModalVisible.value = false;
       getProducts();
     } catch (error) {
@@ -113,7 +113,7 @@
     try {
       await editFormRef.value.validate();
       // Call your API to update the package
-      await Http.patch(`/api/packages/update-package/${editForm.value.id}`, editForm.value);
+      await Http.patch(`packages/update-package/${editForm.value.id}`, editForm.value);
       editModalVisible.value = false;
       getProducts();
     } catch (error) {
@@ -130,7 +130,7 @@
 
   const deletePackage = async (id) => {
     try {
-      await Http.delete(`/api/projects/delete/project/${id}`);
+      await Http.delete(`projects/delete/project/${id}`);
       getProducts();
     } catch (error) {
       console.error('Error deleting package:', error);

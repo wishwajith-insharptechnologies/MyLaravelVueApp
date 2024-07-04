@@ -90,10 +90,19 @@
           <a-form-item>
             <a-input
               id="secretCode"
+              :disabled="true"
               v-model:value="form.secretCode"
               placeholder="Secret Code"
               :class="errors && errors.secret_code ? 'ant-input-status-error' : ''"
-            />
+            >
+            <template #suffix>
+                <a-icon
+                :component="CopyOutlined"
+                @click="copyToClipboard"
+                class="copy-icon"
+                >Copy</a-icon>
+            </template>
+            </a-input>
           </a-form-item>
 
           <!-- product_link -->
@@ -125,14 +134,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import axios from 'axios';
+import Http from '@/services/Http.js';
 import { useAuthStore } from '@/stores/modules/auth.js';
 import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
+import { generateRandomString } from '@/services/Utils.js';
+import { CopyOutlined } from '@ant-design/icons-vue';
 
 const store = useAuthStore();
 const props = defineProps({
   product: { type: Object, default: null },
 });
+
+const submitting = ref(false);
+const errors = ref(null);
+const ready = ref(false);
 
 const projectTypes = [
   { id: 1, name: 'web' },
@@ -149,7 +164,6 @@ const improtsConfigTypes = [
   { id: 2, name: 'Web' },
 ];
 
-// Define form as a reactive reference
 const form = ref({
   id: null,
   image: '',
@@ -165,10 +179,6 @@ const form = ref({
   limitation: [],
 });
 
-const submitting = ref(false);
-const errors = ref(null);
-const ready = ref(false);
-
 const isEditable = computed(() => {
   return props.product !== null;
 });
@@ -181,13 +191,8 @@ const storedLimitations = computed(() => {
   }
 });
 
-// Initialize form data when component is mounted
 onMounted(() => {
   if (props.product) {
-    // Update form data with product details
-    console.log(props.product);
-    console.log(props.product.limitation ? props.product.limitation.limitation : [] );
-
     form.value = {
       ...props.product,
       limitation: props.product.limitation ? props.product.limitation.limitation : [],
@@ -197,7 +202,7 @@ onMounted(() => {
     }, 100);
   } else {
     ready.value = true;
-    generateRandomString(32);
+    generateSecretCode(32);
   }
 });
 
@@ -210,6 +215,14 @@ const onProjectImageFileChange = (event) => {
 const importLimitation = (updatedLimitationData) => {
   form.value.limitation = updatedLimitationData;
 };
+
+const copyToClipboard = () => {
+      navigator.clipboard.writeText(form.value.secretCode).then(() => {
+        console.log('Copied to clipboard');
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    };
 
 // Method to handle form submission
 const submit = async () => {
@@ -229,14 +242,10 @@ const submit = async () => {
   }
 };
 
-// Method to submit form data for creating new project
 const submitForm = async () => {
   try {
     const formData = new FormData();
-
-    // Append each form field to FormData
     Object.entries(form.value).forEach(([key, value]) => {
-      // If the key is 'limitation', stringify the JSON array and append it
       if (key === 'limitation') {
         formData.append(key, JSON.stringify(value));
       } else {
@@ -244,8 +253,8 @@ const submitForm = async () => {
       }
     });
 
-    const response = await axios.post(
-      '/api/projects/create-project',
+    const response = await Http.post(
+      'projects/create-project',
       formData,
       {
         headers: {
@@ -277,8 +286,8 @@ const updateProduct = async () => {
       }
     }
 
-    const response = await axios.post(
-      `/api/projects/update-project/${props.product.id}`,
+    const response = await Http.post(
+      `projects/update-project/${props.product.id}`,
       updateFormData,
     );
 
@@ -308,19 +317,13 @@ const resetFormData = () => {
   };
 };
 
-// Method to generate random string
-const generateRandomString = (length) => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  form.value.secretCode = result;
-};
+function generateSecretCode(length) {
+    form.value.secretCode = generateRandomString(length);
+}
 
 // Method to handle form submission errors
 const handleSubmissionError = (error) => {
-  if (axios.isAxiosError(error)) {
+  if (Http.isAxiosError(error)) {
     if (error.response && error.response.status === 422) {
       errors.value = error.response.data.errors;
     } else {
@@ -332,6 +335,19 @@ const handleSubmissionError = (error) => {
   }
 };
 </script>
+
+<style scoped>
+.copy-icon {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.45);
+  transition: color 0.3s;
+  width: 20px;
+  height: 20px;
+}
+.copy-icon:hover {
+  color: rgba(0, 0, 0, 0.75);
+}
+</style>
 
 
 

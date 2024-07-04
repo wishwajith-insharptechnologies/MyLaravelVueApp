@@ -51,7 +51,6 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   import Http from '@/services/Http.js';
-  import MainLayout from './../../../components/layout/AdminLayout.vue';
 
   const roles = ref([]);
   const editModalVisible = ref(false);
@@ -73,7 +72,7 @@
       pagination.value.current = updatedPage;
     }
     try {
-      const { data } = await Http.get(`/api/roles?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+      const { data } = await Http.get(`roles?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
       roles.value = data.data;
       pagination.value.total = data.total;
       dataReady.value = true;
@@ -97,7 +96,7 @@
     try {
       await createFormRef.value.validate();
       // Call your API to create the role
-      await Http.post('/api/roles', createForm.value);
+      await Http.post('roles', createForm.value);
       createModalVisible.value = false;
       getRoles();
     } catch (error) {
@@ -109,7 +108,7 @@
     try {
       await editFormRef.value.validate();
       // Call your API to update the role
-      await Http.patch(`/api/roles/update-role/${editForm.value.id}`, editForm.value);
+      await Http.patch(`roles/update-role/${editForm.value.id}`, editForm.value);
       editModalVisible.value = false;
       getRoles();
     } catch (error) {
@@ -124,7 +123,7 @@
 
   const deleteRole = async (id) => {
     try {
-      await Http.delete(`/api/roles/delete/role/${id}`);
+      await Http.delete(`roles/delete/role/${id}`);
       getRoles();
     } catch (error) {
       console.error('Error deleting role:', error);

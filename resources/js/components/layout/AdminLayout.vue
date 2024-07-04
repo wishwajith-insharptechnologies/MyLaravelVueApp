@@ -31,13 +31,13 @@
                     </router-link>
 
                     <a-sub-menu key="products" title="Products">
-                        <router-link :to="{ name: 'ProductAddPage' }">
+                        <router-link :to="{ name: 'productAddPage' }">
                             <a-menu-item key="add-product">
                                 <span>Add Product</span>
                             </a-menu-item>
                         </router-link>
 
-                        <router-link :to="{ name: 'ListProductPage' }">
+                        <router-link :to="{ name: 'listProductPage' }">
                             <a-menu-item key="view-products">
                                 <span>View Products</span>
                             </a-menu-item>
@@ -45,7 +45,7 @@
 
                     </a-sub-menu>
                     <a-sub-menu key="packages" title="Packages">
-                        <router-link :to="{ name: 'PackageAddPage' }">
+                        <router-link :to="{ name: 'packageAddPage' }">
                             <a-menu-item key="add-packages">
                                 <span>Add Packages</span>
                             </a-menu-item>
@@ -66,7 +66,6 @@
                     <a-breadcrumb-item>{{ currentBreadcrumb }}</a-breadcrumb-item>
                 </a-breadcrumb>
                 <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
-                    <!-- <slot></slot> -->
                     <router-view></router-view>
                 </div>
             </a-layout-content>

@@ -1,17 +1,6 @@
 <template>
-    <NavBar/>
-    <div class="dashboard-wrapper">
-      <header class="dashboard-header">
-        <div class="logo">
-          <img src="/assets/logo.png" alt="PeacoHRM Logo" />
-        </div>
-        <div class="header-content">
-          <h1>The Next Step</h1>
-          <p>Contact PeacoTeam for the Installation</p>
-        </div>
-        <a-button type="primary" class="notify-button">Notify Team</a-button>
-      </header>
-      <a-tabs default-active-key="1">
+    <ClientLayout>
+        <a-tabs default-active-key="1">
         <a-tab-pane key="1" tab="Dashboard">
           <div class="tab-content">
             <h2>Dashboard</h2>
@@ -38,15 +27,12 @@
           </div>
         </a-tab-pane>
       </a-tabs>
-      <Footer/>
-    </div>
+    </ClientLayout>
   </template>
 
   <script setup>
   import { ref } from 'vue';
-  import NavBar from "./NavBar.vue";
-  import Footer from "./Footer.vue";
-//   import 'ant-design-vue/dist/antd.css';
+  import ClientLayout from '../../../components/layout/ClientLayout.vue';
   </script>
 
   <style scoped>
@@ -57,9 +43,10 @@
   }
 
   .dashboard-header {
+    height: 150px;
     display: flex;
     align-items: center;
-    background-color: #722ed1;
+    background-color: #2D31A6;
     padding: 16px;
     color: white;
     position: relative;

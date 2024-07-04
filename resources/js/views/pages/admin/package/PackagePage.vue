@@ -1,26 +1,29 @@
 <template>
       <a-layout-header style="background: #fff; padding: 24px;">
-        <h1>Permission Management</h1>
+        <h1>Package Management</h1>
       </a-layout-header>
       <a-layout-content style="padding: 24px;">
-        <!-- Permission List Table -->
-        <a-table :columns="columns" :data-source="permissions" rowKey="id" :pagination="pagination" @change="handleTableChange">
+        <!-- Package List Table -->
+        <a-table :columns="columns" :data-source="packages" rowKey="id" :pagination="pagination" @change="handleTableChange">
           <template #name="{ text }">
             {{ text }}
           </template>
           <template #description="{ text }">
             {{ text }}
           </template>
+          <template #price="{ text }">
+            {{ text }}
+          </template>
           <template #operation="{ record }">
             <span>
-              <a-button type="primary" @click="editPermission(record)">Edit</a-button>
-              <a-button type="danger" @click="deletePermission(record.id)">Delete</a-button>
+              <a-button type="primary" @click="editPackage(record)">Edit</a-button>
+              <a-button type="danger" @click="deletePackage(record.id)">Delete</a-button>
             </span>
           </template>
         </a-table>
 
-        <!-- Edit Permission Modal -->
-        <a-modal v-model:visible="editModalVisible" title="Edit Permission" @ok="handleEditPermission" @cancel="closeEditModal">
+        <!-- Edit Package Modal -->
+        <a-modal v-model:visible="editModalVisible" title="Edit Package" @ok="handleEditPackage" @cancel="closeEditModal">
           <a-form :model="editForm" ref="editFormRef">
             <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
               <a-input v-model:value="editForm.name" />
@@ -28,20 +31,26 @@
             <a-form-item label="Description" name="description" :rules="[{ required: true, message: 'Please input the description!' }]">
               <a-input v-model:value="editForm.description" />
             </a-form-item>
+            <a-form-item label="Price" name="price" :rules="[{ required: true, message: 'Please input the price!' }]">
+              <a-input v-model:value="editForm.price" />
+            </a-form-item>
           </a-form>
         </a-modal>
 
-        <!-- Create Permission Button -->
-        <a-button type="primary" @click="showCreateModal">Create New Permission</a-button>
+        <!-- Create Package Button -->
+        <a-button type="primary" @click="showCreateModal">Create New Package</a-button>
 
-        <!-- Create Permission Modal -->
-        <a-modal v-model:visible="createModalVisible" title="Create New Permission" @ok="handleCreatePermission" @cancel="closeCreateModal">
+        <!-- Create Package Modal -->
+        <a-modal v-model:visible="createModalVisible" title="Create New Package" @ok="handleCreatePackage" @cancel="closeCreateModal">
           <a-form :model="createForm" ref="createFormRef">
             <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
               <a-input v-model:value="createForm.name" />
             </a-form-item>
             <a-form-item label="Description" name="description" :rules="[{ required: true, message: 'Please input the description!' }]">
               <a-input v-model:value="createForm.description" />
+            </a-form-item>
+            <a-form-item label="Price" name="price" :rules="[{ required: true, message: 'Please input the price!' }]">
+              <a-input v-model:value="createForm.price" />
             </a-form-item>
           </a-form>
         </a-modal>
@@ -51,9 +60,8 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   import Http from '@/services/Http.js';
-  import MainLayout from './../../../components/layout/AdminLayout.vue';
 
-  const permissions = ref([]);
+  const packages = ref([]);
   const editModalVisible = ref(false);
   const createModalVisible = ref(false);
   const dataReady = ref(false);
@@ -68,19 +76,19 @@
     total: 0
   });
 
-  const getPermissions = async (updatedPage = null) => {
+  const getPackages = async (updatedPage = null) => {
     if (updatedPage) {
       pagination.value.current = updatedPage;
     }
     try {
-      const { data } = await Http.get(`/api/permissions?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
-      permissions.value = data.data;
+      const { data } = await Http.get(`packages?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+      packages.value = data.data;
       pagination.value.total = data.total;
       dataReady.value = true;
     } catch (error) {
-      console.error('Error getting permissions:', error);
+      console.error('Error getting packages:', error);
       this.popToast({
-        message: 'Error Getting Permissions',
+        message: 'Error Getting Packages',
         timer: 5000,
         icon: 'error',
       });
@@ -93,41 +101,41 @@
     createModalVisible.value = true;
   };
 
-  const handleCreatePermission = async () => {
+  const handleCreatePackage = async () => {
     try {
       await createFormRef.value.validate();
-      // Call your API to create the permission
-      await Http.post('/api/permissions', createForm.value);
+      // Call your API to create the package
+      await Http.post('packages', createForm.value);
       createModalVisible.value = false;
-      getPermissions();
+      getPackages();
     } catch (error) {
-      console.error('Error creating permission:', error);
+      console.error('Error creating package:', error);
     }
   };
 
-  const handleEditPermission = async () => {
+  const handleEditPackage = async () => {
     try {
       await editFormRef.value.validate();
-      // Call your API to update the permission
-      await Http.patch(`/api/permissions/update-permission/${editForm.value.id}`, editForm.value);
+      // Call your API to update the package
+      await Http.patch(`packages/update-package/${editForm.value.id}`, editForm.value);
       editModalVisible.value = false;
-      getPermissions();
+      getPackages();
     } catch (error) {
-      console.error('Error updating permission:', error);
+      console.error('Error updating package:', error);
     }
   };
 
-  const editPermission = (permission) => {
-    editForm.value = { ...permission };
+  const editPackage = (pkg) => {
+    editForm.value = { ...pkg };
     editModalVisible.value = true;
   };
 
-  const deletePermission = async (id) => {
+  const deletePackage = async (id) => {
     try {
-      await Http.delete(`/api/permissions/delete/permission/${id}`);
-      getPermissions();
+      await Http.delete(`packages/delete/package/${id}`);
+      getPackages();
     } catch (error) {
-      console.error('Error deleting permission:', error);
+      console.error('Error deleting package:', error);
     }
   };
 
@@ -140,12 +148,13 @@
   };
 
   const handleTableChange = (pagination) => {
-    getPermissions(pagination.current);
+    getPackages(pagination.current);
   };
 
   const columns = [
     { dataIndex: 'name', title: 'Name', key: 'name' },
     { dataIndex: 'description', title: 'Description', key: 'description' },
+    { dataIndex: 'price', title: 'Price', key: 'price' },
     {
       title: 'Operation',
       key: 'operation',
@@ -154,7 +163,7 @@
   ];
 
   onMounted(() => {
-    getPermissions();
+    getPackages();
   });
   </script>
 

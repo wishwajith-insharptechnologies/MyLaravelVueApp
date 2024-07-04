@@ -1,4 +1,5 @@
 <template>
+    <NavBar/>
     <div class="dashboard-wrapper">
       <header class="dashboard-header">
         <div class="logo">
@@ -10,46 +11,16 @@
         </div>
         <a-button type="primary" class="notify-button">Notify Team</a-button>
       </header>
-      <a-tabs default-active-key="1">
-        <a-tab-pane key="1" tab="Dashboard">
-          <div class="tab-content">
-            <h2>Dashboard</h2>
-            <p>
-              From your account dashboard you can view your
-              <a href="#">license key</a>, <a href="#">recent orders</a>,
-              <a href="#">edit your password and account details</a>.
-            </p>
-          </div>
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="License Keys">
-          <div class="tab-content">
-            <!-- License Keys content goes here -->
-          </div>
-        </a-tab-pane>
-        <a-tab-pane key="3" tab="Orders & Invoices">
-          <div class="tab-content">
-            <!-- Orders & Invoices content goes here -->
-          </div>
-        </a-tab-pane>
-        <a-tab-pane key="4" tab="Profile">
-          <div class="tab-content">
-            <!-- Profile content goes here -->
-          </div>
-        </a-tab-pane>
-      </a-tabs>
-      <footer class="dashboard-footer">
-        <p>&copy; 2024 PeacoHRM. All rights reserved.</p>
-        <div class="footer-links">
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
-          <a href="#">Cookies</a>
-        </div>
-      </footer>
+             <!-- <router-view></router-view> -->
+              <slot></slot>
+      <Footer/>
     </div>
   </template>
 
   <script setup>
   import { ref } from 'vue';
+  import NavBar from "./NavBar.vue";
+  import Footer from "./Footer.vue";
 //   import 'ant-design-vue/dist/antd.css';
   </script>
 
@@ -61,9 +32,10 @@
   }
 
   .dashboard-header {
+    height: 150px;
     display: flex;
     align-items: center;
-    background-color: #722ed1;
+    background-color: #2D31A6;
     padding: 16px;
     color: white;
     position: relative;

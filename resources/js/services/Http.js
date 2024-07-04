@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let Http = axios.create({ baseURL: import.meta.env.APP_URL });
+let Http = axios.create({ baseURL: import.meta.env.VITE_API_URL});
 
 Http.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 

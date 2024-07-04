@@ -11,86 +11,121 @@ use App\Http\Resources\ProjectResource;
 use App\Repository\LimitationRepository;
 use App\Http\Requests\CreateProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Symfony\Component\HttpFoundation\Response;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class ProjectsController extends Controller
 {
-    private $projectRepository;
-    private $limitationRepository;
-
-    public function __construct(ProjectRepository $projectRepository, LimitationRepository $limitationRepository)
-    {
-
-        // $this->projectRepository = $projectRepository;
-        // $this->limitationRepository = $limitationRepository;
-        // $this->middleware('auth:sanctum');
-        // $this->middleware('role:super.admin');
-
-        // try {
-        //     ob_start('ob_gzhandler');
-        // } catch (\Exception $e) {
-        //     //
-        // }
-    }
-
     public function getProjects(Request $request)
     {
-        $perPage = $request->input('per', 10);
-        $projects = ProjectService::getProjects($perPage);
-        $transformedProjects = ProjectResource::collection($projects);
-        $projects->data = $transformedProjects;
+        try {
+            $perPage = $request->input('per', 10);
+            $projects = ProjectService::getProjects($perPage);
+            $transformedProjects = ProjectResource::collection($projects);
+            $projects->data = $transformedProjects;
 
-        return response()->json($projects);
+            return response()->json([
+                'projects' => $projects,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' =>  $e,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function createProject(CreateProjectRequest $request)
     {
-        // try {
+        try {
             $project = ProjectService::create($request);
             $limitation = LimitationService::create(json_decode($request->limitation));
 
             $projectLimitation = ProjectRepository::createProjectLimitation($project, $limitation);
 
             return response()->json([
-                'project'  => $project,
-            ]);
-        // } catch (\Exception $e) {
-        //     // Log the exception or handle it in some way
-        //     return response()->json(['error' => $e->getMessage()], 500);
-        // }
+                'project' => $project,
+            ], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' =>  $e,
+                'message'=> $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function updateProject(Request $request, $projectId)
     {
-        $project = ProjectService::update($request, $projectId);
+        try {
+            $project = ProjectService::update($request, $projectId);
 
-        return response()->json([
-            'project'  => $project,
-        ]);
+
+            return response()->json([
+                'project' => $project,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' =>  $e,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function deleteProject($projectId)
     {
-        $project = ProjectService::delete($projectId);
+        try {
+            $project = ProjectService::delete($projectId);
 
-        //$project = $this->projectRepository->delete( $project);
-        return response()->json($project);
+            //$project = $this->projectRepository->delete( $project);
+            return response()->json([
+                'project' => $project,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' =>  $e,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function getProjectList()
     {
-        $projects = ProjectService::getAllProjects();
+        try {
+            $projects = ProjectService::getAllProjects();
 
-        return response()->json($projects);
+            return response()->json([
+                'projects' => $projects,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' =>  $e,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function getProjectById($projectId)
     {
-       $projectObject = ProjectService::getProject($projectId);
-       $project = new ProjectResource($projectObject);
-        return response()->json([
-            'project'  => $project,
-        ]);
+        try {
+            $projectObject = ProjectService::getProject($projectId);
+            $project = new ProjectResource($projectObject);
+
+            return response()->json([
+                'project' => $project,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' =>  $e,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
