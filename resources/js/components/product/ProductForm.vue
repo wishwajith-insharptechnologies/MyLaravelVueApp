@@ -17,7 +17,7 @@
         <!-- Form -->
         <a-form @submit.prevent="submit">
           <!-- project_name -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Project Name')" required>
             <a-input
               id="projectName"
               v-model:value="form.projectName"
@@ -27,7 +27,7 @@
           </a-form-item>
 
           <!-- environment_type -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Environment Type')" required>
             <a-select
               id="environmentType"
               v-model:value="form.environmentType"
@@ -46,7 +46,7 @@
           </a-form-item>
 
           <!-- project_type -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Project Type')" required>
             <a-select
               id="projectType"
               v-model:value="form.projectType"
@@ -65,7 +65,7 @@
           </a-form-item>
 
           <!-- project_description -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Project Description')" >
             <a-textarea
               id="projectDescription"
               v-model:value="form.description"
@@ -76,7 +76,7 @@
           </a-form-item>
 
           <!-- project_image -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Image')" >
             <a-upload
               accept="image/*"
               custom-request="onProjectImageFileChange"
@@ -87,7 +87,7 @@
           </a-form-item>
 
           <!-- project_secret_code -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Secret Code')" required>
             <a-input
               id="secretCode"
               :disabled="true"
@@ -106,7 +106,7 @@
           </a-form-item>
 
           <!-- product_link -->
-          <a-form-item>
+          <a-form-item :label="labelWithRequired('Product Link')" >
             <a-input
               id="productLink"
               v-model:value="form.link"
@@ -133,207 +133,193 @@
   </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import Http from '@/services/Http.js';
-import { useAuthStore } from '@/stores/modules/auth.js';
-import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
-import { generateRandomString } from '@/services/Utils.js';
-import { CopyOutlined } from '@ant-design/icons-vue';
+    import { ref, onMounted, computed } from 'vue';
+    import Http from '@/services/Http.js';
+    import { useAuthStore } from '@/stores/modules/auth.js';
+    import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
+    import { generateRandomString } from '@/services/Utils.js';
+    import { CopyOutlined } from '@ant-design/icons-vue';
+    import { message } from 'ant-design-vue';
 
-const store = useAuthStore();
-const props = defineProps({
-  product: { type: Object, default: null },
-});
 
-const submitting = ref(false);
-const errors = ref(null);
-const ready = ref(false);
-
-const projectTypes = [
-  { id: 1, name: 'web' },
-  { id: 2, name: 'mobile' },
-  { id: 3, name: 'SASS' },
-  { id: 4, name: 'solution' },
-];
-const environmentTypes = [
-  { value: 0, name: 'Web Base' },
-  { value: 1, name: 'Stand 0lone' },
-];
-const improtsConfigTypes = [
-  { id: 1, name: 'Json' },
-  { id: 2, name: 'Web' },
-];
-
-const form = ref({
-  id: null,
-  image: '',
-  link: '',
-  projectName: '',
-  description: '',
-  secretCode: '',
-  projectType: '',
-  environmentType: '',
-  improtsConfigType: improtsConfigTypes[0].id,
-  improtsConfigLink: '',
-  improtsConfigJsonFile: '',
-  limitation: [],
-});
-
-const isEditable = computed(() => {
-  return props.product !== null;
-});
-
-const storedLimitations = computed(() => {
-  if (props.product && props.product.limitation) {
-    return props.product.limitation.limitation;
-  } else {
-    return null;
-  }
-});
-
-onMounted(() => {
-  if (props.product) {
-    form.value = {
-      ...props.product,
-      limitation: props.product.limitation ? props.product.limitation.limitation : [],
-    };
-    setTimeout(() => {
-      ready.value = true;
-    }, 100);
-  } else {
-    ready.value = true;
-    generateSecretCode(32);
-  }
-});
-
-// Method to handle file change for project image
-const onProjectImageFileChange = (event) => {
-  form.value.image = event.target.files[0];
-};
-
-// Method to update limitations
-const importLimitation = (updatedLimitationData) => {
-  form.value.limitation = updatedLimitationData;
-};
-
-const copyToClipboard = () => {
-      navigator.clipboard.writeText(form.value.secretCode).then(() => {
-        console.log('Copied to clipboard');
-      }).catch(err => {
-        console.error('Could not copy text: ', err);
-      });
-    };
-
-// Method to handle form submission
-const submit = async () => {
-  errors.value = null;
-  submitting.value = true;
-
-  try {
-    if (!props.product) {
-      await submitForm();
-    } else {
-      await updateProduct();
-    }
-  } catch (error) {
-    console.error('Error submitting form:', error);
-  } finally {
-    submitting.value = false;
-  }
-};
-
-const submitForm = async () => {
-  try {
-    const formData = new FormData();
-    Object.entries(form.value).forEach(([key, value]) => {
-      if (key === 'limitation') {
-        formData.append(key, JSON.stringify(value));
-      } else {
-        formData.append(key, value);
-      }
+    const store = useAuthStore();
+    const props = defineProps({
+        product: { type: Object, default: null },
     });
 
-    const response = await Http.post(
-      'projects/create-project',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    );
+    const submitting = ref(false);
+    const errors = ref(null);
+    const ready = ref(false);
 
-    // Reset form data after successful submission
-    resetFormData();
+    const projectTypes = [
+        { id: 1, name: 'web' },
+        { id: 2, name: 'mobile' },
+        { id: 3, name: 'SASS' },
+        { id: 4, name: 'solution' },
+    ];
+    const environmentTypes = [
+        { value: 0, name: 'Web Base' },
+        { value: 1, name: 'Stand 0lone' },
+    ];
+    const improtsConfigTypes = [
+        { id: 1, name: 'Json' },
+        { id: 2, name: 'Web' },
+    ];
 
-  } catch (error) {
-    // Handle errors
-    handleSubmissionError(error);
-  }
-};
+    const initialFormState = () => ({
+        id: null,
+        image: '',
+        link: '',
+        projectName: '',
+        description: '',
+        secretCode: '',
+        projectType: '',
+        environmentType: '',
+        improtsConfigType: improtsConfigTypes[0].id,
+        improtsConfigLink: '',
+        improtsConfigJsonFile: '',
+        limitation: [],
+    });
+    const form = ref(initialFormState());
+    const limitations = ref(props.product);
 
-// Method to update existing project
-const updateProduct = async () => {
-  try {
-    const updateFormData = new FormData();
+    const isEditable = computed(() => {
+        return props.product !== null;
+    });
 
-    // Append each form field to FormData
-    for (const [key, value] of Object.entries(form.value)) {
-      if (key === 'limitation') {
-        updateFormData.append(key, JSON.stringify(value));
-      } else {
-        updateFormData.append(key, value);
-      }
+    const storedLimitations = computed(() => {
+        if (limitations.value && limitations.value.limitation) {
+                return limitations.value.limitation.limitation;
+            } else {
+                return null;
+            }
+    });
+
+    onMounted(() => {
+        if (props.product) {
+            form.value = {
+                ...props.product,
+                limitation: props.product.limitation ? props.product.limitation.limitation : [],
+            };
+            setTimeout(() => {
+                ready.value = true;
+            }, 100);
+        } else {
+            ready.value = true;
+            generateSecretCode(32);
+        }
+    });
+
+    const onProjectImageFileChange = (event) => {
+        form.value.image = event.target.files[0];
+    };
+
+    const importLimitation = (updatedLimitationData) => {
+        form.value.limitation = updatedLimitationData;
+    };
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(form.value.secretCode).then(() => {
+            console.log('Copied to clipboard');
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+        });
+    };
+
+    const submit = async () => {
+        errors.value = null;
+        submitting.value = true;
+
+        try {
+            if (!props.product) {
+                await submitForm();
+            } else {
+                await updateProduct();
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+
+        } finally {
+            submitting.value = false;
+        }
+    };
+
+    const submitForm = async () => {
+        try {
+            const formData = new FormData();
+            Object.entries(form.value).forEach(([key, value]) => {
+                if (key === 'limitation') {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, value);
+                }
+            });
+
+            const response = await Http.post(
+                'projects/create-project',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                },
+            );
+
+            message.success('Project created successfully.');
+            clearFormData();
+
+        } catch (error) {
+            handleSubmissionError(error);
+        }
+    };
+
+    const updateProduct = async () => {
+        try {
+            const updateFormData = new FormData();
+
+            for (const [key, value] of Object.entries(form.value)) {
+                if (key === 'limitation') {
+                    updateFormData.append(key, JSON.stringify(value));
+                } else {
+                    updateFormData.append(key, value);
+                }
+            }
+
+            const response = await Http.post(
+                `projects/update-project/${props.product.id}`,
+                updateFormData,
+            );
+
+
+        } catch (error) {
+            handleSubmissionError(error);
+        }
+    };
+
+    const clearFormData = () => {
+        form.value = initialFormState();
+        limitations.value = null;
+    };
+
+    function generateSecretCode(length) {
+        form.value.secretCode = generateRandomString(length);
     }
 
-    const response = await Http.post(
-      `projects/update-project/${props.product.id}`,
-      updateFormData,
-    );
-
-    // Dispatch success toast notification
-
-  } catch (error) {
-    // Handle errors
-    handleSubmissionError(error);
-  }
-};
-
-// Method to reset form data
-const resetFormData = () => {
-  form.value = {
-    id: null,
-    image: '',
-    link: '',
-    projectName: '',
-    description: '',
-    secretCode: '',
-    projectType: '',
-    environmentType: '',
-    improtsConfigType: improtsConfigTypes[0].id,
-    improtsConfigLink: '',
-    improtsConfigJsonFile: '',
-    limitation: [],
-  };
-};
-
-function generateSecretCode(length) {
-    form.value.secretCode = generateRandomString(length);
-}
-
-// Method to handle form submission errors
-const handleSubmissionError = (error) => {
-  if (Http.isAxiosError(error)) {
-    if (error.response && error.response.status === 422) {
-      errors.value = error.response.data.errors;
-    } else {
-        // alert Error Submitting Form
-
-    }
-  } else {
-    console.error('Unexpected error occurred:', error);
-  }
-};
+    const handleSubmissionError = (error) => {
+        if (Http.isAxiosError(error)) {
+            if (error.response && error.response.status === 422) {
+                errors.value = error.response.data.errors;
+            } else {
+                message.error('Error project submit');
+            }
+        } else {
+            console.error('Unexpected error occurred:', error);
+            message.error('Unexpected error occurred');
+        }
+    };
+    const labelWithRequired = (label) => {
+        return `${label} `;
+    };
 </script>
 
 <style scoped>

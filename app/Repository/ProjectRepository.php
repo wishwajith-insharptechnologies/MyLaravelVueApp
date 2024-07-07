@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Models\Limitations;
 use App\Models\Projects;
-
+use Illuminate\Support\Facades\DB;
 
 class ProjectRepository
 {
@@ -35,58 +35,105 @@ class ProjectRepository
 
     public function create($request)
     {
-        $project = new Projects();
+        DB::beginTransaction();
 
-        $project->project_name = $request->project_name;
-        $project->project_type = $request->project_type;
-        $project->description = $request->description;
-        $project->image = '';
-        $project->link = $request->link;
-        $project->secret_code = $request->secret_code;
-        // $project->limitations_id = null;
+        try {
+            $project = new Projects();
 
-        $project->save();
+            $project->project_name = $request->project_name;
+            $project->project_type = $request->project_type;
+            $project->description = $request->description;
+            $project->image = '';
+            $project->link = $request->link;
+            $project->secret_code = $request->secret_code;
+            // $project->limitations_id = null;
 
-        return $project;
+            $project->save();
+
+            DB::commit();
+
+            return $project;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function update($projectData, $projectId)
     {
-        $project = Projects::findOrFail($projectId);
+        DB::beginTransaction();
 
-        $project->update($projectData);
+        try {
+            $project = Projects::findOrFail($projectId);
 
-        return $project;
+            $project->update($projectData);
+
+            DB::commit();
+
+            return $project;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function delete($projectId)
     {
-        $project = Projects::findOrFail($projectId);
-        return $project->delete();
+        DB::beginTransaction();
+
+        try {
+            $project = Projects::findOrFail($projectId);
+            $result = $project->delete();
+
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function createProjectLimitation($project, $limitation)
     {
-        return $project->limitation()->save($limitation);
+        DB::beginTransaction();
+
+        try {
+            $result = $project->limitation()->save($limitation);
+
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    public function updateProjectLimitation($limitationData, $project )
+    public function updateProjectLimitation($limitationData, $project)
     {
-        if ($limitationData) {
+        DB::beginTransaction();
 
-            $limitation = $project->limitation ? $project->limitation : new Limitations();
+        try {
+            if ($limitationData) {
+                $limitation = $project->limitation ? $project->limitation : new Limitations();
 
-            $limitation->limitation = $limitationData;
+                $limitation->limitation = $limitationData;
 
-            $project->limitation()->save($limitation);
+                $project->limitation()->save($limitation);
+            }
+
+            DB::commit();
+
+            return $project->limitation();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-
-        return $project->limitation();
     }
 
     public function getProjectList()
     {
-        return Projects::where('status',1)->select('id', 'project_name')->get();
+        return Projects::where('status', 1)->select('id', 'project_name')->get();
     }
-
 }

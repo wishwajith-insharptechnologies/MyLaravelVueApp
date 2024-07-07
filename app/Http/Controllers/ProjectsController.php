@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Projects;
 use Illuminate\Http\Request;
+use App\Responses\ApiResponse;
 use App\Services\ProjectService;
 use App\Services\LimitationService;
 use App\Repository\ProjectRepository;
@@ -24,15 +25,11 @@ class ProjectsController extends Controller
             $transformedProjects = ProjectResource::collection($projects);
             $projects->data = $transformedProjects;
 
-            return response()->json([
-                'projects' => $projects,
-            ], Response::HTTP_OK);
+            return ApiResponse::success($projects, 'Projects retrieved successfully');
+
         } catch (\Exception $e) {
 
-            return response()->json([
-                'error' =>  $e,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -44,16 +41,12 @@ class ProjectsController extends Controller
 
             $projectLimitation = ProjectRepository::createProjectLimitation($project, $limitation);
 
-            return response()->json([
-                'project' => $project,
-            ], Response::HTTP_OK);
+            return ApiResponse::created($project, 'Projects created successfully');
 
         } catch (\Exception $e) {
 
-            return response()->json([
-                'error' =>  $e,
-                'message'=> $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+
         }
     }
 
@@ -62,16 +55,12 @@ class ProjectsController extends Controller
         try {
             $project = ProjectService::update($request, $projectId);
 
+            return ApiResponse::success($project, 'Projects updated successfully');
 
-            return response()->json([
-                'project' => $project,
-            ], Response::HTTP_OK);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'error' =>  $e,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+
         }
     }
 
@@ -80,16 +69,12 @@ class ProjectsController extends Controller
         try {
             $project = ProjectService::delete($projectId);
 
-            //$project = $this->projectRepository->delete( $project);
-            return response()->json([
-                'project' => $project,
-            ], Response::HTTP_OK);
+            return ApiResponse::success($project, 'Projects deleted successfully');
+
         } catch (\Exception $e) {
 
-            return response()->json([
-                'error' =>  $e,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+
         }
     }
 
@@ -98,15 +83,11 @@ class ProjectsController extends Controller
         try {
             $projects = ProjectService::getAllProjects();
 
-            return response()->json([
-                'projects' => $projects,
-            ], Response::HTTP_OK);
+            return ApiResponse::success($projects, 'Projects get successfully');
+
         } catch (\Exception $e) {
 
-            return response()->json([
-                'error' =>  $e,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -116,15 +97,12 @@ class ProjectsController extends Controller
             $projectObject = ProjectService::getProject($projectId);
             $project = new ProjectResource($projectObject);
 
-            return response()->json([
-                'project' => $project,
-            ], Response::HTTP_OK);
+            return ApiResponse::success($project, 'Projects get successfully');
+
         } catch (\Exception $e) {
 
-            return response()->json([
-                'error' =>  $e,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+
         }
     }
 

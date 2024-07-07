@@ -31,7 +31,7 @@
         </a-modal>
 
         <!-- Create Package Button -->
-        <a-button type="primary" @click="showCreateModal">Create New Package</a-button>
+        <a-button type="primary" @click="redirectProductCreate">Create New Package</a-button>
 
         <!-- Create Package Modal -->
         <a-modal v-model:visible="createModalVisible" title="Create New Package" @ok="handleCreatePackage" @cancel="closeCreateModal">
@@ -51,119 +51,116 @@
   </template>
 
   <script setup>
-  import { ref, onMounted } from 'vue';
-  import Http from '@/services/Http.js';
-  import ProductForm from '@/components/product/ProductForm.vue';
-  import router from '@/router/index.js';
+    import { ref, onMounted } from 'vue';
+    import Http from '@/services/Http.js';
+    import ProductForm from '@/components/product/ProductForm.vue';
+    import router from '@/router/index.js';
+    import { message } from 'ant-design-vue';
 
 
-  const products = ref([]);
-  const editModalVisible = ref(false);
-  const createModalVisible = ref(false);
-  const dataReady = ref(false);
-  const editForm = ref({});
-  const createForm = ref({});
-  const editFormRef = ref(null);
-  const createFormRef = ref(null);
-  const updateProduct = ref(null);
+    const products = ref([]);
+    const editModalVisible = ref(false);
+    const createModalVisible = ref(false);
+    const dataReady = ref(false);
+    const editForm = ref({});
+    const createForm = ref({});
+    const editFormRef = ref(null);
+    const createFormRef = ref(null);
+    const updateProduct = ref(null);
 
-  const pagination = ref({
-    current: 1,
-    pageSize: 10,
-    total: 0
-  });
+    const pagination = ref({
+        current: 1,
+        pageSize: 10,
+        total: 0
+    });
 
-  const getProducts = async (updatedPage = null) => {
-    if (updatedPage) {
-      pagination.value.current = updatedPage;
-    }
-    try {
-      const { data } = await Http.get(`projects?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
-      products.value = data.data;
-      pagination.value.total = data.total;
-      dataReady.value = true;
-    } catch (error) {
-      console.error('Error getting packages:', error);
-      this.popToast({
-        message: 'Error Getting Packages',
-        timer: 5000,
-        icon: 'error',
-      });
-      dataReady.value = true;
-    }
-  };
+    const getProducts = async (updatedPage = null) => {
+        if (updatedPage) {
+            pagination.value.current = updatedPage;
+        }
+        try {
+            const { data } = await Http.get(`projects?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
+            products.value = data.data.data;
+            pagination.value.total = data.data.total;
+            dataReady.value = true;
+        } catch (error) {
+            message.error('Error Getting Packages');
+            dataReady.value = true;
+        }
+    };
 
-  const showCreateModal = () => {
-    router.push({ name: 'ProductAddPage' });
-  };
+    const redirectProductCreate = () => {
+        router.push({ name: 'ProductAddPage' });
+    };
 
-  const handleCreatePackage = async () => {
-    try {
-      await createFormRef.value.validate();
-      // Call your API to create the package
-      await Http.post('packages', createForm.value);
-      createModalVisible.value = false;
-      getProducts();
-    } catch (error) {
-      console.error('Error creating package:', error);
-    }
-  };
+    const handleCreatePackage = async () => {
+        try {
+            await createFormRef.value.validate();
+            await Http.post('packages', createForm.value);
+            createModalVisible.value = false;
+            getProducts();
+        } catch (error) {
+            console.error('Error creating package:', error);
+            message.error('Error creating package');
+        }
+    };
 
-  const handleEditPackage = async () => {
-    try {
-      await editFormRef.value.validate();
-      // Call your API to update the package
-      await Http.patch(`packages/update-package/${editForm.value.id}`, editForm.value);
-      editModalVisible.value = false;
-      getProducts();
-    } catch (error) {
-      console.error('Error updating package:', error);
-    }
-  };
+    const handleEditPackage = async () => {
+        try {
+            await editFormRef.value.validate();
+            await Http.patch(`packages/update-package/${editForm.value.id}`, editForm.value);
+            editModalVisible.value = false;
+            getProducts();
+        } catch (error) {
+            console.error('Error updating package:', error);
+            message.error('Error updating package:');
+        }
+    };
 
-  const editPackage = (pkg) => {
-    console.log(pkg);
-    editForm.value = { ...pkg };
-    updateProduct.value = { ...pkg };
-    editModalVisible.value = true;
-  };
+    const editPackage = (pkg) => {
+        console.log(pkg);
+        editForm.value = { ...pkg };
+        updateProduct.value = { ...pkg };
+        editModalVisible.value = true;
+    };
 
-  const deletePackage = async (id) => {
-    try {
-      await Http.delete(`projects/delete/project/${id}`);
-      getProducts();
-    } catch (error) {
-      console.error('Error deleting package:', error);
-    }
-  };
+    const deletePackage = async (id) => {
+        try {
+            await Http.delete(`projects/delete/project/${id}`);
+            getProducts();
+        } catch (error) {
+            console.error('Error deleting package:', error);
+            message.error('Error deleting package:');
+        }
+    };
 
-  const closeCreateModal = () => {
-    createModalVisible.value = false;
-  };
+    const closeCreateModal = () => {
+        createModalVisible.value = false;
+    };
 
-  const closeEditModal = () => {
-    editModalVisible.value = false;
-  };
+    const closeEditModal = () => {
+        editModalVisible.value = false;
+    };
 
-  const handleTableChange = (pagination) => {
-    getProducts(pagination.current);
-  };
+    const handleTableChange = (pagination) => {
+        getProducts(pagination.current);
+    };
 
-  const columns = [
-    { dataIndex: 'projectName', title: 'Name', key: 'projectName' },
-    { dataIndex: 'description', title: 'Description', key: 'description' },
-    { dataIndex: 'link', title: 'Link', key: 'link' },
-    { dataIndex: 'secretCode', title: 'Secret Code', key: 'secretCode' },
-    {
-      title: 'Operation',
-      key: 'operation',
-      slots: { customRender: 'operation' }
-    }
-  ];
+    const columns = [
+        { dataIndex: 'projectName', title: 'Name', key: 'projectName' },
+        { dataIndex: 'description', title: 'Description', key: 'description' },
+        { dataIndex: 'link', title: 'Link', key: 'link' },
+        { dataIndex: 'secretCode', title: 'Secret Code', key: 'secretCode' },
+        {
+            title: 'Operation',
+            key: 'operation',
+            slots: { customRender: 'operation' }
+        }
+    ];
 
-  onMounted(() => {
-    getProducts();
-  });
+    onMounted(() => {
+        getProducts();
+    });
   </script>
 
   <style scoped>

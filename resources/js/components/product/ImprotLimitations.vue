@@ -6,7 +6,7 @@
           <label
             for="improtsConfigType"
             class="block text-sm font-medium text-gray-700"
-            >Feature improt config</label
+            ><span style="color: red;">*</span>Feature improt config </label
           >
           <select
             id="improtsConfigType"

@@ -1,7 +1,7 @@
 // resources/js/router/routes.js
 
-import Login from "/resources/js/views/pages/gest/auth/Login.vue";
-import Register from "/resources/js/views/pages/gest/auth/Register.vue";
+import Login from "/resources/js/views/pages/guest/auth/Login.vue";
+import Register from "/resources/js/views/pages/guest/auth/Register.vue";
 import ClientDashboard from "/resources/js/views/pages/client/ClientDashboard.vue";
 import AdminDashboard from "/resources/js/views/pages/admin/AdminDashboard.vue";
 import UserPage from "/resources/js/views/pages/admin/user/UserPage.vue";
@@ -11,7 +11,7 @@ import PackagePage from "/resources/js/views/pages/admin/package/PackagePage.vue
 import AddPackage from "../views/pages/admin/package/AddPackage.vue";
 import AddProduct from "../views/pages/admin/product/AddProduct.vue";
 import ListProduct from "../views/pages/admin/product/ProductList.vue";
-import PaymentPage from "../views/pages/gest/payment/Payment.vue";
+import PaymentPage from "../views/pages/guest/payment/Payment.vue";
 import AdminLayout from "../components/layout/AdminLayout.vue";
 
 const routes = [
