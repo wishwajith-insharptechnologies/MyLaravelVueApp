@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NotEmptyArray;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateProjectRequest extends FormRequest
@@ -26,11 +27,24 @@ class CreateProjectRequest extends FormRequest
         return [
             'projectName' => 'required|string|max:255',
             'projectType' => 'required',
+            'limitation' =>  'required',
             'environmentType' => 'required',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
             'link' => 'nullable|url',
             'secretCode' => 'string|unique:projects,secret_code|max:255',
+        ];
+    }
+
+        /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes()
+    {
+        return [
+            'limitation' => 'Import Project Limitations',
         ];
     }
 }
