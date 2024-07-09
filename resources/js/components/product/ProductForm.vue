@@ -216,7 +216,7 @@ import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
 import { generateRandomString, buildFormData } from "@/services/Utils.js";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
-import { createProject, updateProject } from "@/services/ProjectService.js";
+import { createProduct, updateProduct } from "@/services/ProjectService.js";
 
 const store = useAuthStore();
 const props = defineProps({
@@ -225,7 +225,6 @@ const props = defineProps({
 
 const submitting = ref(false);
 const errors = ref({});
-const mainErrorMessage = ref("");
 const ready = ref(false);
 
 const projectTypes = [
@@ -334,15 +333,13 @@ const submitForm = async () => {
     try {
         const formData = buildFormData(form.value);
 
-        const response = await createProject(formData);
+        const response = await createProduct(formData);
         console.log(response.data);
         message.success("Project created successfully.");
         clearFormData();
     } catch (error) {
         if (error.response && error.response.data) {
             errors.value = error.response.data.errors;
-            mainErrorMessage.value =
-                error.response.data.message || "Failed to create project";
         }
         message.error("Failed to create project");
         console.error("Error creating project:", error);

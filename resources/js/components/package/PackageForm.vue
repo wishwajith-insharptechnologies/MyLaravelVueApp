@@ -79,8 +79,11 @@
   <script setup>
   import { onMounted, ref } from 'vue'
   import { message } from 'ant-design-vue'
-  import Http from '@/services/Http.js';
   import LimitationForm from './PackageLimitationForm.vue';
+  import { buildFormData } from "@/services/Utils.js";
+  import { createPackage } from '@/services/PackageService';
+  import { getProduct, getProjectsList } from "@/services/ProjectService.js";
+
 
   const props = defineProps({
   package: { type: Object, default: null },
@@ -125,8 +128,7 @@ const handleSubmit = async () => {
 
 const getProjectList = async () => {
     try {
-        const { data } = await Http.get(`projects/list`);
-        console.log(data);
+        const data = await getProjectsList();
         projectsList.value = data;
     } catch (error) {
         console.error(error);
@@ -152,7 +154,7 @@ const handleLimitationsErrors = (isLimitationError) => {
 
 const loadProjectLimitation = async () => {
   try {
-    const { data } = await Http.get(`project/${form.value.product_id}`);
+    const data  = await getProduct(form.value.product_id);
     loadedLimitations.value = data.project.limitation.limitation;
     console.log(data);
 
@@ -166,33 +168,20 @@ const loadProjectLimitation = async () => {
 };
 const submitForm = async () => {
   try {
-    const formData = new FormData();
-    formData.append('title', form.value.title);
-    formData.append('description', form.value.description);
-    formData.append('rank', form.value.rank);
-    formData.append('validity', form.value.validity);
-    formData.append('price', form.value.price);
-    formData.append('discount', form.value.discount);
-    formData.append('image', form.value.image);
-    formData.append('status', (form.value.status ? 1 : 0));
-    formData.append('trial_period', form.value.trial_period);
-    formData.append('product_id', form.value.product_id);
-    formData.append('category_id', form.value.category_id);
-    formData.append('limitation', JSON.stringify(form.value.limitation));
+    const formData = buildFormData(form.value);
 
-    const { data } = await Http.post('package/create-package', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await createPackage(formData);
     console.log(data);
 
-    message.success('Form submitted successfully!')
+    message.success('Package submitted successfully!')
 
     resetFormData();
   } catch (error) {
-    console.error(error);
-    // Handle error
+    if (error.response && error.response.data) {
+            errors.value = error.response.data.errors;
+        }
+        message.error("Failed to create project");
+        console.error("Error creating project:", error);
   }
 };
   </script>
