@@ -38,12 +38,10 @@ class PackagesController extends Controller
 
     public function getPackages(Request $request)
     {
-        $perPage = $request->input('per', 10);
-        $packages = PackageService::getPackages($perPage);
-        $transformedProjects = PackageResource::collection($packages);
-        $packages->data = $transformedProjects;
+        $packages = PackageService::getPackages();
+        $setPackages = PackageResource::collection($packages);
 
-        return response()->json($packages);
+        return response()->json($setPackages);
     }
 
     public function updatePackage(Request $request, $packageId){

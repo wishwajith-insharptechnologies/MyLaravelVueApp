@@ -47,7 +47,7 @@ export const deleteProject = async (id) => {
 export const getProduct = async (productId) => {
     try {
         const response= await Http.get(`project/${productId}`);
-        return response.data;
+        return response.data.data;
     } catch (error) {
         throw error;
     }

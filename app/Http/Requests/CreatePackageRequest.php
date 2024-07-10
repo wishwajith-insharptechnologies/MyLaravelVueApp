@@ -30,8 +30,8 @@ class CreatePackageRequest extends FormRequest
             'validity'      => 'required',
             'price'         => 'required|numeric',
             'discount'      => 'required|numeric',
-            'images'        => 'nullable|string',
-            'status'        => 'required|in:1,0', // Change to your valid statuses
+            'images'        => 'nullable',
+            'status'        => 'required', // Change to your valid statuses
             'trial_period'  => 'required|integer',
             // 'product_id'    => 'required|integer|exists:products,id',
             // 'category_id'   => 'required|integer|exists:categories,id',

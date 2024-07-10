@@ -75,9 +75,9 @@ class PackageService {
     {
         return PackagesRepository::get($packageId);
     }
-    public static function getPackages($per)
+    public static function getPackages()
     {
-        return PackagesRepository::getAll($per);
+        return PackagesRepository::getAll();
     }
 
     public static function deletePackage($packageId)

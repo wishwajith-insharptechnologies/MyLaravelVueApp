@@ -7,6 +7,7 @@ use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\keyGenerateController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -35,7 +36,7 @@ Route::middleware('guest')->group(function () {
     // Route::get('/user', [UsersController::class, 'user']);
 });
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UsersController::class, 'users']);
     Route::post('/users/toggle-verify', [UsersController::class, 'toggleVerify']);
     Route::delete('/users/delete/user/{user}', [UsersController::class, 'deleteUser']);
@@ -56,8 +57,10 @@ Route::middleware('guest')->group(function () {
             Route::patch('/projects/update-package/{package}', [PackagesController::class, 'updatePackage']);
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
+            Route::post('/upload', [FileUploadController::class, 'upload']);
 
-// });
+
+});
 
 Route::post('/payment/get-session',  [PaymentsController::class, 'getSession']);
 Route::post('/payment/complete',  [PaymentsController::class, 'paymentComplete']);

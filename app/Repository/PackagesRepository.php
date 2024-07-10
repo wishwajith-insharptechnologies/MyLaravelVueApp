@@ -15,7 +15,11 @@ class PackagesRepository
         return Packages::with('limitation', 'project')->findOrFail($id);
     }
 
-    public static function getAll($per)
+    public static function getAll()
+    {
+        return Packages::all();
+    }
+    public static function getAllWithPaginate($per)
     {
         return Packages::with('limitation')->paginate($per);
     }
