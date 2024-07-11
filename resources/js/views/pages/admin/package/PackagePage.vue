@@ -17,7 +17,7 @@
           <template #operation="{ record }">
             <span>
               <a-button type="primary" @click="editPackage(record)">Edit</a-button>
-              <a-button type="danger" @click="handelDeletePackage(record.id)">Delete</a-button>
+              <a-button type="primary" @click="handelDeletePackage(record.id)" danger ghost>Delete</a-button>
             </span>
           </template>
         </a-table>
@@ -29,11 +29,14 @@
 
   <script setup>
   import { ref, onMounted } from 'vue';
+  import { message, Modal } from "ant-design-vue";
+
   import Http from '@/services/Http.js';
   import { useRouter } from 'vue-router';
   import { getPackages, deletePackage } from '@/services/PackageService';
 
   const router = useRouter();
+  const { confirm } = Modal;
 
   const packages = ref([]);
   const dataReady = ref(false);
@@ -65,8 +68,22 @@
 
   const handelDeletePackage = async (id) => {
     try {
-      const response = deletePackage(id);
-      getPackages();
+
+      confirm({
+        title: 'Are you sure you want to delete this item?',
+        content: 'This action cannot be undone',
+        okText: 'Yes',
+        okType: 'danger',
+        cancelText: 'No',
+        onOk() {
+            const response = deletePackage(id);
+            loadPackages();
+            message.success('Item deleted successfully');
+        },
+        onCancel() {
+          message.info('Delete action cancelled');
+        },
+      });
     } catch (error) {
       console.error('Error deleting package:', error);
     }

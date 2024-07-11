@@ -34,7 +34,7 @@ export const editPackage = async (id, formData) => {
 
 export const deletePackage = async (id) => {
     try {
-        const response=  Http.delete(`packages/delete/package/${id}`);
+        const response=  Http.delete(`package/delete-package/${id}`);
         return response;
     } catch (error) {
         throw error;

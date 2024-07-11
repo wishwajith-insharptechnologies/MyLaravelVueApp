@@ -113,7 +113,6 @@
             :rules="[
                 {
                     type: 'number',
-                    message: 'Discount is required',
                     trigger: 'blur',
                 },
             ]"
@@ -199,7 +198,7 @@ const props = defineProps({
     package: { type: Object, default: null },
 });
 
-const form = ref({
+const initialFormState = () => ({
     title: "",
     description: "",
     product_id: "",
@@ -213,6 +212,7 @@ const form = ref({
     category_id: "",
     limitation: {},
 });
+const form = ref(initialFormState());
 const formRef = ref(null);
 const errors = ref([]);
 const limitationErrors = ref(false);
@@ -309,6 +309,11 @@ const handleLimitationsErrors = (isLimitationError) => {
     console.log(limitationErrors.value);
 };
 
+const clearFormData = () => {
+    form.value = initialFormState();
+    loadedLimitations.value = [];
+};
+
 const loadProjectLimitation = async () => {
     try {
         const data = await getProduct(form.value.project_id);
@@ -331,7 +336,7 @@ const submitForm = async () => {
 
         message.success("Package submitted successfully!");
 
-        resetFormData();
+        clearFormData();
     } catch (error) {
         if (error.response && error.response.data) {
             errors.value = error.response.data.errors;

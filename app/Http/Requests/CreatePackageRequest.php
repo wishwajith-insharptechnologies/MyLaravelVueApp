@@ -29,7 +29,7 @@ class CreatePackageRequest extends FormRequest
             'rank'          => 'required|integer',
             'validity'      => 'required',
             'price'         => 'required|numeric',
-            'discount'      => 'required|numeric',
+            'discount'      => 'numeric',
             'images'        => 'nullable',
             'status'        => 'required', // Change to your valid statuses
             'trial_period'  => 'required|integer',
