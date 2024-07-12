@@ -125,9 +125,7 @@
         </a-form-item>
 
         <a-form-item label="Image" name="image">
-            <a-upload :multiple="false"
-                :custom-request="handleCustomRequest"
-            >
+            <a-upload :multiple="false" :custom-request="handleCustomRequest">
                 <a-button> <a-icon type="upload" /> Select Image </a-button>
                 <div slot="fileList">
                     <a-image
@@ -172,7 +170,10 @@
                 style="width: 100%"
             />
         </a-form-item>
-
+        <a-paragraph
+            style="color: red"
+            v-if="!isLimitationFulfillAllFiled"
+        >Please fill required limitation value to submit</a-paragraph>
         <LimitationForm
             v-model:value="form.limitation"
             :limitations="loadedLimitations"
@@ -219,6 +220,7 @@ const limitationErrors = ref(false);
 const submitting = ref(false);
 const projectsList = ref([]);
 const loadedLimitations = ref([]);
+const isLimitationFulfillAllFiled = ref(true);
 
 onMounted(() => {
     getProjectList();
@@ -265,12 +267,36 @@ const handleUploadChange = ({ file }) => {
     }
 };
 
-const onFinish = (values) => {
-    console.log("Success:", values);
+const limitationValidationCheck = () => {
+    isLimitationFulfillAllFiled.value = isLimitationValuesFulfill(
+        form.value.limitation
+    );
+    return isLimitationFulfillAllFiled.value;
+};
+const isLimitationValuesFulfill = (limitations) => {
+    if (!limitations || limitations.length === 0) {
+        console.log('limitaion null');
+        return false;
+    }
+
+    for (let limitation of limitations) {
+        if (
+            limitation.required &&
+            (limitation.value === null || limitation.value === "")
+        ) {
+            console.log('limitaion value null');
+            return false;
+        }
+    }
+
+    return true;
 };
 
 const handleSubmit = async () => {
     await formRef.value.validate();
+    if (!limitationValidationCheck()) {
+        return;
+    }
     errors.value = null;
     submitting.value = true;
 

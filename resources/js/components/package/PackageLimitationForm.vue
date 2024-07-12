@@ -18,6 +18,7 @@
                         <a-input-number
                             v-model:value="limitation.value"
                             @input="emitValue(limitation)"
+                            @focus="emitValue(limitation)"
                             class="form-input"
                         />
                     </a-form-item>
