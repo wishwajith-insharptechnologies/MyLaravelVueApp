@@ -53,8 +53,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
             //packages
             Route::get('/packages', [PackagesController::class, 'getPackages']);
+            Route::get('/package/{package}', [PackagesController::class, 'getPackage']);
             Route::post('/package/create-package', [PackagesController::class, 'createPackage']);
-            Route::patch('/projects/update-package/{package}', [PackagesController::class, 'updatePackage']);
+            Route::patch('/package/update-package/{package}', [PackagesController::class, 'updatePackage']);
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
             Route::post('/upload', [FileUploadController::class, 'upload']);

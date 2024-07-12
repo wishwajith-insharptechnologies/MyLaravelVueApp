@@ -9,6 +9,7 @@ import RolePage from "/resources/js/views/pages/admin/role/RolePage.vue";
 import PermissionPage from "/resources/js/views/pages/admin/permission/PermissionPage.vue";
 import PackagePage from "/resources/js/views/pages/admin/package/PackagePage.vue";
 import AddPackage from "../views/pages/admin/package/AddPackage.vue";
+import EditPackage from "../views/pages/admin/package/PackageEditPage.vue";
 import AddProduct from "../views/pages/admin/product/AddProduct.vue";
 import ListProduct from "../views/pages/admin/product/ProductList.vue";
 import PaymentPage from "../views/pages/guest/payment/Payment.vue";
@@ -31,6 +32,14 @@ const routes = [
                 path: "/package/create",
                 name: "packageAddPage",
                 component: AddPackage,
+            },
+            {
+                path: "/package/edit/:id",
+                props: (route) => ({
+                    id: route.params.id,
+                }),
+                component: EditPackage,
+                name: "packageEditPage",
             },
             {
                 path: "/product/create",

@@ -16,7 +16,7 @@
           </template>
           <template #operation="{ record }">
             <span>
-              <a-button type="primary" @click="editPackage(record)">Edit</a-button>
+              <a-button type="primary" @click="handelEditPackage(record)">Edit</a-button>
               <a-button type="primary" @click="handelDeletePackage(record.id)" danger ghost>Delete</a-button>
             </span>
           </template>
@@ -62,6 +62,9 @@
     }
   };
 
+  const handelEditPackage = (record) => {
+    router.push({ name: 'packageEditPage', params: { id: record.id } });
+  };
   const handleCreateNewPackage = () => {
     router.push({ name: 'packageAddPage' });
   };

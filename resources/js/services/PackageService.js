@@ -14,7 +14,16 @@ export const createPackage = async (formData) => {
     }
 };
 
-export const getPackages = async (popToast) => {
+export const getPackage = async (id) => {
+    try {
+        const response= await Http.get(`package/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPackages = async () => {
     try {
         const response= await Http.get('packages');
         return response.data;
@@ -23,9 +32,9 @@ export const getPackages = async (popToast) => {
     }
 };
 
-export const editPackage = async (id, formData) => {
+export const updatePackage = async (id, formData) => {
     try {
-        const response = await Http.patch(`packages/update-package/${id}`, formData);
+        const response = await Http.patch(`/package/update-package/${id}`, formData);
         return response;
     } catch (error) {
         throw error;

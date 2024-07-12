@@ -33,7 +33,7 @@
 
         <a-form-item
             label="Project"
-            name="project_id"
+            name="product_id"
             :rules="[
                 {
                     required: true,
@@ -43,7 +43,7 @@
             ]"
         >
             <a-select
-                v-model:value="form.project_id"
+                v-model:value="form.product_id"
                 @change="projectSelectChange"
                 placeholder="Select project ID"
             >
@@ -94,7 +94,6 @@
             :rules="[
                 {
                     required: true,
-                    type: 'number',
                     message: 'Price is required',
                     trigger: 'blur',
                 },
@@ -112,7 +111,6 @@
             name="discount"
             :rules="[
                 {
-                    type: 'number',
                     trigger: 'blur',
                 },
             ]"
@@ -144,7 +142,7 @@
         <a-form-item
             label="Trial Period"
             name="trial_period"
-            :rules="[{ type: 'number', trigger: 'blur' }]"
+            :rules="[{ trigger: 'blur' }]"
         >
             <a-input-number
                 v-model:value="form.trial_period"
@@ -170,10 +168,9 @@
                 style="width: 100%"
             />
         </a-form-item>
-        <a-paragraph
-            style="color: red"
-            v-if="!isLimitationFulfillAllFiled"
-        >Please fill required limitation value to submit</a-paragraph>
+        <a-paragraph style="color: red" v-if="!isLimitationFulfillAllFiled"
+            >Please fill required limitation value to submit</a-paragraph
+        >
         <LimitationForm
             v-model:value="form.limitation"
             :limitations="loadedLimitations"
@@ -182,27 +179,27 @@
         />
 
         <a-form-item>
-            <a-button type="primary" html-type="submit">Submit</a-button>
+            <a-button type="primary" html-type="submit">Update</a-button>
         </a-form-item>
     </a-form>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, watch, ref } from "vue";
 import { message } from "ant-design-vue";
 import LimitationForm from "./PackageLimitationForm.vue";
 import { buildFormData } from "@/services/Utils.js";
-import { createPackage } from "@/services/PackageService";
+import { updatePackage } from "@/services/PackageService";
 import { getProduct, getProjectsList } from "@/services/ProjectService.js";
 
 const props = defineProps({
     package: { type: Object, default: null },
 });
 
-const initialFormState = () => ({
+const form = ref({
     title: "",
     description: "",
-    project_id: "",
+    product_id: "",
     rank: "",
     validity: "",
     price: "",
@@ -213,7 +210,6 @@ const initialFormState = () => ({
     category_id: "",
     limitation: {},
 });
-const form = ref(initialFormState());
 const formRef = ref(null);
 const errors = ref([]);
 const limitationErrors = ref(false);
@@ -275,7 +271,7 @@ const limitationValidationCheck = () => {
 };
 const isLimitationValuesFulfill = (limitations) => {
     if (!limitations || limitations.length === 0) {
-        console.log('limitaion null');
+        console.log("limitaion null");
         return false;
     }
 
@@ -284,7 +280,7 @@ const isLimitationValuesFulfill = (limitations) => {
             limitation.required &&
             (limitation.value === null || limitation.value === "")
         ) {
-            console.log('limitaion value null');
+            console.log("limitaion value null");
             return false;
         }
     }
@@ -300,11 +296,7 @@ const handleSubmit = async () => {
     errors.value = null;
     submitting.value = true;
 
-    if (!props.package) {
-        await submitForm();
-    } else {
-        await updatePackage();
-    }
+    await updatePackage(props.package.id, form.value);
 
     submitting.value = false;
 };
@@ -342,9 +334,11 @@ const clearFormData = () => {
 
 const loadProjectLimitation = async () => {
     try {
-        const data = await getProduct(form.value.project_id);
-        console.log(data);
-        loadedLimitations.value = data.limitation.limitation;
+        if (form.value.product_id) {
+            const data = await getProduct(form.value.product_id);
+            console.log(data);
+            loadedLimitations.value = data.limitation.limitation;
+        }
 
         // items.value = clonedeep(JSON.parse(data.project.limitation.limitation));
 
@@ -354,23 +348,31 @@ const loadProjectLimitation = async () => {
         // Handle error
     }
 };
-const submitForm = async () => {
+const setEditLimitation = async () => {
     try {
-        const formData = buildFormData(form.value);
-
-        const response = await createPackage(formData);
-
-        message.success("Package submitted successfully!");
-
-        clearFormData();
+        loadedLimitations.value = form.value.limitation;
     } catch (error) {
-        if (error.response && error.response.data) {
-            errors.value = error.response.data.errors;
-        }
-        message.error("Failed to create project");
-        console.error("Error creating project:", error);
+        console.error(error);
+        // Handle error
     }
 };
+
+watch(
+    () => props.package,
+    (packageData) => {
+        if (packageData) {
+            console.log(packageData.limitation?.limitation );
+            form.value = {
+                ...form.value,
+                ...packageData,
+                limitation: packageData.limitation?.limitation || {},
+            };
+
+            setEditLimitation();
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <style>

@@ -21,7 +21,7 @@ class PackageService {
         $packageData['images'] = " image";
         $packageData['status'] = $request->status;
         $packageData['trial_period'] = $request->trial_period;
-        $packageData['projects_id'] = $request->product_id;
+        $packageData['projects_id'] = $request->project_id;
         $packageData['category_id'] = $request->category_id;
 
         if ($request->hasFile('image')) {
