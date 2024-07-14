@@ -4,7 +4,7 @@
       </a-layout-header>
       <a-layout-content style="padding: 24px;">
         <!-- Package List Table -->
-        <a-table :columns="columns" :data-source="packages" rowKey="id" :pagination="pagination" >
+        <a-table :columns="columns" :data-source="packages" rowKey="id"  >
           <template #name="{ text }">
             {{ text }}
           </template>
@@ -16,7 +16,7 @@
           </template>
           <template #operation="{ record }">
             <span>
-              <a-button type="primary" @click="handelEditPackage(record)">Edit</a-button>
+              <a-button type="primary"  style="margin: 10px;" @click="handelEditPackage(record)">Edit</a-button>
               <a-button type="primary" @click="handelDeletePackage(record.id)" danger ghost>Delete</a-button>
             </span>
           </template>
@@ -40,11 +40,6 @@
 
   const packages = ref([]);
   const dataReady = ref(false);
-  const pagination = ref({
-    current: 1,
-    pageSize: 10,
-    total: 0
-  });
 
   onMounted(() => {
     loadPackages();

@@ -24,15 +24,9 @@ class PackageService {
         $packageData['projects_id'] = $request->project_id;
         $packageData['category_id'] = $request->category_id;
 
-        if ($request->hasFile('image')) {
-            try {
-                $image = $request->file('image');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path() .'/public/images/product', $imageName);
-                $packageData['images'] = $imageName;
-            } catch (\Exception $e) {
-                Log::error('Error uploading image: ' . $e->getMessage());
-            }
+        if ($request->hasFile('images')) {
+
+            $packageData['images'] = FileUploadService::packageImageUpload($request);
         }
 
         $package = PackagesRepository::store($packageData);

@@ -46,6 +46,7 @@
                 v-model:value="form.product_id"
                 @change="projectSelectChange"
                 placeholder="Select project ID"
+                disabled
             >
                 <a-select-option
                     v-for="project in projectsList"
@@ -289,16 +290,23 @@ const isLimitationValuesFulfill = (limitations) => {
 };
 
 const handleSubmit = async () => {
-    await formRef.value.validate();
-    if (!limitationValidationCheck()) {
-        return;
+    try {
+
+        await formRef.value.validate();
+        if (!limitationValidationCheck()) {
+            return;
+        }
+        errors.value = null;
+        submitting.value = true;
+        // const formData = buildFormData(form.value);
+        // console.log(formData);
+        await updatePackage(props.package.id, form.value);
+        message.success('Package Updated');
+        submitting.value = false;
     }
-    errors.value = null;
-    submitting.value = true;
-
-    await updatePackage(props.package.id, form.value);
-
-    submitting.value = false;
+    catch (error){
+        console.log(error);
+    }
 };
 
 const getProjectList = async () => {

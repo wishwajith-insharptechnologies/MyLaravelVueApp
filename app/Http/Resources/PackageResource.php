@@ -23,7 +23,7 @@ class PackageResource extends JsonResource
             'price' => $this->price,
             'discount' => $this->discount,
             'images' => $this->images,
-            'status' => $this->status,
+            'status' => (bool) $this->status,
             'stripeLink' => $this->stripe_link,
             'trial_period' => $this->trial_period,
             'createdAt' => $this->created_at,

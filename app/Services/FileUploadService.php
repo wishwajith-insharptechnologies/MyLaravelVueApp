@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class FileUploadService
@@ -21,12 +22,26 @@ class FileUploadService
                 ];
             }
 
-            return response()->json([
-                'message' => 'Files uploaded successfully',
-                'filePaths' => $filePaths
-            ], 200);
+            return  $filePaths;
         }
 
-        return response()->json(['message' => 'No files uploaded'], 400);
+        return false;
+    }
+
+    public static function packageImageUpload($request)
+    {
+            try {
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $uploadDirectory = '/public/images/product';
+                if (!is_dir($uploadDirectory)) {
+                    mkdir($uploadDirectory, 0755, true);
+                }
+                $image->move(public_path() .$uploadDirectory, $imageName);
+                return $imageName;
+            } catch (\Exception $e) {
+                Log::error('Error uploading image: ' . $e->getMessage());
+                return false;
+            }
     }
 }

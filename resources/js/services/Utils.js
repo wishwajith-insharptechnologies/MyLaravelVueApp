@@ -17,6 +17,7 @@ export function generateRandomString(length) {
                 formData.append(key, JSON.stringify(value));
             }
         } else {
+
             formData.append(key, value);
         }
     });

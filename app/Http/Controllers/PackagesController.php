@@ -45,7 +45,7 @@ class PackagesController extends Controller
     }
 
     public function updatePackage(Request $request, $packageId){
-
+        // return $request->input('title');
         $project = PackageService::update($request, $packageId);
 
         return response()->json([
