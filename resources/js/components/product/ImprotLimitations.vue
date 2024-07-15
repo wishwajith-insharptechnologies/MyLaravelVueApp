@@ -20,6 +20,12 @@
             </div>
 
             <!-- project config json -->
+            <span
+                v-if="!isConfigFieldFill"
+                style="color: red; margin-left: 200px"
+            >
+                Please import project config
+            </span>
             <a-form-item
                 v-if="form.improtsConfigType === improtsConfigTypes[0].id"
                 label="Upload JSON Config File"
@@ -27,8 +33,6 @@
             >
                 <a-upload
                     id="ImprotJsonConfigFile"
-                    v-model="form.project_image"
-                    action="your-upload-api-url"
                     :show-upload-list="false"
                     :before-upload="beforeUpload"
                     :onChange="onJsonConfigFileChange"
@@ -55,10 +59,10 @@
                     v-model:value="form.improtsConfigLink"
                     placeholder="Feature Import Config Link"
                     required
-                    style="width: 200px;"
+                    style="width: 200px"
                 />
                 <a-button
-                    class="ml-2"
+                    style="margin-left: 10px"
                     type="primary"
                     @click="importWebLimitation"
                 >
@@ -104,15 +108,15 @@ import Http from "@/services/Http.js";
 const props = defineProps({
     storedLimitationData: { type: Object, default: null },
 });
-
+const isConfigFieldFill = ref(true);
 const improtsConfigTypes = [
     { id: 1, name: "Json" },
     { id: 2, name: "Web" },
 ];
 const form = ref({
     improtsConfigType: improtsConfigTypes[0].id,
-    improtsConfigLink: "",
-    improtsConfigJsonFile: {},
+    improtsConfigLink: null,
+    improtsConfigJsonFile: null,
     limitationData: [],
 });
 const emit = defineEmits(["limitationDataChanged"]);
@@ -133,7 +137,6 @@ watch(
 );
 
 const onJsonConfigFileChange = (event) => {
-
     const file = event.file.originFileObj;
     const reader = new FileReader();
 
@@ -150,7 +153,7 @@ const onJsonConfigFileChange = (event) => {
     };
 
     reader.readAsText(file);
-}
+};
 
 const getChildFeatures = (parentId) => {
     return form.value.limitationData.filter(
@@ -176,12 +179,25 @@ const onImprotsConfigTypeChange = () => {
     form.value.limitationData = [];
 };
 const improtFileLimitation = () => {
+    limitationImportValidation(form.value.improtsConfigJsonFile);
     form.value.limitationData = form.value.improtsConfigJsonFile;
 };
 const importWebLimitation = async () => {
-    // form.value.limitationData = [];
+    limitationImportValidation(form.value.improtsConfigLink);
     await fetchWebLimitationData();
 };
+
+const limitationImportValidation = async (field) => {
+    isConfigFieldFill.value = true;
+    if (!field) {
+        isConfigFieldFill.value = false;
+        return;
+    }
+};
+const clearLimitationData = async () => {
+    form.value.limitationData = [];
+};
+defineExpose({ clearLimitationData });
 </script>
 <style scoped>
 .parent {

@@ -187,9 +187,11 @@
                     :validate-status="getErrors('limitation') ? 'error' : ''"
                 >
                     <ImprotLimitations
+                        ref="limitationImport"
                         :stored-limitation-data="storedLimitations"
                         :errors="errors"
                         @limitationDataChanged="importLimitation"
+
                     />
                 </a-form-item>
 
@@ -223,6 +225,7 @@ const props = defineProps({
     product: { type: Object, default: null },
 });
 
+const limitationImport = ref(null);
 const submitting = ref(false);
 const errors = ref({});
 const ready = ref(false);
@@ -359,7 +362,7 @@ const updateProductForm = async () => {
 
 const clearFormData = () => {
     form.value = initialFormState();
-    limitations.value = null;
+    limitationImport.value.clearLimitationData()
 };
 
 function generateSecretCode(length) {
