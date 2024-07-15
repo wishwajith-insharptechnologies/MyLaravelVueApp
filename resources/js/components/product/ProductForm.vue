@@ -19,12 +19,24 @@
             />
 
             <!-- Form -->
-            <a-form @submit.prevent="submit">
+            <a-form
+                :model="form"
+                ref="productFormRef"
+                @submit.prevent="submit"
+                @finish="submit"
+                :validateMessages="validateMessages"
+            >
                 <!-- project_name -->
                 <a-form-item
-                    :label="labelWithRequired('Project Name')"
-                    :help="getErrors('projectName')"
-                    :validate-status="getErrors('projectName') ? 'error' : ''"
+                    label="Project Name"
+                    name="projectName"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Project Name is required',
+                            trigger: 'blur',
+                        },
+                    ]"
                     required
                 >
                     <a-input
@@ -36,11 +48,15 @@
 
                 <!-- environment_type -->
                 <a-form-item
-                    :label="labelWithRequired('Environment Type')"
-                    :help="getErrors('environmentType')"
-                    :validate-status="
-                        getErrors('environmentType') ? 'error' : ''
-                    "
+                label="Environment Type"
+                    name="projectName"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Environment Type is required',
+                            trigger: 'blur',
+                        },
+                    ]"
                     required
                 >
                     <a-select
@@ -68,9 +84,15 @@
 
                 <!-- project_type -->
                 <a-form-item
-                    :label="labelWithRequired('Project Type')"
-                    :help="getErrors('projectType')"
-                    :validate-status="getErrors('projectType') ? 'error' : ''"
+                label="Project Type"
+                    name="projectType"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Project Type is required',
+                            trigger: 'blur',
+                        },
+                    ]"
                     required
                 >
                     <a-select
@@ -98,9 +120,8 @@
 
                 <!-- project_description -->
                 <a-form-item
-                    :label="labelWithRequired('Project Description')"
-                    :help="getErrors('description')"
-                    :validate-status="getErrors('description') ? 'error' : ''"
+                    label="Project Description"
+                    name="projectDescription"
                 >
                     <a-textarea
                         id="projectDescription"
@@ -117,9 +138,8 @@
 
                 <!-- project_image -->
                 <a-form-item
-                    :label="labelWithRequired('Image')"
-                    :help="getErrors('project_image')"
-                    :validate-status="getErrors('project_image') ? 'error' : ''"
+                    label="Image"
+                    name="project_image"
                 >
                     <a-upload
                         accept="image/*"
@@ -136,9 +156,15 @@
 
                 <!-- project_secret_code -->
                 <a-form-item
-                    :label="labelWithRequired('Secret Code')"
-                    :help="getErrors('secretCode')"
-                    :validate-status="getErrors('secretCode') ? 'error' : ''"
+                label="Secret Code"
+                    name="secretCode"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Secret Code is required',
+                            trigger: 'blur',
+                        },
+                    ]"
                     required
                 >
                     <a-input
@@ -165,9 +191,8 @@
 
                 <!-- product_link -->
                 <a-form-item
-                    :label="labelWithRequired('Product Link')"
-                    :help="getErrors('link')"
-                    :validate-status="getErrors('link') ? 'error' : ''"
+                    label="Product Link"
+                    name="productLink"
                 >
                     <a-input
                         id="productLink"
@@ -183,17 +208,24 @@
 
                 <!-- import limitations -->
                 <a-form-item
-                    :help="getErrors('limitation')"
-                    :validate-status="getErrors('limitation') ? 'error' : ''"
+                    name="limitation"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Upload JSON Config File  is required',
+                            trigger: 'blur',
+                        },
+                    ]"
+                    required
                 >
                     <ImprotLimitations
                         ref="limitationImport"
                         :stored-limitation-data="storedLimitations"
                         :errors="errors"
                         @limitationDataChanged="importLimitation"
-
                     />
                 </a-form-item>
+                <p></p>
 
                 <!-- Submit and Cancel Buttons -->
                 <a-form-item>
@@ -227,6 +259,7 @@ const props = defineProps({
 
 const limitationImport = ref(null);
 const submitting = ref(false);
+const productFormRef = ref(null);
 const errors = ref({});
 const ready = ref(false);
 
@@ -316,6 +349,7 @@ const getErrors = (field) => {
 };
 
 const submit = async () => {
+    await productFormRef.value.validate();
     errors.value = null;
     submitting.value = true;
 
@@ -362,7 +396,7 @@ const updateProductForm = async () => {
 
 const clearFormData = () => {
     form.value = initialFormState();
-    limitationImport.value.clearLimitationData()
+    limitationImport.value.clearLimitationData();
 };
 
 function generateSecretCode(length) {
