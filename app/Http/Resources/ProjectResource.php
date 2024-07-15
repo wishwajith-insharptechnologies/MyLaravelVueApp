@@ -17,7 +17,7 @@ class ProjectResource extends JsonResource
         return [
             'id' => $this->id,
             'projectName' => $this->project_name, // Using the modified attribute name
-            'projectType' => $this->project_type,
+            'projectType' => (int) $this->project_type,
             'environmentType' => $this->is_web_base,
             'description' => $this->description,
             'image' => $this->image,

@@ -20,12 +20,11 @@ class ProjectsController extends Controller
     public function getProjects(Request $request)
     {
         try {
-            $perPage = $request->input('per', 10);
-            $projects = ProjectService::getProjects($perPage);
-            $transformedProjects = ProjectResource::collection($projects);
-            $projects->data = $transformedProjects;
+            $projects = ProjectService::getProjects();
+            $projectsData = ProjectResource::collection($projects);
 
-            return ApiResponse::success($projects, 'Projects retrieved successfully');
+
+            return ApiResponse::success($projectsData, 'Projects retrieved successfully');
 
         } catch (\Exception $e) {
 

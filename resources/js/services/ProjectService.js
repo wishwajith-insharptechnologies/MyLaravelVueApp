@@ -26,9 +26,9 @@ export const createProduct = async ( data ) => {
     }
 };
 
-export const getProducts = async (currentPage, pageSize) => {
+export const getProducts = async () => {
     try {
-        const response = await Http.get(`projects?page=${currentPage}&per=${pageSize}`);
+        const response = await Http.get(`projects`);
         return response.data;
     } catch (error) {
         throw error;
@@ -47,7 +47,7 @@ export const deleteProject = async (id) => {
 export const getProduct = async (productId) => {
     try {
         const response= await Http.get(`project/${productId}`);
-        return response.data.data;
+        return response.data;
     } catch (error) {
         throw error;
     }

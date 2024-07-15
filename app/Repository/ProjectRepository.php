@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectRepository
 {
-    public static function get($per)
+    public static function getAll()
     {
-        return Projects::with('limitation')->paginate($per);
+        return Projects::with('limitation')->get();
     }
 
-    public static function getAll($columns)
+    public static function getAllByColumnNames($columns)
     {
         return Projects::where('status', 1)->select($columns)->get();
     }

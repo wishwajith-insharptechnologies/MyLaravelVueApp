@@ -121,11 +121,22 @@ const form = ref({
 });
 const emit = defineEmits(["limitationDataChanged"]);
 
-onMounted(() => {
-    if (props.storedLimitationData) {
-        form.value.limitationData = props.storedLimitationData;
+// onMounted(() => {
+//     if (props.storedLimitationData) {
+//         form.value.limitationData = props.storedLimitationData;
+//     }
+// });
+
+watch(
+  () => props.storedLimitationData,
+  (propsData) => {
+    if (propsData) {
+      form.value.limitationData = propsData;
+      emit("limitationDataChanged", propsData);
     }
-});
+  },
+  { immediate: true }
+);
 
 watch(
     () => form.value.limitationData,
@@ -133,7 +144,7 @@ watch(
         console.log(newVal);
         await newVal;
         emit("limitationDataChanged", newVal);
-    }
+    },
 );
 
 const onJsonConfigFileChange = (event) => {

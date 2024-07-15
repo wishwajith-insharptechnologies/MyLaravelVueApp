@@ -11,7 +11,9 @@ import PackagePage from "/resources/js/views/pages/admin/package/PackagePage.vue
 import AddPackage from "../views/pages/admin/package/AddPackage.vue";
 import EditPackage from "../views/pages/admin/package/PackageEditPage.vue";
 import AddProduct from "../views/pages/admin/product/AddProduct.vue";
-import ListProduct from "../views/pages/admin/product/ProductList.vue";
+import ProductPage from "../views/pages/admin/product/ProductPage.vue";
+import EditProduct from "../views/pages/admin/product/EditProduct.vue";
+// import ListProduct from "../views/pages/admin/product/ProductList.vue";
 import PaymentPage from "../views/pages/guest/payment/Payment.vue";
 import AdminLayout from "../components/layout/AdminLayout.vue";
 
@@ -49,7 +51,15 @@ const routes = [
             {
                 path: "/product/list",
                 name: "listProductPage",
-                component: ListProduct,
+                component: ProductPage,
+            },
+            {
+                path: "/product/edit/:id",
+                props: (route) => ({
+                    id: route.params.id,
+                }),
+                component: EditProduct,
+                name: "productEditPage",
             },
         ],
     },

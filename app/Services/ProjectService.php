@@ -10,12 +10,12 @@ class ProjectService
 {
     public static function getAllProjects()
     {
-        return ProjectRepository::getAll(['id', 'project_name']);
+        return ProjectRepository::getAllByColumnNames(['id', 'project_name']);
     }
 
-    public static function getProjects($per)
+    public static function getProjects()
     {
-        return ProjectRepository::get($per);
+        return ProjectRepository::getAll();
     }
 
     public static function find($projectId)
@@ -70,7 +70,7 @@ class ProjectService
         $projectLimitationId = $project->limitation->id;
 
         if($request->limitation){
-            $limitation = LimitationService::update($request->limitation, $projectLimitationId);
+            $limitation = LimitationService::update(json_decode($request->limitation), $projectLimitationId);
         }
 
         return $project;
