@@ -130,13 +130,8 @@
                     <a-upload
                         accept="image/*"
                         custom-request="onProjectImageFileChange"
-                        :class="
-                            errors && errors.project_image
-                                ? 'ant-input-status-error'
-                                : ''
-                        "
+
                     >
-                        <a-button icon="upload">Click to Upload</a-button>
                     </a-upload>
                 </a-form-item>
 
@@ -253,7 +248,7 @@ const environmentTypes = [
 ];
 const improtsConfigTypes = [
     { id: 1, name: "Json" },
-    { id: 2, name: "Web" },
+    { id: 2, name: "Web API" },
 ];
 
 const form = ref({

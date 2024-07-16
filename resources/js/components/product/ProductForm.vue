@@ -144,13 +144,8 @@
                     <a-upload
                         accept="image/*"
                         custom-request="onProjectImageFileChange"
-                        :class="
-                            errors && errors.project_image
-                                ? 'ant-input-status-error'
-                                : ''
-                        "
                     >
-                        <a-button icon="upload">Click to Upload</a-button>
+                        <a-button >Click to Upload</a-button>
                     </a-upload>
                 </a-form-item>
 
@@ -264,14 +259,14 @@ const errors = ref({});
 const ready = ref(false);
 
 const projectTypes = [
-    { id: 1, name: "web" },
-    { id: 2, name: "mobile" },
+    { id: 1, name: "Web" },
+    { id: 2, name: "Mobile" },
     { id: 3, name: "SASS" },
-    { id: 4, name: "solution" },
+    { id: 4, name: "Solution" },
 ];
 const environmentTypes = [
     { value: 0, name: "Web Base" },
-    { value: 1, name: "Stand 0lone" },
+    { value: 1, name: "Stand Alone" },
 ];
 const improtsConfigTypes = [
     { id: 1, name: "Json" },

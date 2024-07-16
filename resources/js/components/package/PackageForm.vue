@@ -57,22 +57,10 @@
             </a-select>
         </a-form-item>
 
-        <a-form-item
-            label="Rank"
-            name="rank"
-            :rules="[
-                {
-                    required: true,
-                    message: 'Rank is required',
-                    trigger: 'blur',
-                },
-            ]"
-        >
-            <a-input v-model:value="form.rank" placeholder="Enter rank" />
-        </a-form-item>
 
-        <a-form-item
-            label="Validity"
+
+    <a-form-item
+            label="Validity (in days)"
             name="validity"
             :rules="[
                 {
@@ -89,7 +77,7 @@
         </a-form-item>
 
         <a-form-item
-            label="Price"
+            label="Price (USD)"
             name="price"
             :rules="[
                 {
@@ -108,7 +96,7 @@
         </a-form-item>
 
         <a-form-item
-            label="Discount"
+            label="Discount (%)"
             name="discount"
             :rules="[
                 {
@@ -142,7 +130,7 @@
         </a-form-item>
 
         <a-form-item
-            label="Trial Period"
+            label="Trial Period (in days)"
             name="trial_period"
             :rules="[{ type: 'number', trigger: 'blur' }]"
         >
@@ -153,7 +141,7 @@
             />
         </a-form-item>
 
-        <a-form-item
+        <!-- <a-form-item
             label="Category ID"
             name="category_id"
             :rules="[
@@ -169,7 +157,7 @@
                 placeholder="Enter category ID"
                 style="width: 100%"
             />
-        </a-form-item>
+        </a-form-item> -->
         <a-paragraph
             style="color: red"
             v-if="!isLimitationFulfillAllFiled"
@@ -203,14 +191,14 @@ const initialFormState = () => ({
     title: "",
     description: "",
     project_id: "",
-    rank: "",
+    rank: 1,
     validity: "",
     price: "",
     discount: "",
     images: null,
     status: true,
     trial_period: 0,
-    category_id: "",
+    category_id: 1,
     limitation: {},
 });
 const form = ref(initialFormState());
@@ -342,8 +330,7 @@ const clearFormData = () => {
 
 const loadProjectLimitation = async () => {
     try {
-        const data = await getProduct(form.value.project_id);
-        console.log(data);
+        const {data} = await getProduct(form.value.project_id);
         loadedLimitations.value = data.limitation.limitation;
 
         // items.value = clonedeep(JSON.parse(data.project.limitation.limitation));

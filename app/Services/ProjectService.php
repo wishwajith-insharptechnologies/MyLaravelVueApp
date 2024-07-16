@@ -30,6 +30,20 @@ class ProjectService
 
     public static function create($request)
     {
+        // if ($request->hasFile('image')) {
+        //     try {
+        //         $image = $request->file('image');
+        //         $imageName = time() . '_' . $image->getClientOriginalName();
+        //         $image->move(public_path() .'/public/images/product', $imageName);
+        //         $projectData['image'] = $imageName;
+        //     } catch (\Exception $e) {
+        //         Log::error('Error uploading image: ' . $e->getMessage());
+        //     }
+        // }
+
+
+        $imagePath = FileUploadService::ImageUpload($request);
+
         $projectData = [
             'project_name' => $request->projectName,
             'project_type' => $request->projectType,
@@ -38,17 +52,6 @@ class ProjectService
             'link'         => $request->link,
             'secret_code'  => $request->secretCode,
         ];
-
-        if ($request->hasFile('image')) {
-            try {
-                $image = $request->file('image');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path() .'/public/images/product', $imageName);
-                $projectData['image'] = $imageName;
-            } catch (\Exception $e) {
-                Log::error('Error uploading image: ' . $e->getMessage());
-            }
-        }
 
         return ProjectRepository::store($projectData);
     }

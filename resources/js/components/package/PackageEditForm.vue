@@ -59,20 +59,6 @@
         </a-form-item>
 
         <a-form-item
-            label="Rank"
-            name="rank"
-            :rules="[
-                {
-                    required: true,
-                    message: 'Rank is required',
-                    trigger: 'blur',
-                },
-            ]"
-        >
-            <a-input v-model:value="form.rank" placeholder="Enter rank" />
-        </a-form-item>
-
-        <a-form-item
             label="Validity"
             name="validity"
             :rules="[
@@ -110,11 +96,7 @@
         <a-form-item
             label="Discount"
             name="discount"
-            :rules="[
-                {
-                    trigger: 'blur',
-                },
-            ]"
+
         >
             <a-input-number
                 v-model:value="form.discount"
@@ -143,7 +125,6 @@
         <a-form-item
             label="Trial Period"
             name="trial_period"
-            :rules="[{ trigger: 'blur' }]"
         >
             <a-input-number
                 v-model:value="form.trial_period"
@@ -152,23 +133,6 @@
             />
         </a-form-item>
 
-        <a-form-item
-            label="Category ID"
-            name="category_id"
-            :rules="[
-                {
-                    required: true,
-                    message: 'Category ID is required',
-                    trigger: 'blur',
-                },
-            ]"
-        >
-            <a-input-number
-                v-model:value="form.category_id"
-                placeholder="Enter category ID"
-                style="width: 100%"
-            />
-        </a-form-item>
         <a-paragraph style="color: red" v-if="!isLimitationFulfillAllFiled"
             >Please fill required limitation value to submit</a-paragraph
         >
@@ -201,14 +165,14 @@ const form = ref({
     title: "",
     description: "",
     product_id: "",
-    rank: "",
+    rank: 1,
     validity: "",
     price: "",
     discount: "",
     images: null,
     status: true,
     trial_period: 0,
-    category_id: "",
+    category_id: 1,
     limitation: {},
 });
 const formRef = ref(null);

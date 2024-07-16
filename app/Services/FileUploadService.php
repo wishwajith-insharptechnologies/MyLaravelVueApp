@@ -11,6 +11,7 @@ class FileUploadService
     public static function ImageUpload($request)
     {
         if ($request->hasFile('images')) {
+            Log::info(" has image");
             $files = $request->file('images');
             $filePaths = [];
 

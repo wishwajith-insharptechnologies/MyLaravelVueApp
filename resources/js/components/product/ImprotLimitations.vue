@@ -8,6 +8,9 @@
                         v-model:value="form.improtsConfigType"
                         @change="onImprotsConfigTypeChange"
                     >
+                    <a-select-option value="" disabled
+                            >Select Import Config Type</a-select-option
+                        >
                         <a-select-option
                             v-for="configType in improtsConfigTypes"
                             :key="configType.id"
@@ -111,7 +114,7 @@ const props = defineProps({
 const isConfigFieldFill = ref(true);
 const improtsConfigTypes = [
     { id: 1, name: "Json" },
-    { id: 2, name: "Web" },
+    { id: 2, name: "Web API" },
 ];
 const form = ref({
     improtsConfigType: improtsConfigTypes[0].id,
