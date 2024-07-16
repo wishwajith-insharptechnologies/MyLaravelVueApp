@@ -30,7 +30,7 @@ class CreateProjectRequest extends FormRequest
             'limitation' =>  'required',
             'environmentType' => 'required',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'image' => 'nullable',
             'link' => 'nullable|url',
             'secretCode' => 'string|unique:projects,secret_code|max:255',
         ];

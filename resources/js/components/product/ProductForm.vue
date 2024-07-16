@@ -48,7 +48,7 @@
 
                 <!-- environment_type -->
                 <a-form-item
-                label="Environment Type"
+                    label="Environment Type"
                     name="projectName"
                     :rules="[
                         {
@@ -84,7 +84,7 @@
 
                 <!-- project_type -->
                 <a-form-item
-                label="Project Type"
+                    label="Project Type"
                     name="projectType"
                     :rules="[
                         {
@@ -137,21 +137,13 @@
                 </a-form-item>
 
                 <!-- project_image -->
-                <a-form-item
-                    label="Image"
-                    name="project_image"
-                >
-                    <a-upload
-                        accept="image/*"
-                        custom-request="onProjectImageFileChange"
-                    >
-                        <a-button >Click to Upload</a-button>
-                    </a-upload>
+                <a-form-item label="Image" name="project_image">
+                    <ImageUpload @uploadedImage="haddieUploadImage" ref="imageComponent" />
                 </a-form-item>
 
                 <!-- project_secret_code -->
                 <a-form-item
-                label="Secret Code"
+                    label="Secret Code"
                     name="secretCode"
                     :rules="[
                         {
@@ -185,10 +177,7 @@
                 </a-form-item>
 
                 <!-- product_link -->
-                <a-form-item
-                    label="Product Link"
-                    name="productLink"
-                >
+                <a-form-item label="Product Link" name="productLink">
                     <a-input
                         id="productLink"
                         v-model:value="form.link"
@@ -239,9 +228,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import Http from "@/services/Http.js";
-import { useAuthStore } from "@/stores/modules/auth.js";
 import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
+import ImageUpload from "@/components/utility/ImageUpload.vue";
+import { useAuthStore } from "@/stores/modules/auth.js";
 import { generateRandomString, buildFormData } from "@/services/Utils.js";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
@@ -251,7 +240,7 @@ const store = useAuthStore();
 const props = defineProps({
     product: { type: Object, default: null },
 });
-
+const imageComponent = ref(null);
 const limitationImport = ref(null);
 const submitting = ref(false);
 const productFormRef = ref(null);
@@ -294,6 +283,14 @@ const isEditable = computed(() => {
     return props.product !== null;
 });
 
+const clearImageData = () => {
+    console.log("callChildMethod");
+
+  if (imageComponent.value) {
+    imageComponent.value.clearImages(); // Call childMethod exposed from ChildComponent
+  }
+};
+
 const storedLimitations = computed(() => {
     if (limitations.value && limitations.value.limitation) {
         return limitations.value.limitation.limitation;
@@ -327,6 +324,12 @@ const importLimitation = (updatedLimitationData) => {
     form.value.limitation = updatedLimitationData;
 };
 
+const haddieUploadImage = (imageData) => {
+if(imageData.url){
+    form.value.image = imageData.url;
+}
+};
+
 const copyToClipboard = () => {
     navigator.clipboard
         .writeText(form.value.secretCode)
@@ -344,6 +347,7 @@ const getErrors = (field) => {
 };
 
 const submit = async () => {
+    callChildMethod();
     await productFormRef.value.validate();
     errors.value = null;
     submitting.value = true;
@@ -369,6 +373,7 @@ const submitForm = async () => {
         console.log(response.data);
         message.success("Project created successfully.");
         clearFormData();
+        clearImageData();
     } catch (error) {
         if (error.response && error.response.data) {
             errors.value = error.response.data.errors;

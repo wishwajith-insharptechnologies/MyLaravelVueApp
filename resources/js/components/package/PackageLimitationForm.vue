@@ -168,7 +168,7 @@ const getArrayOptions = (parameters) => {
 };
 
 const setLimitationDefaultValue = (limitation) => {
-  return limitation.type === "bool" ? false : (limitation.value === undefined ? null : limitation.value);
+  return limitation.type === "bool" ? (limitation.value? limitation.value :false) : (limitation.value === undefined ? null : limitation.value);
 };
 const isClicked = ((bool) => {
   return bool ? 'Yes' : 'No';

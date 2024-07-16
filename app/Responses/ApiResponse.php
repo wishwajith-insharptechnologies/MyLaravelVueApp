@@ -60,4 +60,13 @@ class ApiResponse
             'message' => $message,
         ], Response::HTTP_UNAUTHORIZED);
     }
+
+    public static function uploadSuccess($data = null, $message = null, $status = Response::HTTP_OK): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data,
+        ], $status);
+    }
 }

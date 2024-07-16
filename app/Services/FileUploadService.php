@@ -10,23 +10,19 @@ class FileUploadService
 
     public static function ImageUpload($request)
     {
-        if ($request->hasFile('images')) {
-            Log::info(" has image");
-            $files = $request->file('images');
-            $filePaths = [];
 
-            foreach ($files as $file) {
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
                 $path = $file->store('uploads', 'public');
-                $filePaths[] = [
+                $filePaths = [
                     'name' => $file->getClientOriginalName(),
-                    'url' => Storage::url($path),
+                    'url' => $path,
                 ];
-            }
-
             return  $filePaths;
         }
 
-        return false;
+        return "no file";
     }
 
     public static function packageImageUpload($request)

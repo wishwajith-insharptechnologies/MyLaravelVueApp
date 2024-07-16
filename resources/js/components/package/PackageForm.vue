@@ -113,16 +113,7 @@
         </a-form-item>
 
         <a-form-item label="Image" name="image">
-            <a-upload :multiple="false" :custom-request="handleCustomRequest">
-                <a-button> <a-icon type="upload" /> Select Image </a-button>
-                <div slot="fileList">
-                    <a-image
-                        v-if="previewImage"
-                        :src="previewImage"
-                        width="100%"
-                    />
-                </div>
-            </a-upload>
+            <ImageUpload @uploadedImage="haddieUploadImage" />
         </a-form-item>
 
         <a-form-item label="Status" name="status">
@@ -179,6 +170,7 @@
 import { onMounted, ref } from "vue";
 import { message } from "ant-design-vue";
 import LimitationForm from "./PackageLimitationForm.vue";
+import ImageUpload from "@/components/utility/ImageUpload.vue";
 import { buildFormData } from "@/services/Utils.js";
 import { createPackage } from "@/services/PackageService";
 import { getProduct, getProjectsList } from "@/services/ProjectService.js";
@@ -225,33 +217,9 @@ const validateMessages = {
     },
 };
 
-const beforeUpload = (file) => {
-    const isJpegOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpegOrPng) {
-        message.error("You can only upload JPEG/PNG files!");
-        return false;
-    }
-    return true;
-};
-
-const handleCustomRequest = async (option) => {
-    const { file, onSuccess } = option;
-    form.value.images = file;
-    onSuccess();
-};
-
-const handleUploadChange = ({ file }) => {
-    console.log(file);
-    if (file.status === "done") {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagePreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file.originFileObj);
-        form.value.images = [file.originFileObj];
-    } else if (file.status === "removed") {
-        imagePreview.value = null;
-        form.value.images = [];
+const haddieUploadImage = (imageData) => {
+    if(imageData.url){
+        form.value.images = imageData.url;
     }
 };
 

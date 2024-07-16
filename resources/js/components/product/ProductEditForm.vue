@@ -127,12 +127,7 @@
 
                 <!-- project_image -->
                 <a-form-item label="Image" name="project_image">
-                    <a-upload
-                        accept="image/*"
-                        custom-request="onProjectImageFileChange"
-
-                    >
-                    </a-upload>
+                    <ImageUpload @uploadedImage="haddieUploadImage" />
                 </a-form-item>
 
                 <!-- project_secret_code -->
@@ -224,6 +219,7 @@ import { generateRandomString, buildFormData } from "@/services/Utils.js";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { createProduct, updateProduct } from "@/services/ProjectService.js";
+import ImageUpload from "@/components/utility/ImageUpload.vue";
 
 const store = useAuthStore();
 const props = defineProps({
@@ -275,8 +271,10 @@ const form = ref({
 //     }
 // });
 
-const onProjectImageFileChange = (event) => {
-    form.value.image = event.target.files[0];
+const haddieUploadImage = (imageData) => {
+    if(imageData.url){
+        form.value.image = imageData.url;
+    }
 };
 
 const importLimitation = (updatedLimitationData) => {

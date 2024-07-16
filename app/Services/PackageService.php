@@ -18,16 +18,11 @@ class PackageService {
         $packageData['validity'] = $request->validity;
         $packageData['price'] = $request->price;
         $packageData['discount'] = $request->discount;
-        $packageData['images'] = " image";
+        $packageData['images'] = $request->images;
         $packageData['status'] = $request->status;
         $packageData['trial_period'] = $request->trial_period;
         $packageData['projects_id'] = $request->project_id;
         $packageData['category_id'] = $request->category_id;
-
-        if ($request->hasFile('images')) {
-
-            $packageData['images'] = FileUploadService::packageImageUpload($request);
-        }
 
         $package = PackagesRepository::store($packageData);
 
@@ -48,7 +43,7 @@ class PackageService {
         $packageData['validity'] = $request->validity;
         $packageData['price'] = $request->price;
         $packageData['discount'] = $request->discount;
-        $packageData['images'] = " image";
+        $packageData['images'] = $request->images;
         $packageData['status'] = $request->status;
         $packageData['trial_period'] = $request->trial_period;
         $packageData['projects_id'] = $request->product_id;

@@ -30,19 +30,6 @@ class ProjectService
 
     public static function create($request)
     {
-        // if ($request->hasFile('image')) {
-        //     try {
-        //         $image = $request->file('image');
-        //         $imageName = time() . '_' . $image->getClientOriginalName();
-        //         $image->move(public_path() .'/public/images/product', $imageName);
-        //         $projectData['image'] = $imageName;
-        //     } catch (\Exception $e) {
-        //         Log::error('Error uploading image: ' . $e->getMessage());
-        //     }
-        // }
-
-
-        $imagePath = FileUploadService::ImageUpload($request);
 
         $projectData = [
             'project_name' => $request->projectName,
@@ -50,6 +37,7 @@ class ProjectService
             'is_web_base' => $request->environmentType,
             'description'  => $request->description,
             'link'         => $request->link,
+            'image'         => $request->image,
             'secret_code'  => $request->secretCode,
         ];
 
@@ -64,7 +52,7 @@ class ProjectService
         $projectData['project_type'] = $request->projectType;
         $projectData['description'] = $request->description;
         $projectData['is_web_base'] = $request->environmentType;
-        $projectData['image'] = '';
+        $projectData['image'] =  $request->image;
         $projectData['link'] = $request->link;
         $projectData['secret_code'] = $request->secretCode;
 
