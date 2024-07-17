@@ -90,11 +90,11 @@
   const columns = [
     { dataIndex: 'title', title: 'Title', key: 'title' },
     { dataIndex: 'description', title: 'Description', key: 'description' },
-    { dataIndex: 'price', title: 'Price', key: 'price' },
-    { dataIndex: 'discount', title: 'Discount', key: 'discount' },
+    { dataIndex: 'price', title: 'Price (USD)', key: 'price' },
+    { dataIndex: 'discount', title: 'Discount (%)', key: 'discount' },
     { dataIndex: 'rank', title: 'Rank', key: 'rank' },
-    { dataIndex: 'validity', title: 'validity in days', key: 'validity' },
-    { dataIndex: 'trial_period', title: 'Trail in days', key: 'trial_period' },
+    { dataIndex: 'validity', title: 'validity  (in days)', key: 'validity' },
+    { dataIndex: 'trial_period', title: 'Trail (in days)', key: 'trial_period' },
     {
       title: 'Operation',
       key: 'operation',

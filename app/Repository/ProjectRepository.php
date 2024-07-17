@@ -10,7 +10,7 @@ class ProjectRepository
 {
     public static function getAll()
     {
-        return Projects::with('limitation')->get();
+        return Projects::with('limitation')->orderBy('created_at', 'desc')->get();
     }
 
     public static function getAllByColumnNames($columns)

@@ -16,9 +16,11 @@
                         :name="limitation.name"
                     >
                         <a-input-number
+
                             v-model:value="limitation.value"
                             @input="emitValue(limitation)"
                             @focus="emitValue(limitation)"
+                            :placeholder="`Enter Number of ${limitation.name}`"
                             class="form-input"
                         />
                     </a-form-item>

@@ -17,7 +17,7 @@ class PackagesRepository
 
     public static function getAll()
     {
-        return Packages::all();
+        return Packages::orderBy('created_at', 'desc')->get();
     }
     public static function getAllWithPaginate($per)
     {

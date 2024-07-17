@@ -347,7 +347,6 @@ const getErrors = (field) => {
 };
 
 const submit = async () => {
-    callChildMethod();
     await productFormRef.value.validate();
     errors.value = null;
     submitting.value = true;
