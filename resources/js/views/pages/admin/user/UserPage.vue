@@ -28,6 +28,12 @@
           <a-form-item label="Email" name="email" :rules="[{ required: true, message: 'Please input the email!' }]">
             <a-input v-model:value="editForm.email" />
           </a-form-item>
+          <a-form-item label="Role" name="role" :rules="[{ required: true, message: 'Please input the role!' }]">
+            <a-select
+                v-model:value="editForm.role"
+            >
+        </a-select>
+          </a-form-item>
         </a-form>
       </a-modal>
 
@@ -41,6 +47,9 @@
             <a-input v-model:value="createForm.name" />
           </a-form-item>
           <a-form-item label="Email" name="email" :rules="[{ required: true, message: 'Please input the email!' }]">
+            <a-input v-model:value="createForm.email" />
+          </a-form-item>
+          <a-form-item label="Role" name="role" :rules="[{ required: true, message: 'Please input the role!' }]">
             <a-input v-model:value="createForm.email" />
           </a-form-item>
         </a-form>

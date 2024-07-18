@@ -49,7 +49,7 @@
                 <!-- environment_type -->
                 <a-form-item
                     label="Environment Type"
-                    name="projectName"
+                    name="environmentType"
                     :rules="[
                         {
                             required: true,
@@ -63,19 +63,14 @@
                         id="environmentType"
                         v-model:value="form.environmentType"
                         placeholder="Select Environment Type"
-                        :class="
-                            errors && errors.environment_type
-                                ? 'ant-input-status-error'
-                                : ''
-                        "
                     >
                         <a-select-option value="" disabled
                             >Select Environment Type</a-select-option
                         >
                         <a-select-option
                             v-for="typeItem in environmentTypes"
-                            :key="typeItem.value"
-                            :value="typeItem.value"
+                            :key="typeItem.id"
+                            :value="typeItem.id"
                         >
                             {{ typeItem.name }}
                         </a-select-option>
@@ -196,7 +191,7 @@
                     :rules="[
                         {
                             required: true,
-                            message: 'Upload JSON Config File  is required',
+                            message: 'Upload JSON Config File is required',
                             trigger: 'blur',
                         },
                     ]"
@@ -231,7 +226,7 @@ import { ref, onMounted, computed } from "vue";
 import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
 import ImageUpload from "@/components/utility/ImageUpload.vue";
 import { useAuthStore } from "@/stores/modules/auth.js";
-import { generateRandomString, buildFormData } from "@/services/Utils.js";
+import { generateRandomString, buildFormData, getProjectTypes ,getEnvironmentTypes } from "@/services/Utils.js";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { createProduct, updateProduct } from "@/services/ProjectService.js";
@@ -247,16 +242,8 @@ const productFormRef = ref(null);
 const errors = ref({});
 const ready = ref(false);
 
-const projectTypes = [
-    { id: 1, name: "Web" },
-    { id: 2, name: "Mobile" },
-    { id: 3, name: "SASS" },
-    { id: 4, name: "Solution" },
-];
-const environmentTypes = [
-    { value: 0, name: "Web Base" },
-    { value: 1, name: "Stand Alone" },
-];
+const projectTypes = ref([]);
+const environmentTypes = ref([]);
 const improtsConfigTypes = [
     { id: 1, name: "Json" },
     { id: 2, name: "Web" },
@@ -267,7 +254,7 @@ const initialFormState = () => ({
     image: "",
     link: "",
     projectName: "",
-    description: "",
+    description: " ",
     secretCode: "",
     projectType: "",
     environmentType: "",
@@ -300,6 +287,8 @@ const storedLimitations = computed(() => {
 });
 
 onMounted(() => {
+    fetchEnvironmentTypes();
+    fetchProjectTypes();
     if (props.product) {
         form.value = {
             ...props.product,
@@ -322,6 +311,7 @@ const onProjectImageFileChange = (event) => {
 
 const importLimitation = (updatedLimitationData) => {
     form.value.limitation = updatedLimitationData;
+    productFormRef.value.validate();
 };
 
 const haddieUploadImage = (imageData) => {
@@ -393,6 +383,15 @@ const updateProductForm = async () => {
     }
 };
 
+const fetchProjectTypes = async () => {
+    const data = await getProjectTypes();
+    projectTypes.value = data.original;
+};
+
+const fetchEnvironmentTypes = async () => {
+    const data = await getEnvironmentTypes();
+    environmentTypes.value = data.original;
+};
 const clearFormData = () => {
     form.value = initialFormState();
     limitationImport.value.clearLimitationData();

@@ -57,3 +57,25 @@ export const deleteImage = async (fileId) => {
         throw error;
     }
 };
+
+export const getProjectTypes = async () => {
+    try {
+        const response = await Http.get('/get_project_types');
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching project types:', error);
+        throw error;
+    }
+}
+
+export  const getEnvironmentTypes = async () => {
+    try {
+        const response = await Http.get('/get_environment_types');
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching environment types:', error);
+        throw error;
+    }
+}
+
+

@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ProjectsController;
@@ -58,6 +60,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::patch('/package/update-package/{package}', [PackagesController::class, 'updatePackage']);
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
+
+            //common
+
+            Route::get('/get_project_types', [CommonController::class, 'getProjectTypes']);
+            Route::get('/get_environment_types', [CommonController::class, 'getEnvironmentTypes']);
             Route::post('/upload', [FileUploadController::class, 'upload']);
 
 

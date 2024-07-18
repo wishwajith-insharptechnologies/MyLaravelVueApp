@@ -3,7 +3,7 @@
         <form>
             <!-- project_type -->
             <div class="mb-3">
-                <a-form-item label="Feature import config">
+                <a-form-item label="Feature Import Config">
                     <a-select
                         v-model:value="form.improtsConfigType"
                         @change="onImprotsConfigTypeChange"

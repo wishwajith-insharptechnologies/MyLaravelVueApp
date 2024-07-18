@@ -47,7 +47,7 @@
                 <!-- environment_type -->
                 <a-form-item
                     label="Environment Type"
-                    name="projectName"
+                    name="environmentType"
                     :rules="[
                         {
                             required: true,
@@ -58,22 +58,16 @@
                     required
                 >
                     <a-select
-                        id="environmentType"
                         v-model:value="form.environmentType"
                         placeholder="Select Environment Type"
-                        :class="
-                            errors && errors.environment_type
-                                ? 'ant-input-status-error'
-                                : ''
-                        "
                     >
                         <a-select-option value="" disabled
                             >Select Environment Type</a-select-option
                         >
                         <a-select-option
                             v-for="typeItem in environmentTypes"
-                            :key="typeItem.value"
-                            :value="typeItem.value"
+                            :key="typeItem.id"
+                            :value="typeItem.id"
                         >
                             {{ typeItem.name }}
                         </a-select-option>
@@ -215,7 +209,7 @@ import { ref, onMounted, computed, watch } from "vue";
 import Http from "@/services/Http.js";
 import { useAuthStore } from "@/stores/modules/auth.js";
 import ImprotLimitations from "@/components/product/ImprotLimitations.vue";
-import { generateRandomString, buildFormData } from "@/services/Utils.js";
+import { generateRandomString, buildFormData,  getProjectTypes ,getEnvironmentTypes } from "@/services/Utils.js";
 import { CopyOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { createProduct, updateProduct } from "@/services/ProjectService.js";
@@ -232,16 +226,9 @@ const productFormRef = ref(null);
 const errors = ref({});
 const ready = ref(false);
 
-const projectTypes = [
-    { id: 1, name: "web" },
-    { id: 2, name: "mobile" },
-    { id: 3, name: "SASS" },
-    { id: 4, name: "solution" },
-];
-const environmentTypes = [
-    { value: 0, name: "Web Base" },
-    { value: 1, name: "Stand 0lone" },
-];
+const projectTypes = ref([]);
+const environmentTypes = ref([]);
+//move to common const
 const improtsConfigTypes = [
     { id: 1, name: "Json" },
     { id: 2, name: "Web API" },
@@ -252,7 +239,7 @@ const form = ref({
     image: "",
     link: "",
     projectName: "",
-    description: "",
+    description: " ",
     secretCode: "",
     projectType: "",
     environmentType: "",
@@ -260,6 +247,10 @@ const form = ref({
     improtsConfigLink: "",
     improtsConfigJsonFile: "",
     limitation: [],
+});
+onMounted(() => {
+    fetchEnvironmentTypes();
+    fetchProjectTypes();
 });
 // const limitations = ref(props.product);
 
@@ -313,6 +304,16 @@ const updateProductForm = async () => {
     } catch (error) {
         message.error("Failed to update project");
     }
+};
+
+const fetchProjectTypes = async () => {
+    const data = await getProjectTypes();
+    projectTypes.value = data.original;
+};
+
+const fetchEnvironmentTypes = async () => {
+    const data = await getEnvironmentTypes();
+    environmentTypes.value = data.original;
 };
 
 watch(
