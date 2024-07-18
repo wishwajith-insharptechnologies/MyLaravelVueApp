@@ -60,6 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::patch('/package/update-package/{package}', [PackagesController::class, 'updatePackage']);
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
+            //role
+
+
 
             //common
 

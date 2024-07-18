@@ -8,9 +8,6 @@
                         v-model:value="form.improtsConfigType"
                         @change="onImprotsConfigTypeChange"
                     >
-                    <a-select-option value="" disabled
-                            >Select Import Config Type</a-select-option
-                        >
                         <a-select-option
                             v-for="configType in improtsConfigTypes"
                             :key="configType.id"
@@ -29,78 +26,80 @@
             >
                 Please import project config
             </span>
-            <a-form-item
-                v-if="form.improtsConfigType === improtsConfigTypes[0].id"
-                label="Upload JSON Config File"
-                required
-            >
-                <a-upload
-                    id="ImprotJsonConfigFile"
-                    :show-upload-list="false"
-                    :before-upload="beforeUpload"
-                    :onChange="onJsonConfigFileChange"
-                    class="w-full"
-                >
-                    <a-button>Click to Upload</a-button>
-                </a-upload>
-                <a-button
-                    class="ml-2"
-                    type="primary"
-                    @click="improtFileLimitation"
-                >
-                    Import
-                </a-button>
-            </a-form-item>
-
-            <!-- project config link -->
-            <a-form-item
-                v-if="form.improtsConfigType === improtsConfigTypes[1].id"
-                label="Feature Import Config Link"
-                required
-            >
-                <a-input
-                    v-model:value="form.improtsConfigLink"
-                    placeholder="Feature Import Config Link"
+            <div v-if="form.improtsConfigType != improtsConfigTypes[0].id" >
+                <a-form-item
+                    v-if="form.improtsConfigType === improtsConfigTypes[1].id"
+                    label="Upload JSON Config File"
                     required
-                    style="width: 200px"
-                />
-                <a-button
-                    style="margin-left: 10px"
-                    type="primary"
-                    @click="importWebLimitation"
                 >
-                    Import
-                </a-button>
-            </a-form-item>
-            <div class="feature-list">
-                <div
-                    v-for="feature in form.limitationData"
-                    :key="feature.featureId"
+                    <a-upload
+                        id="ImprotJsonConfigFile"
+                        :show-upload-list="false"
+                        :before-upload="beforeUpload"
+                        :onChange="onJsonConfigFileChange"
+                        class="w-full"
+                    >
+                        <a-button>Click to Upload</a-button>
+                    </a-upload>
+                    <a-button
+                        class="ml-2"
+                        type="primary"
+                        @click="improtFileLimitation"
+                    >
+                        Import
+                    </a-button>
+                </a-form-item>
+
+                <!-- project config link -->
+                <a-form-item
+                    v-if="form.improtsConfigType === improtsConfigTypes[2].id"
+                    label="Feature Import Config Link"
+                    required
                 >
-                    <template v-if="feature.parentId === 0">
-                        <div class="parent">
-                            {{ feature.featureId }} - {{ feature.name }}
-                        </div>
-                        <p class="ml-5 text-gray">
-                            ({{ feature.description }})
-                        </p>
-                        <ul class="child-list">
-                            <li
-                                v-for="child in getChildFeatures(
-                                    feature.featureId
-                                )"
-                                :key="child.featureId"
-                                class="child"
-                            >
-                                {{ child.featureId }} - {{ child.name }}
-                                <p class="ml-5 text-gray">
-                                    {{ child.description }}
-                                </p>
-                            </li>
-                        </ul>
-                    </template>
+                    <a-input
+                        v-model:value="form.improtsConfigLink"
+                        placeholder="Feature Import Config Link"
+                        required
+                        style="width: 200px"
+                    />
+                    <a-button
+                        style="margin-left: 10px"
+                        type="primary"
+                        @click="importWebLimitation"
+                    >
+                        Import
+                    </a-button>
+                </a-form-item>
                 </div>
-            </div>
+                    <div class="feature-list">
+                        <div
+                            v-for="feature in form.limitationData"
+                            :key="feature.featureId"
+                        >
+                            <template v-if="feature.parentId === 0">
+                                <div class="parent">
+                                    {{ feature.featureId }} - {{ feature.name }}
+                                </div>
+                                <p class="ml-5 text-gray">
+                                    ({{ feature.description }})
+                                </p>
+                                <ul class="child-list">
+                                    <li
+                                        v-for="child in getChildFeatures(
+                                            feature.featureId
+                                        )"
+                                        :key="child.featureId"
+                                        class="child"
+                                    >
+                                        {{ child.featureId }} - {{ child.name }}
+                                        <p class="ml-5 text-gray">
+                                            {{ child.description }}
+                                        </p>
+                                    </li>
+                                </ul>
+                            </template>
+                        </div>
+                    </div>
         </form>
     </div>
 </template>
@@ -113,6 +112,7 @@ const props = defineProps({
 });
 const isConfigFieldFill = ref(true);
 const improtsConfigTypes = [
+    { id: 0, name: "Select Import Config Type" },
     { id: 1, name: "Json" },
     { id: 2, name: "Web API" },
 ];

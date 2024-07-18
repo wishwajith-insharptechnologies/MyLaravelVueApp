@@ -322,7 +322,7 @@ const submitForm = async () => {
         if (error.response && error.response.data) {
             errors.value = error.response.data.errors;
         }
-        message.error("Failed to create project");
+        message.error("Package submitted successfully!");
         console.error("Error creating project:", error);
     }
 };
