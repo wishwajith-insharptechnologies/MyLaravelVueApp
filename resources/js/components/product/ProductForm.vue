@@ -311,7 +311,10 @@ const onProjectImageFileChange = (event) => {
 
 const importLimitation = (updatedLimitationData) => {
     form.value.limitation = updatedLimitationData;
-    productFormRef.value.validate();
+    //custom validate when with value
+    if(updatedLimitationData.length != 0){
+        productFormRef.value.validateFields(['limitation']);
+    }
 };
 
 const haddieUploadImage = (imageData) => {
