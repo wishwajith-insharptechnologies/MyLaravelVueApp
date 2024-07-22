@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repository;
 
 use Spatie\Permission\Models\Role;
 
@@ -8,7 +8,7 @@ class RoleRepository
 {
     public static function getAllRoles()
     {
-        return Role::all();
+        return Role::orderBy('created_at', 'desc')->get();
     }
 
     public static function createRole($data)
@@ -32,5 +32,6 @@ class RoleRepository
     {
         $role = Role::findOrFail($id);
         $role->delete();
+        return $role;
     }
 }

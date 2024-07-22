@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\PackagesController;
@@ -61,7 +62,11 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/package/delete-package/{package}', [PackagesController::class, 'deletePackage']);
 
             //role
-
+            Route::get('/roles', [RoleController::class, 'index']);
+            Route::post('/roles', [RoleController::class, 'store']);
+            Route::get('/roles/{id}', [RoleController::class, 'show']);
+            Route::put('/roles/{id}', [RoleController::class, 'update']);
+            Route::delete('/roles/{id}', [RoleController::class, 'destroy']);
 
 
             //common

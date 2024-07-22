@@ -29,8 +29,8 @@ error => {
     const statusCode = error.response.status;
     switch (statusCode) {
       case 400:
-        console.error('Bad Request (400):', error.response.data);
-        message.error('Bad Request: ' + error.response.data.error || 'Something went wrong.');
+        console.log('Bad Request (400):', error.response.data.message);
+        message.error( error.response.data.message || 'Something went wrong.');
 
         break;
       case 401:

@@ -1,89 +1,81 @@
 <template>
-      <a-layout-header style="background: #fff; padding: 24px;">
-        <h1>Role Management</h1>
-      </a-layout-header>
-      <a-layout-content style="padding: 24px;">
-        <!-- Role List Table -->
-        <a-table :columns="columns" :data-source="roles" rowKey="id" :pagination="pagination" @change="handleTableChange">
-          <template #name="{ text }">
-            {{ text }}
-          </template>
-          <template #description="{ text }">
-            {{ text }}
-          </template>
-          <template #operation="{ record }">
-            <span>
-              <a-button type="primary" @click="editRole(record)">Edit</a-button>
-              <a-button type="danger" @click="deleteRole(record.id)">Delete</a-button>
-            </span>
-          </template>
-        </a-table>
+    <a-layout-header style="background: #fff; padding: 24px;">
+      <h1>Role Management</h1>
+    </a-layout-header>
+    <a-layout-content style="padding: 24px;">
+      <!-- Role List Table -->
+      <a-table :columns="columns" :dataSource="roles" rowKey="id" @change="handleTableChange">
+        <template #operation="{ record }">
+          <span>
+            <a-button type="primary" @click="editRole(record)">Edit</a-button>
+            <a-button type="danger" @click="handleDeleteRole(record.id)">Delete</a-button>
+          </span>
+        </template>
+      </a-table>
 
-        <!-- Edit Role Modal -->
-        <a-modal v-model:visible="editModalVisible" title="Edit Role" @ok="handleEditRole" @cancel="closeEditModal">
-          <a-form :model="editForm" ref="editFormRef">
-            <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
-              <a-input v-model:value="editForm.name" />
-            </a-form-item>
-            <a-form-item label="Description" name="description" :rules="[{ required: true, message: 'Please input the description!' }]">
-              <a-input v-model:value="editForm.description" />
-            </a-form-item>
-          </a-form>
-        </a-modal>
+      <!-- Edit Role Modal -->
+      <a-modal v-model:visible="editModalVisible" title="Edit Role" @ok="handleEditRole" @cancel="closeEditModal">
+        <a-form :model="editForm" ref="editFormRef" :initialValues="editForm">
+          <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
+            <a-input v-model:value="editForm.name" />
+          </a-form-item>
+          <a-form-item label="Description" name="description" :rules="[{ required: true, message: 'Please input the description!' }]">
+            <a-input v-model:value="editForm.description" />
+          </a-form-item>
+        </a-form>
+      </a-modal>
 
-        <!-- Create Role Button -->
-        <a-button type="primary" @click="showCreateModal">Create New Role</a-button>
+      <!-- Create Role Button -->
+      <a-button type="primary" @click="showCreateModal">Create New Role</a-button>
 
-        <!-- Create Role Modal -->
-        <a-modal v-model:visible="createModalVisible" title="Create New Role" @ok="handleCreateRole" @cancel="closeCreateModal">
-          <a-form :model="createForm" ref="createFormRef">
-            <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
-              <a-input v-model:value="createForm.name" />
-            </a-form-item>
-            <a-form-item label="Description" name="description" :rules="[{ required: true, message: 'Please input the description!' }]">
-              <a-input v-model:value="createForm.description" />
-            </a-form-item>
-          </a-form>
-        </a-modal>
-      </a-layout-content>
+      <!-- Create Role Modal -->
+      <a-modal v-model:visible="createModalVisible" title="Create New Role" @ok="handleCreateRole" @cancel="closeCreateModal">
+        <a-form :model="createForm" ref="createFormRef" :initialValues="createForm">
+          <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
+            <a-input v-model:value="createForm.name" />
+          </a-form-item>
+          <a-form-item label="Description" name="description" :rules="[{ required: true, message: 'Please input the description!' }]">
+            <a-input v-model:value="createForm.description" />
+          </a-form-item>
+        </a-form>
+      </a-modal>
+    </a-layout-content>
   </template>
 
   <script setup>
   import { ref, onMounted } from 'vue';
-  import Http from '@/services/Http.js';
+  import { message, Modal } from "ant-design-vue";
+  import { getAllRoles, createRole, updateRole, deleteRole } from '@/services/RoleService';
 
   const roles = ref([]);
   const editModalVisible = ref(false);
   const createModalVisible = ref(false);
-  const dataReady = ref(false);
   const editForm = ref({});
   const createForm = ref({});
   const editFormRef = ref(null);
   const createFormRef = ref(null);
-
-  const pagination = ref({
-    current: 1,
-    pageSize: 10,
-    total: 0
-  });
+  const { confirm } = Modal;
+  const columns = ref([
+  { title: 'ID', dataIndex: 'id', key: 'id' },
+  { title: 'Name', dataIndex: 'name', key: 'name' },
+  { title: 'Description', dataIndex: 'description', key: 'description' },
+  {
+    title: 'Operation',
+    key: 'operation',
+    slots: { customRender: 'operation' }
+  }
+]);
 
   const getRoles = async (updatedPage = null) => {
     if (updatedPage) {
-      pagination.value.current = updatedPage;
+      pagination.current = updatedPage;
     }
     try {
-      const { data } = await Http.get(`roles?page=${pagination.value.current}&per=${pagination.value.pageSize}`);
-      roles.value = data.data;
-      pagination.value.total = data.total;
-      dataReady.value = true;
+      const { data } = await getAllRoles();
+      console.log(data);
+      roles.value = data;
     } catch (error) {
       console.error('Error getting roles:', error);
-      this.popToast({
-        message: 'Error Getting Roles',
-        timer: 5000,
-        icon: 'error',
-      });
-      dataReady.value = true;
     }
   };
 
@@ -95,10 +87,10 @@
   const handleCreateRole = async () => {
     try {
       await createFormRef.value.validate();
-      // Call your API to create the role
-      await Http.post('roles', createForm.value);
+      await createRole(createForm.value);
       createModalVisible.value = false;
       getRoles();
+      message.success("Role created successfully");
     } catch (error) {
       console.error('Error creating role:', error);
     }
@@ -107,10 +99,10 @@
   const handleEditRole = async () => {
     try {
       await editFormRef.value.validate();
-      // Call your API to update the role
-      await Http.patch(`roles/update-role/${editForm.value.id}`, editForm.value);
+      await updateRole(editForm.value.id, editForm.value);
       editModalVisible.value = false;
       getRoles();
+      message.success("Role edited successfully");
     } catch (error) {
       console.error('Error updating role:', error);
     }
@@ -121,10 +113,24 @@
     editModalVisible.value = true;
   };
 
-  const deleteRole = async (id) => {
+  const handleDeleteRole = async (id) => {
     try {
-      await Http.delete(`roles/delete/role/${id}`);
-      getRoles();
+        confirm({
+            title: "Are you sure you want to delete this Role?",
+            content: "This action cannot be undone",
+            okText: "Yes",
+            okType: "danger",
+            cancelText: "No",
+            onOk() {
+                const response = deleteRole(id);
+                getRoles();
+                message.success("Role deleted successfully");
+            },
+            onCancel() {
+                message.info("Delete action cancelled");
+            },
+        });
+
     } catch (error) {
       console.error('Error deleting role:', error);
     }
@@ -141,16 +147,6 @@
   const handleTableChange = (pagination) => {
     getRoles(pagination.current);
   };
-
-  const columns = [
-    { dataIndex: 'name', title: 'Name', key: 'name' },
-    { dataIndex: 'description', title: 'Description', key: 'description' },
-    {
-      title: 'Operation',
-      key: 'operation',
-      slots: { customRender: 'operation' }
-    }
-  ];
 
   onMounted(() => {
     getRoles();
