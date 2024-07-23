@@ -120,13 +120,14 @@
             okText: "Yes",
             okType: "danger",
             cancelText: "No",
-            onOk() {
-                const response = deleteRole(id);
-                getRoles();
-                message.success("Role deleted successfully");
-            },
-            onCancel() {
-                message.info("Delete action cancelled");
+            onOk: async () => {
+                try {
+                    await deleteRole(id);
+                    await getRoles();
+                    message.success("User deleted successfully");
+                } catch (error) {
+                    console.error("Error deleting user:", error);
+                }
             },
         });
 

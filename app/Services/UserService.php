@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Mail\WelcomeEmail;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserService
 {
@@ -22,11 +24,13 @@ class UserService
         //     $email_verified_at = now();
         // }
 
+        $password = CommonService::generateStrongPassword(8);
+
         $userData = [
             'name'              => $request['name'],
             'email'             => $request['email'],
             'email_verified_at' => $email_verified_at,
-            'password'          => Hash::make(12345678),
+            'password'          => Hash::make($password),
         ];
 
         $user = UserRepository::store($userData);
@@ -35,6 +39,8 @@ class UserService
             $role = Role::find($request['role']);
             $user->assignRole($role->name);
         }
+
+        Mail::to($user->email)->send(new WelcomeEmail($user, $password));
 
         return $user;
     }

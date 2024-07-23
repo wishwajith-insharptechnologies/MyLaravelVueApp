@@ -21,8 +21,11 @@
                     <a-button type="primary" @click="triggerEditUser(record)"
                         >Edit</a-button
                     >
-                    <a-button type="danger" @click="triggerDeleteUser(record.id)"
-                        >Delete</a-button
+                    <a-button
+                        :disabled="isAuthUserCanDelete(record.id)"
+                        type="danger"
+                        @click="triggerDeleteUser(record.id)"
+                        ><span style="color: red">Delete</span></a-button
                     >
                 </span>
             </template>
@@ -32,8 +35,6 @@
         <a-modal
             v-model:visible="editModalVisible"
             title="Edit User"
-            @ok="handleEditUser"
-            @cancel="closeEditModal"
         >
             <a-form :model="editForm" ref="editFormRef">
                 <a-form-item
@@ -48,6 +49,7 @@
                 <a-form-item
                     label="Email"
                     name="email"
+                    :disabled="true"
                     :rules="[
                         { required: true, message: 'Please input the email!' },
                     ]"
@@ -72,6 +74,17 @@
                     </a-select>
                 </a-form-item>
             </a-form>
+            <template #footer>
+                <a-button @click="closeEditModal">Cancel</a-button>
+                <a-button
+                    type="primary"
+                    :loading="loading"
+                    :disabled="isSubmit"
+                    @click="handleEditUser"
+                >
+                    Edit User
+                </a-button>
+            </template>
         </a-modal>
 
         <!-- Create User Button -->
@@ -83,8 +96,6 @@
         <a-modal
             v-model:visible="createModalVisible"
             title="Create New User"
-            @ok="handleCreateUser"
-            @cancel="closeCreateModal"
         >
             <a-form :model="createForm" ref="createFormRef">
                 <a-form-item
@@ -109,7 +120,7 @@
                     label="Role"
                     name="role"
                     :rules="[
-                        { required: true, message: 'Please input the role!' },
+                        { required: true, message: 'Please select the role!' },
                     ]"
                 >
                     <a-select v-model:value="createForm.role">
@@ -123,30 +134,48 @@
                     </a-select>
                 </a-form-item>
             </a-form>
+            <template #footer>
+                <a-button @click="closeCreateModal">Cancel</a-button>
+                <a-button
+                    type="primary"
+                    :loading="loading"
+                    :disabled="isSubmit"
+                    @click="handleCreateUser"
+                >
+                    Create User
+                </a-button>
+            </template>
         </a-modal>
     </a-layout-content>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import Http from "@/services/Http.js";
-import {  message, Modal  } from "ant-design-vue";
+import { useAuthStore } from "@/stores";
+import { message, Modal } from "ant-design-vue";
 import { getAllRoles } from "@/services/RoleService";
-import { getAllUsers, createUser, editUser ,deleteUser } from "@/services/UserService";
+import {
+    getAllUsers,
+    createUser,
+    editUser,
+    deleteUser,
+} from "@/services/UserService";
 
 const users = ref([]);
 const roles = ref([]);
 const editModalVisible = ref(false);
 const createModalVisible = ref(false);
 const dataReady = ref(false);
+const isSubmit = ref(false);
 const editForm = ref({});
 const createForm = ref({});
 const editFormRef = ref(null);
 const createFormRef = ref(null);
 const { confirm } = Modal;
+const authStore = useAuthStore();
+const authUser = authStore.getUser;
 
 const getUsers = async (updatedPage = null) => {
-
     try {
         const { data } = await getAllUsers();
         console.log(data);
@@ -175,12 +204,20 @@ const showCreateModal = () => {
     createModalVisible.value = true;
 };
 
+const isAuthUserCanDelete = (id) => {
+    console.log(id == authUser.id);
+    return id == authUser.id;
+};
+
 const handleCreateUser = async () => {
     try {
+        isSubmit.value = true;
         await createFormRef.value.validate();
         await createUser(createForm.value);
         createModalVisible.value = false;
+        createModalVisible.value = false;
         getUsers();
+        isSubmit.value = false;
         message.success("User created successfully");
     } catch (error) {
         console.error("Error creating user:", error);
@@ -189,11 +226,13 @@ const handleCreateUser = async () => {
 
 const handleEditUser = async () => {
     try {
+        isSubmit.value = true;
         await editFormRef.value.validate();
         await editUser(editForm.value);
         editModalVisible.value = false;
         message.success("User updated successfully");
         getUsers();
+        isSubmit.value = false;
     } catch (error) {
         console.error("Error updating user:", error);
     }
@@ -212,16 +251,19 @@ const triggerDeleteUser = async (id) => {
             okText: "Yes",
             okType: "danger",
             cancelText: "No",
-            onOk() {
-                deleteUser(id);
-                getUsers();
-                message.success("User deleted successfully");
+            onOk: async () => {
+                try {
+                    await deleteUser(id);
+                    await getUsers();
+                    message.success("User deleted successfully");
+                } catch (error) {
+                    console.error("Error deleting user:", error);
+                }
             },
             onCancel() {
                 message.info("Delete action cancelled");
             },
         });
-
     } catch (error) {
         console.error("Error deleting user:", error);
     }

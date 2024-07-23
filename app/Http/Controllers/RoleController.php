@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Responses\ApiResponse;
 use App\Repository\RoleRepository;
@@ -70,6 +71,12 @@ class RoleController extends Controller
     public function destroy($id)
     {
         try {
+            $role = Role::findOrFail($id);
+            $userCount = User::role($role->name)->count();
+            if($userCount > 0){
+                return ApiResponse::error('Role is assigned to one or more users and cannot be deleted.', Response::HTTP_BAD_REQUEST);
+            }
+
             $deleted = RoleRepository::deleteRole($id);
             if ($deleted) {
                 return ApiResponse::success(null, 'Role deleted successfully');
