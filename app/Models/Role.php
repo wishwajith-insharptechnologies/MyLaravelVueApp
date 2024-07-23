@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use jeremykenedy\LaravelRoles\Models\Role as OriginRole;
+use Spatie\Permission\Contracts\Role as RoleContract;
+
 
 class Role extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $guarded = [];
 }

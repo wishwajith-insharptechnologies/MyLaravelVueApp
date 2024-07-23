@@ -40,11 +40,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/users', [UsersController::class, 'users']);
-    Route::post('/users/toggle-verify', [UsersController::class, 'toggleVerify']);
-    Route::delete('/users/delete/user/{user}', [UsersController::class, 'deleteUser']);
-    Route::post('/users/create-user', [UsersController::class, 'createUser']);
-    Route::patch('/users/update-user/{user}', [UsersController::class, 'updateUser']);
+            //users
+            Route::get('/users', [UsersController::class, 'users']);
+            Route::post('/users/toggle-verify', [UsersController::class, 'toggleVerify']);
+            Route::delete('/users/delete/user/{user}', [UsersController::class, 'deleteUser']);
+            Route::post('/users/create-user', [UsersController::class, 'createUser']);
+            Route::patch('/users/update-user/{user}', [UsersController::class, 'updateUser']);
 
             //projects
             Route::get('/projects', [ProjectsController::class, 'getProjects']);

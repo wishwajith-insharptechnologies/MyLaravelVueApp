@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Users\CreateUserRequest;
-use App\Http\Requests\Users\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Responses\ApiResponse;
+use App\Repository\RoleRepository;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\Users\RoleResource;
+use App\Http\Requests\Users\CreateUserRequest;
+use App\Http\Requests\Users\UpdateUserRequest;
+use App\Http\Resources\Users\UsersResource;
+use App\Repository\UserRepository;
+use App\Services\UserService;
+use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
 {
@@ -20,12 +27,13 @@ class UsersController extends Controller
 
     public function users(Request $request)
     {
-        $per = 10;
-        if ($request->has('per')) {
-            $per = $request->input('per');
+        try {
+            $users = UserService::getUsers();
+            return ApiResponse::success(UsersResource::collection($users), 'users retrieved successfully');
+        } catch (\Exception $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return response()->json(User::paginate($per));
+        // return response()->json(User::paginate($per));
     }
 
     public function toggleVerify(Request $request)
@@ -45,44 +53,26 @@ class UsersController extends Controller
 
     public function createUser(CreateUserRequest $request)
     {
-        $validated = $request->validated();
-
-        $email_verified_at = false;
-        if ($validated['email_verified_at']) {
-            $email_verified_at = now();
-        }
-
-        $user = User::create([
-            'name'              => $validated['name'],
-            'email'             => $validated['email'],
-            // 'email_verified_at' => $email_verified_at,
-            'password'          => Hash::make($validated['password']),
-        ]);
-
-        if ($user) {
-            $user->syncRoles($validated['roles']);
-
-            // event(new Registered($user));
-
-            return response()->json([
-                'user'  => $user,
-            ]);
+        try {
+            $validated = $request->validated();
+            $user = UserService::createUser($validated);
+            return ApiResponse::success($user, 'users retrieved successfully');
+        } catch (\Exception $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function updateUser(Request $request, User $user)
+    public function updateUser(UpdateUserRequest $request, User $user)
     {
-        // $request->validate([
-        //     'email' => 'required|email|unique:users,email,'.$user->id,
-        // ]);
+        try {
 
-        // $validated = $request->validated();
-        $user->update($request->only('name', 'email', 'theme_dark', 'email_verified_at'));
-        // $user->syncRoles($validated['roles']);
+            $validated = $request->validated();
 
-        return response()->json([
-            'user'  => $user,
-        ]);
+            $user = UserService::updateUser($request);
+            return ApiResponse::success($user, 'users retrieved successfully');
+        } catch (\Exception $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function deleteUser(Request $request, User $user)

@@ -72,7 +72,6 @@
     }
     try {
       const { data } = await getAllRoles();
-      console.log(data);
       roles.value = data;
     } catch (error) {
       console.error('Error getting roles:', error);

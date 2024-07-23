@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Users;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest
@@ -13,6 +14,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize()
     {
+        return true;
         // return $this->user()->hasOneRole(config('roles.models.role')::whereName('Super Admin')->first('id')->id);
     }
 
@@ -23,11 +25,25 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
+        $userId = $this->route('id');
+        $user = User::find($userId);
+
         return [
             'name'              => 'required|min:3|max:255',
-            // 'email'             => 'required|email|unique:users,email,'.$user->id,
-            'password'          => 'nullable|min:6|max:255|confirmed',
-            'roles'             => 'present|array',
+            'email'             => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) use ($userId, $user) {
+                    if ($user && $user->email !== $value) {
+                        $exists = User::where('email', $value)->where('id', '<>', $userId)->exists();
+                        if ($exists) {
+                            $fail('The email has already been taken.');
+                        }
+                    }
+                },
+            ],
+            // 'password'          => 'nullable|min:6|max:255|confirmed',
+            'role'             => 'required',
             'theme_dark'        => 'nullable|boolean',
             'email_verified_at' => 'nullable',
         ];

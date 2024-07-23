@@ -47,6 +47,11 @@ error => {
         console.error('Not Found (404):', error.response.data);
 
         break;
+     case 422:
+        console.log('Bad Request (400):', error.response.data.message);
+        message.error( error.response.data.message || 'Something went wrong.');
+
+        break;
       case 500:
         console.error('Internal Server Error (500):', error.response.data);
         message.error('Internal server error. Please try again later.');
