@@ -8,6 +8,7 @@ use App\Mail\WelcomeEmail;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\sendUserCreateEmailNotification;
 
 class UserService
 {
@@ -40,7 +41,7 @@ class UserService
             $user->assignRole($role->name);
         }
 
-        Mail::to($user->email)->send(new WelcomeEmail($user, $password));
+        sendUserCreateEmailNotification::dispatch($user, $password);
 
         return $user;
     }
