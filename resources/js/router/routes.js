@@ -16,6 +16,7 @@ import EditProduct from "../views/pages/admin/product/EditProduct.vue";
 // import ListProduct from "../views/pages/admin/product/ProductList.vue";
 import PaymentPage from "../views/pages/guest/payment/Payment.vue";
 import AdminLayout from "../components/layout/AdminLayout.vue";
+import ProfilePage from "../views/pages/guest/user/ProfilePage.vue";
 
 const routes = [
     {
@@ -34,6 +35,11 @@ const routes = [
                 path: "/package/create",
                 name: "packageAddPage",
                 component: AddPackage,
+            },
+            {
+                path: "/profile",
+                name: "ProfilePage",
+                component: ProfilePage,
             },
             {
                 path: "/package/edit/:id",

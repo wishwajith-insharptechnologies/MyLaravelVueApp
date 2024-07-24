@@ -44,6 +44,7 @@ class UpdateUserRequest extends FormRequest
             ],
             // 'password'          => 'nullable|min:6|max:255|confirmed',
             'role'             => 'required',
+            'lastName'             => 'nullable',
             'theme_dark'        => 'nullable|boolean',
             'email_verified_at' => 'nullable',
         ];

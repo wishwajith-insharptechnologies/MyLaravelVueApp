@@ -42,6 +42,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
             //users
             Route::get('/users', [UsersController::class, 'users']);
+            Route::get('/user/auth', [UsersController::class, 'authUser']);
+            Route::post('/user/password-update', [UsersController::class, 'userPasswordUpdate']);
             Route::post('/users/toggle-verify', [UsersController::class, 'toggleVerify']);
             Route::delete('/users/delete/user/{user}', [UsersController::class, 'deleteUser']);
             Route::post('/users/create-user', [UsersController::class, 'createUser']);

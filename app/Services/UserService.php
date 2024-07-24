@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Mail\WelcomeEmail;
 use App\Repository\UserRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\sendUserCreateEmailNotification;
@@ -16,6 +17,11 @@ class UserService
     public static function getUsers()
     {
         return UserRepository::getAllWithRoles();
+    }
+
+    public static function getAuthUser()
+    {
+        return Auth::User();
     }
 
     public static function createUser($request)
@@ -56,6 +62,7 @@ class UserService
 
         $userData = [
             'name' => $request['name'],
+            'last_name' => $request['lastName'],
             'email' => $request['email'],
             'email_verified_at' => $request['email_verified_at'] ? now() : $user->email_verified_at,
         ];
@@ -74,6 +81,11 @@ class UserService
         }
 
         return $user;
+    }
+
+    public static function updateUserPassword($user, $request){
+        $user->password = Hash::make($request['new_password']);
+        return $user->save();
     }
 
 }

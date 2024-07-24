@@ -157,7 +157,7 @@ import { getAllRoles } from "@/services/RoleService";
 import {
     getAllUsers,
     createUser,
-    editUser,
+    updateUser,
     deleteUser,
 } from "@/services/UserService";
 
@@ -228,7 +228,7 @@ const handleEditUser = async () => {
     try {
         isSubmit.value = true;
         await editFormRef.value.validate();
-        await editUser(editForm.value);
+        await updateUser(editForm.value);
         editModalVisible.value = false;
         message.success("User updated successfully");
         getUsers();
