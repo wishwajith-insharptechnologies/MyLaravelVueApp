@@ -6,7 +6,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Vite Scripts and Styles -->
-    @vite(['resources/js/app.js', 'resources/css/app.css'])
+    @vite(['resources/js/app.js', 'resources/sass/app.scss'])
 </head>
 <body class="font-sans antialiased">
     <div id="app">
