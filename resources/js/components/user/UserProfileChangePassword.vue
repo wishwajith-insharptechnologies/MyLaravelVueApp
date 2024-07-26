@@ -121,6 +121,7 @@ const handleSubmit = async () => {
         message.success("Password updated successfully");
         isSubmit.value = false;
     } catch (errorInfo) {
+        isSubmit.value = false;
         console.log("Validation failed:", errorInfo);
     }
 };

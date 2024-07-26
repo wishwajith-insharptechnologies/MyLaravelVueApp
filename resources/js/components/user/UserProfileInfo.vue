@@ -33,7 +33,7 @@
                 },
             ]"
         >
-            <a-input v-model:value="form.lastName" placeholder="Last name" />
+            <a-input v-model:value="form.lastName"  placeholder="Last name" />
         </a-form-item>
         <a-form-item
             label="Email"
@@ -47,7 +47,7 @@
                 },
             ]"
         >
-            <a-input v-model:value="form.email" placeholder="Email" />
+            <a-input v-model:value="form.email" :disabled="true" placeholder="Email" />
         </a-form-item>
         <a-form-item>
             <a-button type="primary" @click="handleSubmit" :disabled="isSubmit"
@@ -77,6 +77,7 @@ const handleSubmit = async () => {
         message.success("Personal info updated successfully");
         isSubmit.value = false;
     } catch (error) {
+        isSubmit.value = false;
         console.error("Error updating user:", error);
     }
 };
