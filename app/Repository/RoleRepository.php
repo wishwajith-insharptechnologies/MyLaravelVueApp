@@ -13,7 +13,7 @@ class RoleRepository
 
     public static function createRole($data)
     {
-        return Role::create($data);
+        return Role::create([...$data, 'guard_name' => 'web']);
     }
 
     public static function getRoleById($id)

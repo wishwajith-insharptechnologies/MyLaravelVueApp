@@ -59,8 +59,20 @@ const handleSubmit = async () => {
 
     Auth.login({ email: email.value, password: password.value })
         .then( async (Response) => {
-            await useAuthStore().login();
+            await authStore.signIn();
+            const userData = await authStore.getUser;
+
+            console.log(userData.roleName);
+
+        if (userData.roleName === 'Admin') {
+            router.push('/admin_dashboard');
+        } else if (userData.roleName === 'User') {
             router.push('/dashboard');
+        } else {
+            router.push('/login');
+        }
+
+            // router.push('/dashboard');
         })
 
     // message.success('Login successful');

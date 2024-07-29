@@ -13,7 +13,13 @@ export default {
   },
 
   async logout() {
-    return Http.get("logout");
+    try{
+
+        return Http.post("logout");
+    }catch(error){
+        console.log(error);
+
+    }
   },
 
   auth() {

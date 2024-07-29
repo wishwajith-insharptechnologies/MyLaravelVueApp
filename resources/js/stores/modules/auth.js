@@ -22,19 +22,23 @@ export const useAuthStore = defineStore('auth', {
     }
   },
   actions: {
-    async login() {
+    async signIn() {
       try {
         const { data } = await Http.get("user");
-        this.user = data;
+        this.user = data.data;
         this.authenticated = true;
       } catch (error) {
         this.user = {};
         this.authenticated = false;
       }
     },
-    logout() {
+    signOut() {
       this.user = {};
       this.authenticated = false;
+
+      localStorage.clear();
+      this.$reset();
+      console.log("session clear");
     },
   },
   persist: {

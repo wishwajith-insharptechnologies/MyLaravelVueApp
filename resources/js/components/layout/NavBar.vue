@@ -38,11 +38,10 @@
     showDropdown.value = !showDropdown.value;
   };
 
-  const signOut = () => authStore.logout();
 
-  const logout = () => {
-    Auth.logout().then(async () => {
-        await signOut();
+  const logout = async () => {
+      await authStore.signOut();
+      await Auth.logout().then(async () => {
         await router.push('/login');
     });
   };
