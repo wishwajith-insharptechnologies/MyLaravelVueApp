@@ -17,6 +17,7 @@ import EditProduct from "../views/pages/admin/product/EditProduct.vue";
 import PaymentPage from "../views/pages/guest/payment/Payment.vue";
 import AdminLayout from "../components/layout/AdminLayout.vue";
 import ProfilePage from "../views/pages/guest/user/ProfilePage.vue";
+import NotFoundPage from "../views/pages/guest/common/NotFondPage.vue";
 
 const routes = [
     {
@@ -84,13 +85,26 @@ const routes = [
     },
 
     {
-        path: "/payment/:id",
+        path: '/pkg',
         props: (route) => ({
-            id: route.params.id,
+            id: route.query.package,
+            extraInfo: route.query.extra
         }),
         component: PaymentPage,
         name: "payment",
+        beforeEnter: (to, from, next) => {
+            if (!to.query.package) {
+              next({ name: 'notFound' });
+            } else {
+              next();
+            }
+          }
     },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'notFound',
+        component: NotFoundPage
+    }
 ];
 
 export default routes;

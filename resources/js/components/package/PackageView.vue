@@ -1,5 +1,5 @@
 <template>
-    <a-row justify="center">
+    <a-row style="background-color: #F5F8FF;" justify="center">
       <a-col :span="10">
         <a-button type="text" class="back-button" icon>
           <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,7 +94,8 @@ const limitationValue = (value) => {
   return value;
 };
 const getImageUrl = (imagePath) => {
-  return `/public/images/product/${imagePath}`;
+    const trimmedImagePath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+  return `${import.meta.env.VITE_MEDIA_URL}${trimmedImagePath}`;
 };
 </script>
 

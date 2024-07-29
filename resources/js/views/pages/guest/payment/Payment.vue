@@ -128,7 +128,8 @@
       const response = await Http.get(`package/${props.id}`);
       packageDetails.value = response.data;
     } catch (err) {
-      console.log(err);
+        router.push({ name: 'notFound' });
+        console.log(err);
     }
   };
 
