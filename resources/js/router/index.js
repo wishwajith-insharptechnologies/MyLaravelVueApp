@@ -13,7 +13,7 @@ router.beforeEach((to, from, next) => {
 
     const store = useAuthStore();
 
-    document.title = to.meta.title
+    // document.title = to.meta.title
     if (to.meta.middleware == "guest") {
         console.log(useAuthStore);
         if (store.isAuthenticated) {

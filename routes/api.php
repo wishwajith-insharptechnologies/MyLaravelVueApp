@@ -27,9 +27,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->get('/user', [UsersController::class, 'authUser']);
+
 
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
@@ -37,7 +36,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', ForgotPasswordController::class);
     Route::post('/reset-password', ResetPasswordController::class);
     // Route::get('/user', [UsersController::class, 'user']);
-});
+    });
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
             //users

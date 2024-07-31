@@ -22,7 +22,7 @@
                         >Edit</a-button
                     >
                     <a-button
-                        :disabled="isAuthUserCanDelete(record.id)"
+                        v-show="!isAuthUserCanDelete(record.id)"
                         type="danger"
                         @click="triggerDeleteUser(record.id)"
                         ><span style="color: red">Delete</span></a-button
@@ -49,12 +49,12 @@
                 <a-form-item
                     label="Email"
                     name="email"
-                    :disabled="true"
+
                     :rules="[
                         { required: true, message: 'Please input the email!' },
                     ]"
                 >
-                    <a-input v-model:value="editForm.email" />
+                    <a-input v-model:value="editForm.email" :disabled="true"/>
                 </a-form-item>
                 <a-form-item
                     label="Role"
@@ -220,6 +220,7 @@ const handleCreateUser = async () => {
         isSubmit.value = false;
         message.success("User created successfully");
     } catch (error) {
+        isSubmit.value = false;
         console.error("Error creating user:", error);
     }
 };

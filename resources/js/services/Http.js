@@ -30,7 +30,7 @@ error => {
     switch (statusCode) {
       case 400:
         console.log('Bad Request (400):', error.response.data.message);
-        message.error( error.response.data.message || 'Something went wrong.');
+        message.warning( error.response.data.message || 'Something went wrong.');
 
         break;
       case 401:
@@ -49,7 +49,7 @@ error => {
         break;
      case 422:
         console.log('Bad Request (400):', error.response.data.message);
-        message.error( error.response.data.message || 'Something went wrong.');
+        message.warning( error.response.data.message || 'Something went wrong.');
 
         break;
       case 500:

@@ -62,7 +62,7 @@ class UserService
 
         $userData = [
             'name' => $request['name'],
-            'last_name' => $request['lastName'],
+            'last_name' => $request['lastName']??' ',
             'email' => $request['email'],
             'email_verified_at' => $request['email_verified_at'] ? now() : $user->email_verified_at,
         ];

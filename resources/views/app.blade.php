@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>PkG Manager</title>
 
     <!-- Vite Scripts and Styles -->
-    @vite(['resources/js/app.js', 'resources/css/app.css'])
+    @vite(['resources/js/app.js', 'resources/sass/app.scss'])
 </head>
 <body class="font-sans antialiased">
     <div id="app">

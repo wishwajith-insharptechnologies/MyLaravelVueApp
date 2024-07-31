@@ -22,7 +22,6 @@ class FirstUserSeeder extends Seeder
             'email_verified_at' => null,
             'password' =>  Hash::make(12345678),
             'remember_token' => null,
-            'theme_dark' => null,
         ]);
     }
 }
