@@ -1,4 +1,14 @@
 <template>
+
+    <a-config-provider
+      :theme="{
+        token: {
+          colorPrimary: '#00b96b',
+        },
+      }"
+    >
+      <a-button />
+    </a-config-provider>
 <NavBar/>
     <a-layout class="layout">
         <a-layout>
@@ -72,6 +82,7 @@
         </a-layout>
         </a-layout>
     <Footer/>
+
 </template>
 
   <script setup>

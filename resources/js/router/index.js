@@ -10,6 +10,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
+
     const store = useAuthStore();
 
     document.title = to.meta.title
@@ -31,3 +32,4 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+
