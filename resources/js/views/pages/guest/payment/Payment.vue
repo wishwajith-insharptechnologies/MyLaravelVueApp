@@ -70,9 +70,11 @@
   import PackageView from '@/components/package/PackageView.vue';
   import PaymentLogin from '@/components/auth/PaymentLogin.vue';
   import SuccessModal from '@/components/payment/PaymentSuccessModal.vue';
-  import { message } from 'ant-design-vue';
+  import { getPackage } from "@/services/PackageService";
 
-  const store = useAuthStore();
+
+  import { message } from 'ant-design-vue';
+  const authStore = useAuthStore();
   const router = useRouter();
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -91,7 +93,7 @@
   const paymentIntentStatus = ref(null);
   const paymentToken = ref(null);
 
-  const isAuthenticated = store.isAuthenticated;
+  const isAuthenticated = authStore.isAuthenticated;
 
   const props = defineProps({
     id: {
@@ -125,8 +127,8 @@
 
   const fetchPackageDetails = async () => {
     try {
-      const response = await Http.get(`package/${props.id}`);
-      packageDetails.value = response.data;
+      const { data } = await getPackage(props.id);
+      packageDetails.value = data;
     } catch (err) {
         router.push({ name: 'notFound' });
         console.log(err);
@@ -231,32 +233,25 @@
   };
 
   const register = async (registerForm) => {
-    console.log('call redister');
-    // try {
-    const response = await store.dispatch('auth/register', registerForm);
-    console.log(response);
-    // } catch (e) {
-    //   // console.log(e);
-    //   console.log(e);
-    //   handleError(e);
-    //   // handleError(e.response);
-    // }
+    try {
+    Auth.register({ registerForm }).then(async ( response)=>{
+        await authStore.signIn();
+    });
+    } catch (e) {
+      console.log(e);
+      handleError(e);
+    }
   };
 
   const login = async (loginForm) => {
-    console.log("login form flow");
-    // try {
-    //   const response = await store.dispatch('auth/login', loginForm);
-    console.log(loginForm);
-      Auth.login({ email: loginForm.value.email, password: loginForm.value.password })
+     try {
+        Auth.login({ email: loginForm.value.email, password: loginForm.value.password })
         .then( async (Response) => {
-            await useAuthStore().login();
-            // router.push('/dashboard');
-            console.log('loged in');
+            await authStore.signIn();
         })
-    // } catch (e) {
-    //   handleError(e);
-    // }
+    } catch (e) {
+      handleError(e);
+    }
   };
 
   const handleError = (response) => {

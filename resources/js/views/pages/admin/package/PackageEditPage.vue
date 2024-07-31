@@ -29,7 +29,7 @@ onMounted(() => {
 
 const loadPackages = async () => {
     try {
-        const data = await getPackage(props.id);
+        const {data} = await getPackage(props.id);
         console.log(data);
         packageData.value = data;
         dataReady.value = true;

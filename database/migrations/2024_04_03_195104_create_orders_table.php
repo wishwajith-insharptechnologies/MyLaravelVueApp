@@ -15,18 +15,20 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('package_id')->nullable();
-            $table->unsignedBigInteger('project_id')->nullable();
-            $table->date('date');
-            $table->float('total_price');
-            $table->integer('status');
-            $table->integer('stage');
+            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('customer_id');
+            $table->float('total');
+            $table->unsignedBigInteger('payment_id')->nullable();
             $table->timestamps();
+            $table->integer('status');
+            $table->integer('payment_status');
+            $table->unsignedBigInteger('modify_by')->nullable();
+            $table->timestamp('modify_date')->nullable();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('package_id')->references('id')->on('packages')->onDelete('set null');
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('set null');
+
+            $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('set null');
+            $table->foreign('modify_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

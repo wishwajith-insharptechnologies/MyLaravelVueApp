@@ -47,7 +47,7 @@
 
   const loadPackages = async () => {
     try {
-      const data = await getPackages();
+      const {data} = await getPackages();
       console.log(data);
       packages.value = data;
       dataReady.value = true;

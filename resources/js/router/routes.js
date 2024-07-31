@@ -92,6 +92,7 @@ const routes = [
         }),
         component: PaymentPage,
         name: "payment",
+        meta: { middleware: "guest", title: `payment` },
         beforeEnter: (to, from, next) => {
             if (!to.query.package) {
               next({ name: 'notFound' });
