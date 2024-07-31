@@ -1,72 +1,67 @@
 <template>
     <a-row style="background-color: #F5F8FF;" justify="center">
-      <a-col :span="10">
-        <a-button type="text" class="back-button" icon>
-          <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </a-button>
-        <h1 class="title">Order Summary</h1>
-        <p class="item-count">1 item(s)</p>
-        <div class="details">
-          <div class="flex-between">
-            <span class="plan-name mb-5">{{ props.package.title }}</span>
-            <span class="plan-price"><b>${{ props.package.price }}</b></span>
-          </div>
-          <span class="plan-name mb-5">Package details</span>
-          <ul class="package-details mb-2">
-            <li
-              v-for="(feature, key) in props.package.limitation.limitation"
-              :key="key"
-            >
-              <a-list-item v-if="feature.value">
-                <a-icon type="check" class="check-icon" />
-                {{ limitationValue(feature.value) + ' ' + feature.name }}
-              </a-list-item>
-            </li>
-          </ul>
-          <div class="flex-between">
-            <span>{{ props.package.title }}</span>
-            <span>${{ props.package.price }}</span>
-          </div>
-          <div class="flex-between">
-            <span>Discount</span>
-            <span>%{{ props.package.discount }}</span>
-          </div>
-          <div class="flex-between total">
-            <span>Total</span>
-            <span>${{ totalPrice }}</span>
-          </div>
-          <div class="flex-between total">
-            <span>Total Billed Annually</span>
-            <span>${{ totalPrice }}</span>
-          </div>
-          <p class="next-charge">Next charge date {{ validityEndDate }}</p>
-        </div>
-        <p class="note">
-          Your purchase may be subject to local taxes based on the billing
-          information you provide. The final charge may be different than the
-          amount shown here and will be displayed on your invoice.
-        </p>
-        <div class="logo-container">
-          <img
-            :src="getImageUrl(props.package.images)"
-            alt="PeacoHRM Logo"
-            class="logo"
-          />
-        </div>
-        <p class="footer">© 2024 PeacoHRM. All rights reserved.</p>
-      </a-col>
+        <a-col :span="10">
+            <a-button type="text" class="back-button" icon>
+                <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a-button>
+            <h1 class="title">Order Summary</h1>
+            <p class="item-count">1 item(s)</p>
+            <div class="details">
+                <div class="flex-between">
+                    <span class="plan-name mb-5">{{ props.package.title }}</span>
+                    <span class="plan-price"><b>${{ props.package.price }}</b></span>
+                </div>
+                <span class="plan-name mb-5">Package details</span>
+                <ul class="package-details mb-2">
+                    <li v-for="(feature, key) in props.package.limitation.limitation" :key="key">
+                        <a-list-item v-if="feature.value">
+                            <CheckOutlined class="check-box-icon"/>
+                            {{ limitationValue(feature.value) + ' ' + feature.name }}
+                        </a-list-item>
+                    </li>
+                </ul>
+                <div class="flex-between">
+                    <span>{{ props.package.title }}</span>
+                    <span>${{ props.package.price }}</span>
+                </div>
+                <div class="flex-between">
+                    <span>Discount</span>
+                    <span>%{{ props.package.discount }}</span>
+                </div>
+                <div class="flex-between total">
+                    <span>Total</span>
+                    <span>${{ totalPrice }}</span>
+                </div>
+                <div class="flex-between total">
+                    <span>Total Billed Annually</span>
+                    <span>${{ totalPrice }}</span>
+                </div>
+                <p class="next-charge">Next charge date {{ validityEndDate }}</p>
+            </div>
+            <p class="note">
+                Your purchase may be subject to local taxes based on the billing
+                information you provide. The final charge may be different than the
+                amount shown here and will be displayed on your invoice.
+            </p>
+            <div class="image-container">
+                <div class="image-left-div">
+                    <img :src="getImageUrl(props.package.images)" alt="logo" class="left-image" />
+                </div>
+                <div class="image-right-div">
+                    <img src="/storage/logos/aurelianLogo.png" alt="logo" class="right-image" />
+                </div>
+            </div>
+
+            <p class="footer">© 2024 PeacoHRM. All rights reserved.</p>
+        </a-col>
     </a-row>
-  </template>
+</template>
 
 <script setup>
 import { defineProps, computed } from 'vue';
+import { CheckOutlined    } from '@ant-design/icons-vue';
 
 const props = defineProps(['package']);
 
@@ -94,8 +89,8 @@ const limitationValue = (value) => {
   return value;
 };
 const getImageUrl = (imagePath) => {
-    const trimmedImagePath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
-  return `${import.meta.env.VITE_MEDIA_URL}${trimmedImagePath}`;
+    // const trimmedImagePath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+  return `/storage/${imagePath}`;
 };
 </script>
 
@@ -194,9 +189,10 @@ const getImageUrl = (imagePath) => {
   margin-bottom: 1.5rem;
 }
 
-.logo-container {
+.image-container {
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
@@ -209,4 +205,33 @@ const getImageUrl = (imagePath) => {
   text-align: center;
   margin-top: 1rem;
 }
+
+.image-left-div {
+  flex: 1;
+}
+
+.image-right-div {
+  flex: 0;
+}
+
+.left-image {
+  width:100px;
+  height: auto;
+}
+
+.right-image {
+  width: 100px; /* Set the desired width */
+  height: auto;
+}
+
+.spacer {
+  flex: 0 0 20px; /* Adjust the space between images */
+}
+
+.check-box-icon{
+    font-size: 20px; /* 32px */
+    margin-right: 5px;
+    color: #6172F3; /* Custom color */
+}
+
 </style>

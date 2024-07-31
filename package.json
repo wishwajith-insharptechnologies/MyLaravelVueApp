@@ -17,6 +17,7 @@
         "vue": "^3.4.31"
     },
     "dependencies": {
+        "@ant-design/icons-vue": "^7.0.1",
         "@stripe/stripe-js": "^3.5.0",
         "ant-design-vue": "^4.2.1",
         "js-cookie": "^3.0.5",
