@@ -6,7 +6,7 @@
         </div>
         <h2>Log in to your account</h2>
         <p>Welcome! Please enter your details.</p>
-        <a-form @submit.prevent="handleSubmit" layout="vertical">
+        <a-form  @submit.prevent="handleSubmit" layout="vertical">
           <a-form-item>
             <a-input
               v-model:value="email"

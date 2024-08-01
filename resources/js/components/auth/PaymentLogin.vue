@@ -11,6 +11,7 @@
             >
                 <!-- Email Field -->
                 <a-form-item
+                    class="heading"
                     label="Email"
                     name="email"
                     :rules="[

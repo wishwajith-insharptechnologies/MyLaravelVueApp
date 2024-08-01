@@ -1,10 +1,10 @@
 <template>
-      <a-layout-header style="background: #fff; padding: 24px;">
-        <h1>Permission Management</h1>
-      </a-layout-header>
-      <a-layout-content style="padding: 24px;">
+      <p class="text-[20px] font-bold m-0 mb-4">
+        Permission Management
+      </p>
+      <div>
         <!-- Permission List Table -->
-        <a-table :columns="columns" :data-source="permissions" rowKey="id" :pagination="pagination" @change="handleTableChange">
+        <a-table :scroll="{ x: 767 }" :columns="columns" :data-source="permissions" rowKey="id" :pagination="pagination" @change="handleTableChange">
           <template #name="{ text }">
             {{ text }}
           </template>
@@ -21,7 +21,7 @@
 
         <!-- Edit Permission Modal -->
         <a-modal v-model:visible="editModalVisible" title="Edit Permission" @ok="handleEditPermission" @cancel="closeEditModal">
-          <a-form :model="editForm" ref="editFormRef">
+          <a-form layout="vertical" :model="editForm" ref="editFormRef">
             <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
               <a-input v-model:value="editForm.name" />
             </a-form-item>
@@ -32,11 +32,11 @@
         </a-modal>
 
         <!-- Create Permission Button -->
-        <a-button type="primary" @click="showCreateModal">Create New Permission</a-button>
+        <a-button class="mt-6" type="primary" @click="showCreateModal">Create New Permission</a-button>
 
         <!-- Create Permission Modal -->
         <a-modal v-model:visible="createModalVisible" title="Create New Permission" @ok="handleCreatePermission" @cancel="closeCreateModal">
-          <a-form :model="createForm" ref="createFormRef">
+          <a-form layout="vertical" :model="createForm" ref="createFormRef">
             <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
               <a-input v-model:value="createForm.name" />
             </a-form-item>
@@ -45,7 +45,7 @@
             </a-form-item>
           </a-form>
         </a-modal>
-      </a-layout-content>
+    </div>
   </template>
 
   <script setup>

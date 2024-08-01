@@ -6,7 +6,7 @@
         </div>
         <h2>Create a new account</h2>
         <p>Welcome! Please fill in your details to sign up.</p>
-        <a-form @submit.prevent="handleSubmit" layout="vertical">
+        <a-form  @submit.prevent="handleSubmit" layout="vertical">
           <a-form-item>
             <a-input
               v-model:value="name"

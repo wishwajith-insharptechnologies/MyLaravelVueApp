@@ -1,12 +1,15 @@
 <template>
-    <a-layout-header style="background: #fff; padding: 24px">
-        <h1>User Management</h1>
-    </a-layout-header>
-    <a-layout-content style="padding: 24px">
+
+    <p class="text-[20px] font-bold m-0 mb-4">
+        User Management
+    </p>
+
+    <div >
         <!-- User List Table -->
         <a-table
             :columns="columns"
             :data-source="users"
+            :scroll="{ x: 767 }"
             rowKey="id"
             @change="handleTableChange"
         >
@@ -36,7 +39,7 @@
             v-model:visible="editModalVisible"
             title="Edit User"
         >
-            <a-form :model="editForm" ref="editFormRef">
+            <a-form layout="vertical" :model="editForm" ref="editFormRef">
                 <a-form-item
                     label="Name"
                     name="name"
@@ -88,7 +91,7 @@
         </a-modal>
 
         <!-- Create User Button -->
-        <a-button type="primary" @click="showCreateModal"
+        <a-button class="mt-6" type="primary" @click="showCreateModal"
             >Create New User</a-button
         >
 
@@ -146,7 +149,7 @@
                 </a-button>
             </template>
         </a-modal>
-    </a-layout-content>
+    </div>
 </template>
 
 <script setup>

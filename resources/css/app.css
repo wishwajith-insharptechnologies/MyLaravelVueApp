@@ -1,0 +1,24 @@
+/* src/assets/main.css */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+    --primary-color: #2D31A6 !important;
+    --secondary-color: #101828 !important;
+    font-family: "Inter", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-style: normal;
+  }
+  .bg-primary{
+    background-color: #2D31A6 !important ;
+
+  }
+  .content-layout{
+    min-height: calc( 100vh - 166px );
+
+  }
+
+

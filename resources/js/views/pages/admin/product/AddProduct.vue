@@ -1,6 +1,6 @@
 <template>
-           <div id="users" class="bg-white p-3 dark:bg-slate-800 dark:text-gray-200">
-             <nav class="mb-6 text-sm font-semibold" aria-label="Breadcrumb">
+           <div id="users" class="">
+             <nav class=" text-sm font-semibold" aria-label="Breadcrumb">
                <a-breadcrumb>
                  <a-breadcrumb-item v-if="authenticated && roles && (roles.admin || roles.superAdmin)">
                    <router-link to="{ name: 'admin' }">Admin</router-link>

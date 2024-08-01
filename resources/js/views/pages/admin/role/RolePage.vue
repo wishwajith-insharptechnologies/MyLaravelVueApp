@@ -1,10 +1,10 @@
 <template>
-    <a-layout-header style="background: #fff; padding: 24px;">
-      <h1>Role Management</h1>
-    </a-layout-header>
-    <a-layout-content style="padding: 24px;">
+    <p class="text-[20px] font-bold m-0 mb-4">
+      Role Management
+    </p>
+    <div>
       <!-- Role List Table -->
-      <a-table :columns="columns" :dataSource="roles" rowKey="id" @change="handleTableChange">
+      <a-table :scroll="{ x: 767 }" :columns="columns" :dataSource="roles" rowKey="id" @change="handleTableChange">
         <template #operation="{ record }">
           <span>
             <a-button type="primary" @click="editRole(record)">Edit</a-button>
@@ -14,7 +14,7 @@
       </a-table>
 
       <!-- Edit Role Modal -->
-      <a-modal v-model:visible="editModalVisible" title="Edit Role" @ok="handleEditRole" @cancel="closeEditModal">
+      <a-modal a-form v-model:visible="editModalVisible" title="Edit Role" @ok="handleEditRole" @cancel="closeEditModal">
         <a-form :model="editForm" ref="editFormRef" :initialValues="editForm">
           <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
             <a-input v-model:value="editForm.name" />
@@ -26,11 +26,11 @@
       </a-modal>
 
       <!-- Create Role Button -->
-      <a-button type="primary" @click="showCreateModal">Create New Role</a-button>
+      <a-button class="mt-6" type="primary" @click="showCreateModal">Create New Role</a-button>
 
       <!-- Create Role Modal -->
       <a-modal v-model:visible="createModalVisible" title="Create New Role" @ok="handleCreateRole" @cancel="closeCreateModal">
-        <a-form :model="createForm" ref="createFormRef" :initialValues="createForm">
+        <a-form layout="vertical" :model="createForm" ref="createFormRef" :initialValues="createForm">
           <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
             <a-input v-model:value="createForm.name" />
           </a-form-item>
@@ -39,7 +39,7 @@
           </a-form-item>
         </a-form>
       </a-modal>
-    </a-layout-content>
+    </div>
   </template>
 
   <script setup>
