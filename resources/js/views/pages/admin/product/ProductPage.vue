@@ -1,10 +1,11 @@
 <template>
-    <a-layout-header style="background: #fff; padding: 24px">
-        <h1>Product Management</h1>
-    </a-layout-header>
-    <a-layout-content style="padding: 24px">
+    <p class="text-[20px] font-bold m-0 mb-4">
+        Product Management
+    </p>
+    <div>
         <!-- Product List Table -->
         <a-table
+        :scroll="{ x: 767 }"
             :columns="columns"
             :data-source="products"
             :row-key="(record) => record.id"
@@ -36,10 +37,10 @@
         </a-table>
 
         <!-- Create Product Button -->
-        <a-button type="primary" @click="handleCreateNewProject"
+        <a-button class="mt-6" type="primary" @click="handleCreateNewProject"
             >Create New Product</a-button
         >
-    </a-layout-content>
+    </div>
 </template>
 
 <script setup>

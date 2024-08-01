@@ -1,10 +1,10 @@
 <template>
-      <a-layout-header style="background: #fff; padding: 24px;">
-        <h1>Permission Management</h1>
-      </a-layout-header>
-      <a-layout-content style="padding: 24px;">
+      <p class="text-[20px] font-bold m-0 mb-4">
+        Permission Management
+      </p>
+      <div>
         <!-- Permission List Table -->
-        <a-table :columns="columns" :data-source="permissions" rowKey="id" :pagination="pagination" @change="handleTableChange">
+        <a-table :scroll="{ x: 767 }" :columns="columns" :data-source="permissions" rowKey="id" :pagination="pagination" @change="handleTableChange">
           <template #name="{ text }">
             {{ text }}
           </template>
@@ -32,7 +32,7 @@
         </a-modal>
 
         <!-- Create Permission Button -->
-        <a-button type="primary" @click="showCreateModal">Create New Permission</a-button>
+        <a-button class="mt-6" type="primary" @click="showCreateModal">Create New Permission</a-button>
 
         <!-- Create Permission Modal -->
         <a-modal v-model:visible="createModalVisible" title="Create New Permission" @ok="handleCreatePermission" @cancel="closeCreateModal">
@@ -45,7 +45,7 @@
             </a-form-item>
           </a-form>
         </a-modal>
-      </a-layout-content>
+    </div>
   </template>
 
   <script setup>

@@ -6,11 +6,11 @@
         @submit.prevent="handleSubmit"
     >
             <a-form-item>
-                <h2
-                    >Change Password</h2
+                <p class="text-[18px] font-bold m-0 mb-1"
+                    >Change Password</p
                 >
-                <a-typography-text
-                    >Update personal details here.</a-typography-text
+                <p class="text-[14px] m-0 text-gray-600"
+                    >Update personal details here.</p
                 >
             </a-form-item>
             <a-form-item

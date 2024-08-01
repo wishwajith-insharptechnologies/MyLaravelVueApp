@@ -5,10 +5,12 @@
         layout="vertical"
         @submit.prevent="handleSubmit"
     >
-        <a-form-item>
-            <h2>Personal info</h2>
-            <a-typography-text>Update personal details here.</a-typography-text>
+
+    <a-form-item>
+            <p class="text-[18px] font-bold m-0 mb-1">Personal info</p>
+            <p class="text-[14px] m-0 text-gray-600">Update personal details here.</p>
         </a-form-item>
+        <div class=" grid grid-cols-1 md:grid-cols-2 gap-4">
         <a-form-item
             label="First name"
             name="name"
@@ -35,6 +37,7 @@
         >
             <a-input v-model:value="form.lastName"  placeholder="Last name" />
         </a-form-item>
+    </div>
         <a-form-item
             label="Email"
             name="email"

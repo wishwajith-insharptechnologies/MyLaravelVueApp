@@ -1,9 +1,8 @@
 <template>
-    <a-card>
-        <a-typography-title level="3">Profile</a-typography-title>
+
         <UserProfileInfo />
         <UserProfileChangePassword />
-    </a-card>
+    
 </template>
 
 <script setup>

@@ -1,10 +1,10 @@
 <template>
-      <a-layout-header style="background: #fff; padding: 24px;">
-        <h1>Package Management</h1>
-      </a-layout-header>
-      <a-layout-content style="padding: 24px;">
+      <p class="text-[20px] font-bold m-0 mb-4">
+        Package Management
+      </p>
+      <div>
         <!-- Package List Table -->
-        <a-table :columns="columns" :data-source="packages" rowKey="id"  >
+        <a-table :scroll="{ x: 767 }" :columns="columns" :data-source="packages" rowKey="id"  >
           <template #name="{ text }">
             {{ text }}
           </template>
@@ -23,8 +23,8 @@
         </a-table>
 
         <!-- Create Package Button -->
-        <a-button type="primary" @click="handleCreateNewPackage">Create New Package</a-button>
-      </a-layout-content>
+        <a-button class="mt-6" type="primary" @click="handleCreateNewPackage">Create New Package</a-button>
+    </div>
   </template>
 
   <script setup>
