@@ -21,7 +21,7 @@
 
         <!-- Edit Permission Modal -->
         <a-modal v-model:visible="editModalVisible" title="Edit Permission" @ok="handleEditPermission" @cancel="closeEditModal">
-          <a-form :model="editForm" ref="editFormRef">
+          <a-form layout="vertical" :model="editForm" ref="editFormRef">
             <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
               <a-input v-model:value="editForm.name" />
             </a-form-item>
@@ -36,7 +36,7 @@
 
         <!-- Create Permission Modal -->
         <a-modal v-model:visible="createModalVisible" title="Create New Permission" @ok="handleCreatePermission" @cancel="closeCreateModal">
-          <a-form :model="createForm" ref="createFormRef">
+          <a-form layout="vertical" :model="createForm" ref="createFormRef">
             <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
               <a-input v-model:value="createForm.name" />
             </a-form-item>

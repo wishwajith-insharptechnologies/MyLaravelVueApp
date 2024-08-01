@@ -44,6 +44,12 @@
           Settings
         </a>
       </a-menu-item>
+      <a-menu-item key="logout" @click="logout">
+        <a >
+            Logout
+        </a>
+      </a-menu-item>
+
     </a-menu>
   </template>
 </a-dropdown>
@@ -133,7 +139,26 @@
                   <p>Settings</p>
                 </a-menu-item>
               </router-link>
+              <router-link to="/settings">
+                <a-menu-item key="settings">
+                  <p>Settings</p>
+                </a-menu-item>
+              </router-link>
+
+
             </a-sub-menu>
+
+            <router-link >
+              <a-menu-item key="logout" @click="logout">
+                <p class="m-0">Logout</p>
+
+              </a-menu-item>
+            </router-link>
+
+            
+
+
+
           </a-menu>
         </a-drawer>
 

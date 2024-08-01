@@ -14,7 +14,7 @@
       </a-table>
 
       <!-- Edit Role Modal -->
-      <a-modal v-model:visible="editModalVisible" title="Edit Role" @ok="handleEditRole" @cancel="closeEditModal">
+      <a-modal a-form v-model:visible="editModalVisible" title="Edit Role" @ok="handleEditRole" @cancel="closeEditModal">
         <a-form :model="editForm" ref="editFormRef" :initialValues="editForm">
           <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
             <a-input v-model:value="editForm.name" />
@@ -30,7 +30,7 @@
 
       <!-- Create Role Modal -->
       <a-modal v-model:visible="createModalVisible" title="Create New Role" @ok="handleCreateRole" @cancel="closeCreateModal">
-        <a-form :model="createForm" ref="createFormRef" :initialValues="createForm">
+        <a-form layout="vertical" :model="createForm" ref="createFormRef" :initialValues="createForm">
           <a-form-item label="Name" name="name" :rules="[{ required: true, message: 'Please input the name!' }]">
             <a-input v-model:value="createForm.name" />
           </a-form-item>

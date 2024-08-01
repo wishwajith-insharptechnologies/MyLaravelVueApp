@@ -2,7 +2,7 @@
     <a-row justify="center">
       <a-col :span="30">
         <h1 class="heading">Checkout</h1>
-        <a-form v-if="!authenticated" layout="vertical" @submit="handleSubmit">
+        <a-form   v-if="!authenticated" layout="vertical" @submit="handleSubmit">
           <!-- Name Field -->
           <a-form-item
             v-if="form.isRegisterForm"

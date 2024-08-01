@@ -39,7 +39,7 @@
             v-model:visible="editModalVisible"
             title="Edit User"
         >
-            <a-form :model="editForm" ref="editFormRef">
+            <a-form layout="vertical" :model="editForm" ref="editFormRef">
                 <a-form-item
                     label="Name"
                     name="name"

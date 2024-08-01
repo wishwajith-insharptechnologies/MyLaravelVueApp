@@ -18,6 +18,7 @@
 
             <!-- Form -->
             <a-form
+            
                 :model="form"
                 ref="productFormRef"
                 @submit.prevent="submit"

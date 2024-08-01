@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <a-card
-            class="ml-5 mr-20 bg-white max-w-mx dark:bg-slate-800 dark:text-gray-200"
+        <div
+            class=""
         >
             <!-- Title -->
-            <h2 class="mb-4 text-lg font-bold">
+            <p class="text-[20px] font-bold m-0 mb-4">
                 {{ product ? "Edit" : "Create" }} Product
-            </h2>
+            </p>
 
             <!-- Error messages -->
             <Errors
@@ -20,6 +20,7 @@
 
             <!-- Form -->
             <a-form
+            layout="vertical"
                 :model="form"
                 ref="productFormRef"
                 @submit.prevent="submit"
@@ -217,7 +218,7 @@
                     </a-button>
                 </a-form-item>
             </a-form>
-        </a-card>
+        </div>
     </div>
 </template>
 

@@ -1,11 +1,15 @@
 <template>
     <a-form
+    
         :model="form"
         layout="vertical"
         ref="formRef"
         @finish="handleSubmit"
         :validateMessages="validateMessages"
     >
+    <p class="text-[20px] font-bold m-0 mb-4">
+                Create Package
+            </p>
         <a-form-item
             label="Title"
             name="title"
@@ -161,7 +165,7 @@
         />
 
         <a-form-item>
-            <a-button type="primary" html-type="submit">Submit</a-button>
+            <a-button class="mt-6" type="primary" html-type="submit">Submit</a-button>
         </a-form-item>
     </a-form>
 </template>
