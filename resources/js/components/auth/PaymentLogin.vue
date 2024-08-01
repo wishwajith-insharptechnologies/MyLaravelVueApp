@@ -138,14 +138,13 @@ const store = useAuthStore();
 // const errors = ref(null);
 const loading = ref(false);
 const formRef = ref(null);
-const timer = ref(null);
 const form = ref({
     name: "",
     email: "",
     password: "",
     userEmail: "",
     isSameEmail: true,
-    isRegisterForm: true,
+    isRegisterForm: false,
     password_confirmation: "",
 });
 
@@ -154,19 +153,33 @@ const emit = defineEmits(["form-change"]);
 const isAuthenticated = store.isAuthenticated;
 
 watch(form.value, (newValue, oldValue) => {
-    console.log(newValue);
     emit("form-change", form.value);
+
 });
+
+watch(
+  () => form.value.email,
+  (newEmail, oldEmail) => {
+    formRef.value.validateFields(['email'])
+  .then(values => {
+    checkUserExists(values);
+  })
+  .catch(error => {
+    // console.error('Email validation failed:', error);
+  });
+  }
+);
+
+
+const checkUserExists = async (email) =>{
+    const {data } = await isUserExists(email);
+    form.value.isRegisterForm =  ! data;
+    console.log(data);
+}
+
 
 const toggleForm = () => {
     form.value.isRegisterForm = !form.value.isRegisterForm;
-};
-const handleInput = (e) => {
-    clearTimeout(timer.value);
-
-    timer.value = setTimeout(() => {
-        alert("searching...");
-    }, 2500);
 };
 const checkPasswordConfirmation = (rule, value, callback) => {
     if (value !== form.value.password) {

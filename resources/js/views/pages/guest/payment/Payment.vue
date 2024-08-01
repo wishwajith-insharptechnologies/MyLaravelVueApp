@@ -71,7 +71,6 @@
   import PaymentLogin from '@/components/auth/PaymentLogin.vue';
   import SuccessModal from '@/components/payment/PaymentSuccessModal.vue';
   import { getPackage } from "@/services/PackageService";
-
   import { message } from 'ant-design-vue';
   const authStore = useAuthStore();
   const router = useRouter();
@@ -120,7 +119,6 @@
   });
 
   const handleFormChange = (updatedForm) => {
-    console.log(updatedForm);
     form.value = updatedForm;
   };
 

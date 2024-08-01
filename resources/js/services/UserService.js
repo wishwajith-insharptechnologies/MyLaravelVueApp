@@ -59,7 +59,7 @@ export const updatePassword = async (userData) => {
 
 export const isUserExists = async (email) => {
     try {
-        const response = await Http.get("user-exists", email);
+        const response = await Http.post("user-exists", email);
         return response.data;
     } catch (error) {
         throw error;
