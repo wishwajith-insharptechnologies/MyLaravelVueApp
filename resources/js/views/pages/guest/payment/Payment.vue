@@ -72,7 +72,6 @@
   import SuccessModal from '@/components/payment/PaymentSuccessModal.vue';
   import { getPackage } from "@/services/PackageService";
 
-
   import { message } from 'ant-design-vue';
   const authStore = useAuthStore();
   const router = useRouter();

@@ -1,175 +1,222 @@
 <template>
     <a-row justify="center">
-      <a-col :span="30">
-        <h1 class="heading">Checkout</h1>
-        <a-form v-if="!authenticated" layout="vertical" @submit="handleSubmit">
-          <!-- Name Field -->
-          <a-form-item
-            v-if="form.isRegisterForm"
-            label="Name"
-            :validate-status="props.errors?.name ? 'error' : ''"
-            :help="props.errors?.name ? props.errors.name[0] : ''"
-          >
-            <a-input
-              v-model:value="form.name"
-              type="text"
-              name="name"
-              :disabled="loading"
-            />
-          </a-form-item>
+        <a-col :span="30">
+            <h1 class="heading">Checkout</h1>
+            <a-form
+                v-if="!authenticated"
+                :model="form"
+                layout="vertical"
+                ref="formRef"
+                @submit="handleSubmit"
+            >
+                <!-- Email Field -->
+                <a-form-item
+                    label="Email"
+                    name="email"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Email is required',
+                            trigger: 'blur',
+                        },
+                        {
+                            type: 'email',
+                            message: 'Please enter a valid email address',
+                            trigger: ['blur', 'change'],
+                        },
+                    ]"
+                >
+                    <a-input
+                        v-model:value="form.email"
+                        type="email"
+                        placeholder="Enter email"
+                        @input="handleInput"
+                    />
+                </a-form-item>
 
-          <!-- Email Field -->
-          <a-form-item
-            label="Email"
-            :validate-status="props.errors?.email ? 'error' : ''"
-            :help="props.errors?.email ? props.errors.email[0] : ''"
-          >
-            <a-input
-              v-model:value="form.email"
-              type="email"
-              name="email"
-              :disabled="loading"
-            />
-          </a-form-item>
+                <!-- Password Field -->
+                <a-form-item
+                    label="Password"
+                    name="password"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Password is required',
+                            trigger: 'blur',
+                        },
+                        {
+                            min: 8,
+                            message: 'Password must be at least 8 characters',
+                            trigger: 'blur',
+                        },
+                    ]"
+                >
+                    <a-input
+                        v-model:value="form.password"
+                        type="password"
+                        placeholder="Enter password"
+                    />
+                </a-form-item>
 
-          <!-- Password Field -->
-          <a-form-item
-            label="Password"
-            :validate-status="props.errors?.password ? 'error' : ''"
-            :help="props.errors?.password ? props.errors.password[0] : ''"
-          >
-            <a-input
-              v-model:value="form.password"
-              type="password"
-              placeholder="Must be at least 8 characters"
-            />
-          </a-form-item>
+                <a-form-item
+                    v-if="form.isRegisterForm"
+                    label="Confirm Password"
+                    name="password_confirmation"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Please confirm your password',
+                            trigger: 'blur',
+                        },
+                        {
+                            validator: checkPasswordConfirmation,
+                            trigger: 'blur',
+                        },
+                    ]"
+                >
+                    <a-input
+                        v-model:value="form.password_confirmation"
+                        type="password"
+                        name="password_confirmation"
+                        :disabled="loading"
+                    />
+                </a-form-item>
 
-          <!-- Confirm Password Field -->
-          <a-form-item
-            v-if="form.isRegisterForm"
-            label="Confirm Password"
-            :validate-status="props.errors?.password_confirmation ? 'error' : ''"
-            :help="props.errors?.password_confirmation ? props.errors.password_confirmation[0] : ''"
-          >
-            <a-input
-              v-model:value="form.password_confirmation"
-              type="password"
-              name="password_confirmation"
-              :disabled="loading"
-            />
-          </a-form-item>
+                <!-- Checkbox Field -->
+                <a-form-item>
+                    <a-checkbox v-model:checked="form.isSameEmail">
+                        Peaco user email is same as email
+                    </a-checkbox>
+                </a-form-item>
 
-          <!-- Toggle Form Link -->
-          <a-form-item>
-            <a @click="toggleForm">
-              {{ form.isRegisterForm ? 'Login' : 'Register' }}
-            </a>
-          </a-form-item>
+                <!-- Peaco User Email Field -->
+                <a-form-item
+                    label="Peaco User Email"
+                    name="userEmail"
+                    :rules="[
+                        {
+                            required: true,
+                            message: 'Peaco User Email is required',
+                            trigger: 'blur',
+                        },
+                        {
+                            type: 'email',
+                            message: 'Please enter a valid email address',
+                            trigger: ['blur', 'change'],
+                        },
+                    ]"
+                >
+                    <a-input
+                        v-model:value="form.userEmail"
+                        type="email"
+                        :disabled="form.isSameEmail"
+                    />
+                </a-form-item>
 
-          <!-- Checkbox Field -->
-          <a-form-item>
-            <a-checkbox v-model:checked="form.isSameEmail">
-              Peaco user email is same as email
-            </a-checkbox>
-          </a-form-item>
-
-          <!-- Peaco User Email Field -->
-          <a-form-item label="Peaco User Email">
-            <a-input
-              v-model:value="form.userEmail"
-              type="email"
-              :disabled="form.isSameEmail"
-            />
-          </a-form-item>
-
-          <!-- Submit Button -->
-          <!-- <a-form-item>
+                <!-- Submit Button -->
+                <!-- <a-form-item>
             <a-button type="primary" html-type="submit" :loading="loading">
               Submit
             </a-button>
           </a-form-item> -->
-        </a-form>
-      </a-col>
+            </a-form>
+        </a-col>
     </a-row>
-  </template>
+</template>
 
 <script setup>
-import { computed, ref, defineEmits, watch } from 'vue';
-import { useAuthStore } from '@/stores/modules/auth.js';
+import { computed, ref, defineEmits, watch } from "vue";
+import { useAuthStore } from "@/stores/modules/auth.js";
+import { isUserExists } from "@/services/UserService";
 
 const props = defineProps({
-  errors: Object,
+    errors: Object,
 });
 
 const store = useAuthStore();
 // const errors = ref(null);
 const loading = ref(false);
+const formRef = ref(null);
+const timer = ref(null);
 const form = ref({
-  name: '',
-  email: '',
-  password: '',
-  userEmail: '',
-  isSameEmail: true,
-  isRegisterForm: false,
-  password_confirmation: '',
+    name: "",
+    email: "",
+    password: "",
+    userEmail: "",
+    isSameEmail: true,
+    isRegisterForm: true,
+    password_confirmation: "",
 });
 
-const emit = defineEmits(['form-change']);
+const emit = defineEmits(["form-change"]);
 
 const isAuthenticated = store.isAuthenticated;
 
 watch(form.value, (newValue, oldValue) => {
-  console.log(newValue);
-  emit('form-change', form.value);
+    console.log(newValue);
+    emit("form-change", form.value);
 });
 
 const toggleForm = () => {
-  form.value.isRegisterForm = !form.value.isRegisterForm;
+    form.value.isRegisterForm = !form.value.isRegisterForm;
+};
+const handleInput = (e) => {
+    clearTimeout(timer.value);
+
+    timer.value = setTimeout(() => {
+        alert("searching...");
+    }, 2500);
+};
+const checkPasswordConfirmation = (rule, value, callback) => {
+    if (value !== form.value.password) {
+        callback(new Error("The passwords do not match"));
+    } else {
+        callback();
+    }
 };
 </script>
 <style scoped>
 .container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
 }
 
 .heading {
-  text-align: left;
-  margin-top: 100px;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
+    text-align: left;
+    margin-top: 100px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .input-group {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 .label {
-  margin-bottom: 5px;
-  display: block;
-  font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
 }
 
 .input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
 }
 
 .checkbox {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 .checkbox-label {
-  display: inline;
+    display: inline;
 }
 </style>

@@ -56,3 +56,12 @@ export const updatePassword = async (userData) => {
         throw error;
     }
 };
+
+export const isUserExists = async (email) => {
+    try {
+        const response = await Http.get("user-exists", email);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

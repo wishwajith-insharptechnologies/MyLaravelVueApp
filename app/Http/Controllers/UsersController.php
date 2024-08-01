@@ -117,4 +117,14 @@ class UsersController extends Controller
             return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function isUserExists(Request $request)
+    {
+        try {
+            $isUserExists = UserService::searchUserExists($request);
+            return ApiResponse::success($isUserExists);
+        } catch (\Exception $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

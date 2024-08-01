@@ -20,4 +20,9 @@ class UserRepository
     {
         return User::create($userData);
     }
+
+    public static function isUserExists($email)
+    {
+        return User::where('email', $email)->exists();
+    }
 }

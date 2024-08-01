@@ -11,7 +11,7 @@
         <template #overlay>
           <a-menu>
             <a-menu-item key="profile">
-              <router-link to="/profile">Profile</router-link>
+              <router-link to="/profile">Profile te</router-link>
             </a-menu-item>
             <a-menu-item key="logout" @click="logout">
               Logout

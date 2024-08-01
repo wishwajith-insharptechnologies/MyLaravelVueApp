@@ -88,4 +88,8 @@ class UserService
         return $user->save();
     }
 
+    public static function searchUserExists($request){
+        return UserRepository::isUserExists($request->email);
+    }
+
 }
