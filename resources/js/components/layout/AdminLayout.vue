@@ -150,12 +150,12 @@
 
             <router-link >
               <a-menu-item key="logout" @click="logout">
-                <p class="m-0">Logout</p>
+                <p class="m-0">Logout </p>
 
               </a-menu-item>
             </router-link>
 
-            
+
 
 
 
@@ -258,10 +258,16 @@
   import { ref, onMounted, onUnmounted } from 'vue';
   import { Layout, Menu, Breadcrumb, Drawer, Button } from 'ant-design-vue';
   import { MenuOutlined } from '@ant-design/icons-vue';
+  import Auth from "@/services/Auth"
+  import { useAuthStore } from '@/stores/modules/auth.js';
+  import { useRouter } from 'vue-router';
   import NavBar from './NavBar.vue';
   import Footer from './Footer.vue';
   import '../../../css/app.css'
 import { Components } from 'ant-design-vue/es/date-picker/generatePicker';
+
+  const authStore = useAuthStore();
+  const router = useRouter();
 
   const selectedKeys = ref(['1']);
   const drawerVisible = ref(false);
@@ -294,6 +300,13 @@ import { Components } from 'ant-design-vue/es/date-picker/generatePicker';
     isMobileView.value = window.innerWidth <= 768;
   };
 
+  const logout = async () => {
+      await authStore.signOut();
+      await Auth.logout().then(async () => {
+        await router.push('/login');
+    });
+  };
+
   onMounted(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -302,6 +315,7 @@ import { Components } from 'ant-design-vue/es/date-picker/generatePicker';
   onUnmounted(() => {
     window.removeEventListener('resize', handleResize);
   });
+
   </script>
 
   <style scoped>
