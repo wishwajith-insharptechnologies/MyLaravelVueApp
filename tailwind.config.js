@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./resources/**/*.{vue,js,ts,jsx,tsx,css,scss,vue} ',
+    './resources/views/**/*.blade.php',,
+    './resources/js/**/*.js',
+    './resources/js/**/*.vue',
     './resources/js/components/layout/AdminLayout.vue',
     './resources/js/views/pages/admin/user/UserPage.vue',
     './resources/js/components/user/UserProfileChangePassword.vue',
