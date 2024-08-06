@@ -101,3 +101,6 @@ Route::get('/test/get-product-key',  [keyGenerateController::class, 'getProductK
 
 Route::get('/test/public/url',  [PaymentsController::class, 'testPublicUrl']);
 Route::get('/test/decrypt/key',  [PaymentsController::class, 'testDecryptKey']);
+
+//webhooks
+Route::stripeWebhooks('webhook-route-pkg-payment-configured-stripe-dashboard');

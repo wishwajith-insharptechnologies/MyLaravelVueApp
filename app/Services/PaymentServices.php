@@ -12,7 +12,9 @@ use App\Mail\SendProductKeyMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Stripe\Webhook as StripeWebhook;
 use App\Repository\PackagesRepository;
+use Illuminate\Support\Facades\Response;
 
 class PaymentServices
 {
@@ -157,10 +159,9 @@ class PaymentServices
         return $discountedPrice;
     }
 
-    public static function stripeWebhook()
+
+    public static function stripeWebhookListening()
     {
-        Log::info("listen hook");
-        // This is your Stripe CLI webhook secret for testing your endpoint locally.
         $endpoint_secret = env('STRIPE_WEBHOOK_SECRET');
 
         $payload = @file_get_contents('php://input');
@@ -168,41 +169,38 @@ class PaymentServices
         $event = null;
 
         try {
-            $event = \Stripe\Webhook::constructEvent(
+            $event = StripeWebhook::constructEvent(
                 $payload,
                 $sig_header,
                 $endpoint_secret
             );
         } catch (\UnexpectedValueException $e) {
-            // Invalid payload
-            return response('', 400);
+            Log::error('Invalid payload: ' . $e->getMessage());
+            return Response::make('Invalid payload', 400);
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            // Invalid signature
-            return response('', 400);
+
+            Log::error('Invalid signature: ' . $e->getMessage());
+            return Response::make('Invalid signature', 400);
         }
-        Log::info($event);
-        // Handle the event
+
+        Log::info('Received Stripe event: ' . $event->type);
+
+        // Handle the event based on its type
         switch ($event->type) {
             case 'charge.succeeded':
-                log::info('charge succeeded done');
+                Log::info('Charge succeeded event received.');
+                // self::handleChargeSucceeded($event->data->object);
+                break;
+
             case 'checkout.session.completed':
+                Log::info('Checkout session completed event received.');
+                break;
 
-                Log::info("checkout session completed done");
-                // $session = $event->data->object;
-
-                // $order = Order::where('session_id', $session->id)->first();
-                // if ($order && $order->status === 'unpaid') {
-                //     $order->status = 'paid';
-                //     $order->save();
-                //     // Send email to customer
-                // }
-
-                // ... handle other event types
             default:
-                Log::info("Received unknown event type");
-                echo 'Received unknown event type ' . $event->type;
+                Log::info('Unhandled event type: ' . $event->type);
+                return Response::make('Unhandled event type', 200);
         }
 
-        return response('');
+        return Response::make('Event processed', 200);
     }
 }

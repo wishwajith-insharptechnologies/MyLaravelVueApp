@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('customer_id');
             $table->float('total');
-            $table->unsignedBigInteger('payment_id')->nullable();
             $table->timestamps();
             $table->integer('status');
             $table->integer('payment_status');
@@ -27,7 +26,6 @@ return new class extends Migration
 
 
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('set null');
             $table->foreign('modify_by')->references('id')->on('users')->onDelete('set null');
         });
     }

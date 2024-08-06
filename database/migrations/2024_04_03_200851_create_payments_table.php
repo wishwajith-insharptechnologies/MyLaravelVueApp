@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->string('stripr_id');
+            $table->string('stripe_id');
             $table->string('card_type');
             $table->float('amount');
             $table->integer('status');
