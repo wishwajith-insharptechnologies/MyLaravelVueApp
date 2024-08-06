@@ -3,7 +3,7 @@
         <a-col :span="30">
             <h1 class="heading">Checkout</h1>
             <a-form
-                v-if="!authenticated"
+                v-if="!isAuthenticated"
                 :model="form"
                 layout="vertical"
                 ref="formRef"
@@ -126,9 +126,10 @@
 </template>
 
 <script setup>
-import { computed, ref, defineEmits, watch } from "vue";
+import { computed, ref, defineEmits, watch, onMounted} from "vue";
 import { useAuthStore } from "@/stores/modules/auth.js";
 import { isUserExists } from "@/services/UserService";
+import { message } from 'ant-design-vue';
 
 const props = defineProps({
     errors: Object,
@@ -148,12 +149,12 @@ const form = ref({
     password_confirmation: "",
 });
 
-const emit = defineEmits(["form-change"]);
-
-const isAuthenticated = store.isAuthenticated;
+const emit = defineEmits(["form-change","form-ref"]);
+const isAuthenticated = computed(() => store.isAuthenticated);
 
 watch(form.value, (newValue, oldValue) => {
     emit("form-change", form.value);
+    emit("form-ref", formRef);
 
 });
 
@@ -172,15 +173,17 @@ watch(
 
 
 const checkUserExists = async (email) =>{
-    const {data } = await isUserExists(email);
-    form.value.isRegisterForm =  ! data;
-    console.log(data);
+    if(!isAuthenticated){
+        setTimeout(async () => {
+            const {data}  = await isUserExists(email);
+            form.value.isRegisterForm =  ! data;
+            if(!data){
+                // message.info('Enter Confirm Password to register');
+            }
+        }, 1000);
+    }
 }
 
-
-const toggleForm = () => {
-    form.value.isRegisterForm = !form.value.isRegisterForm;
-};
 const checkPasswordConfirmation = (rule, value, callback) => {
     if (value !== form.value.password) {
         callback(new Error("The passwords do not match"));
@@ -188,6 +191,12 @@ const checkPasswordConfirmation = (rule, value, callback) => {
         callback();
     }
 };
+const getRandomNumber = () => {
+  return Math.floor(Math.random() * 1000);
+}
+onMounted(() => {
+  form.value.name = `anonymous${getRandomNumber()}`;
+});
 </script>
 <style scoped>
 .container {

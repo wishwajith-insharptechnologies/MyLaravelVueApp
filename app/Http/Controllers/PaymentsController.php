@@ -12,16 +12,6 @@ use App\Services\KeyGenerateServices;
 class PaymentsController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:sanctum');
-    //     try {
-    //         ob_start('ob_gzhandler');
-    //     } catch (\Exception $e) {
-    //         //
-    //     }
-    // }
-    //keyGenerateController
     public function getSession(Request $request){
         try {
             $productId = $request->productId;

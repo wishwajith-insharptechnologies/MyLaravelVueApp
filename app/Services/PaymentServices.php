@@ -56,6 +56,11 @@ class PaymentServices
                     ],
                 ],
                 'mode' => 'payment',
+                'metadata' => [
+                    'user_id' => 1,
+                    'oder_id' => 1,
+                    'package_id' => 1,
+                ],
             ]);
 
             // Return the checkout session object
@@ -106,8 +111,7 @@ class PaymentServices
                 ],
             ]);
 
-            // Return the client secret in the response
-            // return response()->json(['clientSecret' => $paymentIntent->client_secret]);
+
             return $paymentIntent;
         } catch (\Exception $e) {
             // Handle any errors and return an error response

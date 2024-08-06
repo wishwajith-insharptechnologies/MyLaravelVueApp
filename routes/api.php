@@ -35,9 +35,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/forgot-password', ForgotPasswordController::class);
     Route::post('/reset-password', ResetPasswordController::class);
-    Route::post('/user-exists', [UsersController::class,'isUserExists']);
     // Route::get('/user', [UsersController::class, 'user']);
     });
+Route::post('/user-exists', [UsersController::class,'isUserExists']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {

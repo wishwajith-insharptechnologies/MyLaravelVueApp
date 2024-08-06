@@ -1,300 +1,313 @@
 <template>
     <div>
-      <!-- Loading indicator -->
-      <a-spin v-if="isLoading" class="flex justify-center items-center h-screen">
-        <span>Loading...</span>
-      </a-spin>
+        <!-- Loading indicator -->
+        <a-spin
+            v-if="isLoading"
+            class="flex justify-center items-center h-screen"
+        >
+            <span>Loading...</span>
+        </a-spin>
 
-      <!-- Main content -->
-      <a-row v-else class="h-screen">
-        <a-col :span="12">
-          <PackageView :package="packageDetails" />
-        </a-col>
-        <a-col :span="12" class="flex flex-col h-screen">
-          <a-row :span="16" class="p-4">
-            <PaymentLogin
-              :errors="authFormErrorMessage"
-              @form-change="handleFormChange"
-            />
-            <a-alert
-              v-if="commonErrorMessage"
-              type="error"
-              message="Error"
-              description="commonErrorMessage"
-              show-icon
-            />
-          </a-row>
-          <a-alert
-            v-if="errorMessage"
-            type="error"
-            message="Error"
-            description="errorMessage"
-            show-icon
-          />
-          <a-row :span="8" class="p-4">
-            <div class="container">
-              <div id="payment-element" class="my-4 card-element"></div>
-              <a-button
-                type="primary"
-                :loading="loading"
-                class="btn btn-primary mx-auto w-400 mt-2"
-                @click="handleSubmit"
-              >
-                <template v-if="loading" #icon>
-                  <a-spin />
-                </template>
-                Pay
-                <!-- <span v-else id="button-text" class="inline-block text-center">
+        <!-- Main content -->
+        <a-row v-else class="h-screen">
+            <a-col :span="12">
+                <PackageView :package="packageDetails" />
+            </a-col>
+            <a-col :span="12" class="flex flex-col h-screen">
+                <a-row :span="16" class="p-4">
+                    <PaymentLogin
+                        :errors="authFormErrorMessage"
+                        @form-change="handleFormChange"
+
+                    />
+                    <!-- <a-alert
+                        v-if="commonErrorMessage"
+                        type="error"
+                        message="Error"
+                        description="commonErrorMessage"
+                        show-icon
+                    /> -->
+                </a-row>
+                <a-alert
+                    v-if="errorMessage"
+                    type="error"
+                    message="Error"
+                    :description="errorMessage"
+                    show-icon
+                />
+                <a-row :span="8" class="p-4">
+                    <div class="container">
+                        <div
+                            id="payment-element"
+                            class="my-4 card-element"
+                        ></div>
+                        <a-button
+                            type="primary"
+                            :loading="loading"
+                            class="btn btn-primary mx-auto w-400 mt-2"
+                            @click="handleSubmit"
+                        >
+                            <template v-if="loading" #icon>
+                                <a-spin />
+                            </template>
+                            Pay
+                            <!-- <span v-else id="button-text" class="inline-block text-center">
                   Pay {{ packageTotalPrice }}
                 </span> -->
-              </a-button>
-            </div>
-          </a-row>
-        </a-col>
-      </a-row>
-      <SuccessModal
-        v-if="isSuccessModalOpen"
-        :payment-intent="paymentIntentStatus"
-        @close="handleSuccessModalClose"
-      />
+                        </a-button>
+                    </div>
+                </a-row>
+            </a-col>
+        </a-row>
+        <SuccessModal
+            v-if="isSuccessModalOpen"
+            :payment-intent="paymentIntentStatus"
+            @close="handleSuccessModalClose"
+        />
     </div>
-  </template>
+</template>
 
-  <script setup>
-  import { ref, onMounted, computed, nextTick, watch } from 'vue';
-  import Http from '@/services/Http.js';
-  import Auth from "@/services/Auth"
-  import { loadStripe } from '@stripe/stripe-js';
-  import { useAuthStore } from '@/stores/modules/auth.js';
-  import { useRouter } from 'vue-router';
-  import PackageView from '@/components/package/PackageView.vue';
-  import PaymentLogin from '@/components/auth/PaymentLogin.vue';
-  import SuccessModal from '@/components/payment/PaymentSuccessModal.vue';
-  import { getPackage } from "@/services/PackageService";
-  import { message } from 'ant-design-vue';
-  const authStore = useAuthStore();
-  const router = useRouter();
-  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+<script setup>
+import { ref, onMounted, computed, nextTick, watch } from "vue";
+import Http from "@/services/Http.js";
+import Auth from "@/services/Auth";
+import { loadStripe } from "@stripe/stripe-js";
+import { useAuthStore } from "@/stores/modules/auth.js";
+import { useRouter } from "vue-router";
+import PackageView from "@/components/package/PackageView.vue";
+import PaymentLogin from "@/components/auth/PaymentLogin.vue";
+import SuccessModal from "@/components/payment/PaymentSuccessModal.vue";
+import { getPackage } from "@/services/PackageService";
+import { message } from "ant-design-vue";
+import { getSession, completePayment } from "@/services/Payment";
+const authStore = useAuthStore();
+const router = useRouter();
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-  const packageDetails = ref({});
-  const sessionDetails = ref();
-  const isLoading = ref(true);
-  const loading = ref(false);
-  const errorMessage = ref();
-  const authFormErrorMessage = ref();
-  const commonErrorMessage = ref();
-  const form = ref({});
-  const paymentElement = ref(null);
-  const stripe = ref(null);
-  const elements = ref(null);
-  const isSuccessModalOpen = ref(false);
-  const paymentIntentStatus = ref(null);
-  const paymentToken = ref(null);
+const packageDetails = ref({});
+const sessionDetails = ref();
+const isLoading = ref(true);
+const loading = ref(false);
+const errorMessage = ref();
+const authFormErrorMessage = ref();
+const commonErrorMessage = ref();
+const form = ref({});
+const paymentElement = ref(null);
+const stripe = ref(null);
+const elements = ref(null);
+const isSuccessModalOpen = ref(false);
+const paymentIntentStatus = ref(null);
+const paymentToken = ref(null);
+const paymentLoginRef = ref(null);
 
-  const isAuthenticated = authStore.isAuthenticated;
+const isAuthenticated = computed(() => authStore.isAuthenticated);
 
-  const props = defineProps({
+const props = defineProps({
     id: {
-      type: Number,
-      required: true,
+        type: Number,
+        required: true,
     },
-  });
+});
 
-  onMounted(async () => {
+onMounted(async () => {
     await fetchPackageDetails();
-    await getSession();
+    await getSessionData();
     isLoading.value = false;
-  });
+});
 
-  watch(isLoading, async (newVal) => {
+watch(isLoading, async (newVal) => {
     if (!newVal) {
-      await nextTick(); // Ensure the DOM is updated before initializing the payment element
-      await initializePaymentElement();
-      // checkStatus();
+        await nextTick(); // Ensure the DOM is updated before initializing the payment element
+        await initializePaymentElement();
+        // checkStatus();
     }
-  });
+});
 
-  const packageTotalPrice = computed(() => {
+const packageTotalPrice = computed(() => {
     return sessionDetails.value.amount / 100;
-  });
+});
 
-  const handleFormChange = (updatedForm) => {
+const handleFormChange = (updatedForm) => {
     form.value = updatedForm;
-  };
+};
+const handleFormRefChange = (updatedFormRef) => {
+    paymentLoginRef.value = updatedFormRef;
+};
 
-  const fetchPackageDetails = async () => {
+const fetchPackageDetails = async () => {
     try {
-      const { data } = await getPackage(props.id);
-      packageDetails.value = data;
+        const { data } = await getPackage(props.id);
+        packageDetails.value = data;
     } catch (err) {
-        router.push({ name: 'notFound' });
+        router.push({ name: "notFound" });
         console.log(err);
     }
-  };
+};
 
-  const getSession = async () => {
-    const response = await Http.post(`payment/get-session`, {
-      productId: props.id,
-    });
-    if (response && response.data && response.data.id) {
-      console.log(response);
-      sessionDetails.value = response.data;
-      paymentToken.value = response.data.metadata.payment_token;
+const getSessionData = async () => {
+    const { data } = await getSession(props.id);
+    if (data && data.id) {
+        sessionDetails.value = data;
+        paymentToken.value = data.metadata.payment_token;
     }
-  };
+};
 
-  const updatePaymentStatus = async () => {
-    const response = await Http.post(`payment/complete`, {
-      payment_token: paymentToken.value,
-      payment_Intent_Id: paymentIntentStatus.value.paymentIntent.id,
-    });
+const updatePaymentStatus = async () => {
+    const response = await completePayment(
+        paymentToken.value,
+        paymentIntentStatus.value.paymentIntent.id
+    );
+
     if (response) {
-      console.log('success');
+        console.log("success");
     }
-  };
+};
 
-  const initializePaymentElement = async () => {
+const initializePaymentElement = async () => {
+    console.log(sessionDetails.value);
     stripe.value = await stripePromise;
     elements.value = stripe.value.elements({
-      clientSecret: sessionDetails.value.client_secret,
+        clientSecret: sessionDetails.value.client_secret,
     });
 
     const paymentElementOptions = {
-      layout: 'tabs',
+        layout: "tabs",
     };
 
     paymentElement.value = elements.value.create(
-      'payment',
-      paymentElementOptions,
+        "payment",
+        paymentElementOptions
     );
-    paymentElement.value.mount('#payment-element');
-  };
+    paymentElement.value.mount("#payment-element");
+};
 
-  const handleSubmit = async (e) => {
-    loading.value = true;
-    errorMessage.value = '';
-
+const handleSubmit = async (e) => {
     try {
-      if (!isAuthenticated.value) {
-        await authenticationFlow();
-      }
-      // if (!isAuthenticated.value) {
-      //   return;
-      // }
+        loading.value = true;
+        errorMessage.value = "";
 
-      if (!paymentElement.value) {
-        throw new Error('Payment element is not mounted.');
-      }
+        // paymentLoginRef.value.validate();
+        if (!isAuthenticated.value) {
+            await authenticationFlow();
+        }
 
-      const { error } = await stripe.value.confirmPayment({
-        elements: elements.value,
-        redirect: 'if_required',
-      });
-      if (error) {
-        errorMessage.value = error.message;
-        console.log(error.message);
-      } else {
-        checkStatus();
-        console.log('Payment successful!');
-      }
+
+        if (!paymentElement.value) {
+            throw new Error("Payment element is not mounted.");
+        }
+
+        const { error } = await stripe.value.confirmPayment({
+            elements: elements.value,
+            redirect: "if_required",
+        });
+        if (error) {
+            errorMessage.value = error.message;
+            console.log(error.message);
+        } else {
+            checkStatus();
+            console.log("Payment successful!");
+        }
     } catch (e) {
-      console.error(e);
-      errorMessage.value = e.message;
+        console.error(e);
+        errorMessage.value = e.message;
     } finally {
-      loading.value = false;
+        loading.value = false;
     }
-  };
+};
 
-  const checkStatus = async () => {
+const checkStatus = async () => {
     const clientSecret = sessionDetails.value.client_secret;
 
     if (!clientSecret) {
-      return;
+        return;
     }
 
     paymentIntentStatus.value = await stripe.value.retrievePaymentIntent(
-      clientSecret,
+        clientSecret
     );
     isSuccessModalOpen.value = true;
 
     updatePaymentStatus();
-  };
+};
 
-  const authenticationFlow = async () => {
-    console.log("authenticated flow");
+const authenticationFlow = async () => {
+
     if (form.value.isRegisterForm) {
-      register(form.value);
+        register(form.value);
     } else {
-      login(form);
+        login(form);
     }
-  };
+};
 
-  const register = async (registerForm) => {
+const register = async (registerForm) => {
     try {
-    Auth.register({ registerForm }).then(async ( response)=>{
-        await authStore.signIn();
-    });
-    } catch (e) {
-      console.log(e);
-      handleError(e);
-    }
-  };
-
-  const login = async (loginForm) => {
-     try {
-        Auth.login({ email: loginForm.value.email, password: loginForm.value.password })
-        .then( async (Response) => {
+        Auth.register(registerForm).then(async (response) => {
             await authStore.signIn();
-        })
+        });
     } catch (e) {
-      handleError(e);
+        console.log(e);
+        handleError(e);
     }
-  };
+};
 
-  const handleError = (response) => {
+const login = async (loginForm) => {
+    try {
+        Auth.login({
+            email: loginForm.value.email,
+            password: loginForm.value.password,
+        }).then(async (Response) => {
+            await authStore.signIn();
+            message.success('Login successful');
+        });
+    } catch (e) {
+        handleError(e);
+    }
+};
+
+const handleError = (response) => {
     console.log(response);
     if (response && response.status === 422) {
-      console.log(response.data.errors);
-      authFormErrorMessage.value = response.data.errors;
+        console.log(response.data.errors);
+        authFormErrorMessage.value = response.data.errors;
     }
     if (response && response.status === 401) {
-      commonErrorMessage.value = 'Invalid Email or Password';
+        commonErrorMessage.value = "Invalid Email or Password";
     }
-  };
+};
 
-  const handleSuccessModalClose = () => {
+const handleSuccessModalClose = () => {
     isSuccessModalOpen.value = false;
     loading.value = true;
-    router.push({ name: 'user-dashboard' });
-  };
-  </script>
+    router.push({ name: "dashboard" });
+};
+</script>
 
-  <style scoped>
-  .card-element {
+<style scoped>
+.card-element {
     margin: auto;
     width: 400px;
-  }
+}
 
-  .error {
+.error {
     color: red;
     text-align: center;
     margin: auto;
-  }
+}
 
-  .btn {
+.btn {
     @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
-  }
+}
 
-  #payment-element {
+#payment-element {
     margin: auto;
     width: 400px;
-  }
+}
 
-  #spinner {
+#spinner {
     @apply inline-block;
-  }
+}
 
-  #button-text {
+#button-text {
     @apply inline-block text-center;
-  }
-  </style>
+}
+</style>

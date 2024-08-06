@@ -17,11 +17,10 @@ router.beforeEach((to, from, next) => {
     if (to.meta.middleware == "guest") {
         console.log(useAuthStore);
         if (store.isAuthenticated) {
-            next({ name: "dashboard" })
+            next()
         }
         next()
     } else {
-        console.log('login');
         console.log(store.isAuthenticated);
         if (store.isAuthenticated) {
             next()
